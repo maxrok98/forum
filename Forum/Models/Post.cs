@@ -21,8 +21,8 @@ namespace Forum.Models
         public string ImageId { get; set; }
         public virtual PostImage Image { get; set; }
         //image
-        public DateTime Date;
-        public int Rating;
+        public DateTime Date { get; set; }
+        public int Rating { get; set; }
 
         public virtual ICollection<Coment> Coments { get; set; }
         public virtual ICollection<Vote> Votes { get; set; }

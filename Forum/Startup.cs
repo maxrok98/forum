@@ -47,11 +47,13 @@ namespace Forum
 
             services.AddScoped<IThreadRepository, ThreadRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IComentRepository, ComentRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<IThreadService, ThreadService>();
             services.AddScoped<IPostService, PostService>();
+            services.AddScoped<IComentService, ComentService>();
 
             services.AddAutoMapper(typeof(Startup));
 

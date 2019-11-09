@@ -9,5 +9,8 @@ namespace Forum.Models
     {
         public string Id { get; set; }
         public byte[] Image { get; set; }
+
+        public string ThreadId { get; set; }
+        public Thread Thread { get; set; }
     }
 }

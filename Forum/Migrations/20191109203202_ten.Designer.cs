@@ -4,14 +4,16 @@ using Forum.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Forum.Migrations
 {
     [DbContext(typeof(Models.AppContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20191109203202_ten")]
+    partial class ten
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,17 +111,11 @@ namespace Forum.Migrations
                         .IsRequired()
                         .HasMaxLength(100000);
 
-                    b.Property<DateTime>("Date")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("GETDATE()");
-
                     b.Property<string>("ImageId");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50);
-
-                    b.Property<int>("Rating");
 
                     b.Property<string>("ThreadId");
 
@@ -138,8 +134,8 @@ namespace Forum.Migrations
                     b.ToTable("Posts");
 
                     b.HasData(
-                        new { Id = "ertioow", Content = "Here we are going to talk about OS", Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Name = "Little bit about OS", Rating = 0, ThreadId = "sadfasdfa" },
-                        new { Id = "dfgm,ndsl", Content = "ARM is beter then x86", Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Name = "Little bit about ARM architecture", Rating = 0, ThreadId = "teewrsl" }
+                        new { Id = "ertioow", Content = "Here we are going to talk about OS", Name = "Little bit about OS", ThreadId = "sadfasdfa" },
+                        new { Id = "dfgm,ndsl", Content = "ARM is beter then x86", Name = "Little bit about ARM architecture", ThreadId = "teewrsl" }
                     );
                 });
 
@@ -409,7 +405,8 @@ namespace Forum.Migrations
                 {
                     b.HasOne("Forum.Models.User", "Added")
                         .WithMany("OtherChats")
-                        .HasForeignKey("AddedId");
+                        .HasForeignKey("AddedId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Forum.Models.User", "Creator")
                         .WithMany("MyChats")
@@ -421,7 +418,8 @@ namespace Forum.Migrations
                 {
                     b.HasOne("Forum.Models.Coment", "ParentComent")
                         .WithMany("Coments")
-                        .HasForeignKey("ParentComentId");
+                        .HasForeignKey("ParentComentId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Forum.Models.Post", "Post")
                         .WithMany("Coments")

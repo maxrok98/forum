@@ -18,14 +18,6 @@ namespace Forum.Repositories
                         group vote by post.Id into grouped
                         select new { postId = grouped.Key, Count = grouped.Count(t => t.Id != null) };
 
-            //var query2 = (from post in _context.Posts
-            //              select post).ToList();
-
-            //foreach (var q in query2)
-            //{
-            //    Console.WriteLine($"{q.Content} - {q.Id}");
-            //}
-
             return await (from p in query
                     from post in _context.Posts
                     where post.Id == p.postId

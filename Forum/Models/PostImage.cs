@@ -9,5 +9,8 @@ namespace Forum.Models
     {
         public string Id { get; set; }
         public byte[] Image { get; set; }
+
+        public string PostId { get; set; }
+        public virtual Post Post { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace Forum.Models
         public string ChatId { get; set; }
         public virtual Chat Chat { get; set; }
 
-        public string SenderId { get; set; }
+        public string UserId { get; set; }
         public virtual User User { get; set; }
 
         public string Text { get; set; }

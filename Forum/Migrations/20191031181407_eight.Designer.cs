@@ -4,14 +4,16 @@ using Forum.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Forum.Migrations
 {
     [DbContext(typeof(Models.AppContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20191031181407_eight")]
+    partial class eight
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,9 +32,7 @@ namespace Forum.Migrations
 
                     b.Property<bool>("Encrypted");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50);
+                    b.Property<string>("Name");
 
                     b.HasKey("Id");
 
@@ -48,34 +48,21 @@ namespace Forum.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("Date")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<string>("ParentComentId");
+                    b.Property<DateTime>("Date");
 
                     b.Property<string>("PostId");
 
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(300);
+                    b.Property<string>("Text");
 
                     b.Property<string>("UserId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentComentId");
 
                     b.HasIndex("PostId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Coments");
-
-                    b.HasData(
-                        new { Id = "weorowo", Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), PostId = "ertioow", Text = "Realy cool article" },
-                        new { Id = "xcvzxcm,", Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), PostId = "dfgm,ndsl", Text = "ARM the best!!" }
-                    );
                 });
 
             modelBuilder.Entity("Forum.Models.Message", b =>
@@ -85,9 +72,9 @@ namespace Forum.Migrations
 
                     b.Property<string>("ChatId");
 
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(300);
+                    b.Property<string>("SenderId");
+
+                    b.Property<string>("Text");
 
                     b.Property<string>("UserId");
 
@@ -105,21 +92,11 @@ namespace Forum.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(100000);
-
-                    b.Property<DateTime>("Date")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("GETDATE()");
+                    b.Property<string>("Content");
 
                     b.Property<string>("ImageId");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.Property<int>("Rating");
+                    b.Property<string>("Name");
 
                     b.Property<string>("ThreadId");
 
@@ -127,20 +104,13 @@ namespace Forum.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ImageId")
-                        .IsUnique()
-                        .HasFilter("[ImageId] IS NOT NULL");
+                    b.HasIndex("ImageId");
 
                     b.HasIndex("ThreadId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Posts");
-
-                    b.HasData(
-                        new { Id = "ertioow", Content = "Here we are going to talk about OS", Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Name = "Little bit about OS", Rating = 0, ThreadId = "sadfasdfa" },
-                        new { Id = "dfgm,ndsl", Content = "ARM is beter then x86", Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Name = "Little bit about ARM architecture", Rating = 0, ThreadId = "teewrsl" }
-                    );
                 });
 
             modelBuilder.Entity("Forum.Models.PostImage", b =>
@@ -150,8 +120,6 @@ namespace Forum.Migrations
 
                     b.Property<byte[]>("Image")
                         .HasMaxLength(10000000);
-
-                    b.Property<string>("PostId");
 
                     b.HasKey("Id");
 
@@ -163,20 +131,15 @@ namespace Forum.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(300);
+                    b.Property<string>("Description");
 
                     b.Property<string>("ImageId");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50);
+                    b.Property<string>("Name");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ImageId")
-                        .IsUnique()
-                        .HasFilter("[ImageId] IS NOT NULL");
+                    b.HasIndex("ImageId");
 
                     b.ToTable("Threads");
 
@@ -193,8 +156,6 @@ namespace Forum.Migrations
 
                     b.Property<byte[]>("Image")
                         .HasMaxLength(10000000);
-
-                    b.Property<string>("ThreadId");
 
                     b.HasKey("Id");
 
@@ -247,10 +208,6 @@ namespace Forum.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ImageId")
-                        .IsUnique()
-                        .HasFilter("[ImageId] IS NOT NULL");
-
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
 
@@ -273,6 +230,10 @@ namespace Forum.Migrations
                     b.Property<string>("UserId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("UserImage");
                 });
@@ -413,85 +374,69 @@ namespace Forum.Migrations
 
                     b.HasOne("Forum.Models.User", "Creator")
                         .WithMany("MyChats")
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CreatorId");
                 });
 
             modelBuilder.Entity("Forum.Models.Coment", b =>
                 {
-                    b.HasOne("Forum.Models.Coment", "ParentComent")
-                        .WithMany("Coments")
-                        .HasForeignKey("ParentComentId");
-
                     b.HasOne("Forum.Models.Post", "Post")
                         .WithMany("Coments")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("PostId");
 
                     b.HasOne("Forum.Models.User", "User")
                         .WithMany("Coments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Forum.Models.Message", b =>
                 {
                     b.HasOne("Forum.Models.Chat", "Chat")
                         .WithMany("Messages")
-                        .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ChatId");
 
                     b.HasOne("Forum.Models.User", "User")
                         .WithMany("Messages")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Forum.Models.Post", b =>
                 {
                     b.HasOne("Forum.Models.PostImage", "Image")
-                        .WithOne("Post")
-                        .HasForeignKey("Forum.Models.Post", "ImageId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany()
+                        .HasForeignKey("ImageId");
 
                     b.HasOne("Forum.Models.Thread", "Thread")
                         .WithMany("Posts")
-                        .HasForeignKey("ThreadId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("ThreadId");
 
                     b.HasOne("Forum.Models.User", "User")
                         .WithMany("Posts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Forum.Models.Thread", b =>
                 {
                     b.HasOne("Forum.Models.ThreadImage", "Image")
-                        .WithOne("Thread")
-                        .HasForeignKey("Forum.Models.Thread", "ImageId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany()
+                        .HasForeignKey("ImageId");
                 });
 
-            modelBuilder.Entity("Forum.Models.User", b =>
+            modelBuilder.Entity("Forum.Models.UserImage", b =>
                 {
-                    b.HasOne("Forum.Models.UserImage", "Image")
-                        .WithOne("User")
-                        .HasForeignKey("Forum.Models.User", "ImageId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("Forum.Models.User", "User")
+                        .WithOne("Image")
+                        .HasForeignKey("Forum.Models.UserImage", "UserId");
                 });
 
             modelBuilder.Entity("Forum.Models.Vote", b =>
                 {
                     b.HasOne("Forum.Models.Post", "Post")
                         .WithMany("Votes")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("PostId");
 
                     b.HasOne("Forum.Models.User", "User")
                         .WithMany("Votes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
