@@ -36,5 +36,12 @@ namespace Forum.Repositories
                           where c.Id == id
                           select c).Include(c => c.User).FirstAsync();
         }
+        public async Task<Coment> UserOwnsComentAsync(string ComentId, string UserId)
+        {
+            return await (from c in _context.Coments
+                          where c.Id == ComentId
+                          where c.UserId == UserId
+                          select c).FirstAsync();
+        }
     }
 }

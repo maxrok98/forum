@@ -25,6 +25,6 @@ namespace Forum.DTOout
         //image
         public DateTime Date;
         public int Rating;
-        public virtual ICollection<Coment> Coments { get; set; }
+        public virtual ICollection<ComentDTOout> Coments { get; set; }
     }
 }

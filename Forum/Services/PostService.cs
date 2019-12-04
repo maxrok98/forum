@@ -11,12 +11,13 @@ namespace Forum.Services
     public class PostService : IPostService
     {
         private readonly IPostRepository _postRepository;
+        private readonly IVoteRepository _voteRepository;
         private readonly IUnitOfWork _unitOfWork;
-        public PostService(IPostRepository postRepository, IUnitOfWork unitOfWork)
+        public PostService(IPostRepository postRepository, IVoteRepository voteRepository, IUnitOfWork unitOfWork)
         {
             _postRepository = postRepository;
             _unitOfWork = unitOfWork;
-
+            _voteRepository = voteRepository;
         }
 
         public async Task<IEnumerable<Post>> GetAllAsync()
@@ -97,6 +98,70 @@ namespace Forum.Services
             {
                 return new PostResponse($"An error occurred when saving the post: {ex.Message}");
             }
+        }
+
+        public async Task<bool> UserOwnsPostAsync(string PostId, string UserId)
+        {
+            var post = await _postRepository.UserOwnsPostAsync(PostId, UserId);
+
+            if (post == null)
+                return false;
+            if (post.UserId != UserId)
+                return false;
+
+            return true;
+        }
+
+        public async Task<VoteResponse> Vote(string PostId, string UserId)
+        {
+            var post = await _postRepository.GetAsync(PostId);
+
+            if (post == null)
+                return new VoteResponse("Post not found.");
+
+            var vote = await _voteRepository.FindInstance(PostId, UserId);
+            if (vote != null)
+                return new VoteResponse("You already voted.");
+
+            var Vote = new Vote { PostId = PostId, UserId = UserId };
+            try
+            {
+                await _voteRepository.AddAsync(Vote);
+                post.Rating += 1;
+                await _unitOfWork.CompleteAsync();
+
+                return new VoteResponse(Vote);
+            }
+            catch(Exception ex)
+            {
+                return new VoteResponse($"An error occurred when saving the vote: {ex.Message}");
+            }
+        }
+
+        public async Task<VoteResponse> UnVote(string PostId, string UserId)
+        {
+            var post = await _postRepository.GetAsync(PostId);
+
+            if (post == null)
+                return new VoteResponse("Post not found.");
+
+            var vote = await _voteRepository.FindInstance(PostId, UserId);
+            if (vote == null)
+                return new VoteResponse("You did not vote.");
+
+            try
+            {
+                _voteRepository.Remove(vote);
+                post.Rating -= 1;
+                await _unitOfWork.CompleteAsync();
+
+                return new VoteResponse(vote);
+            }
+            catch(Exception ex)
+            {
+                return new VoteResponse($"An error occurred when deleting the vote: {ex.Message}");
+            }
+
         }
     }
 }

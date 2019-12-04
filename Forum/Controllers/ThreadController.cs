@@ -9,13 +9,15 @@ using Forum.Services;
 using Forum.DTOin;
 using Forum.DTOout;
 using Forum.Models;
-
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Forum.Controllers
 {
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public class ThreadController : ControllerBase
     {
         private readonly IThreadService _threadService;
@@ -28,6 +30,7 @@ namespace Forum.Controllers
         // GET: api/Thread
         [HttpGet("get/", Name = "GetThreads")]
         [ProducesResponseType(typeof(IEnumerable<ThreadDTOout>), 200)]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IEnumerable<ThreadDTOout>> Get()
         {
             var thread = await _threadService.GetAllAsync();
@@ -38,6 +41,7 @@ namespace Forum.Controllers
 
         // GET: api/Thread/5
         [HttpGet("get/{id}", Name = "GetThread")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<ThreadDTOout> Get(string id)
         {
             var thread = await _threadService.GetAsync(id);

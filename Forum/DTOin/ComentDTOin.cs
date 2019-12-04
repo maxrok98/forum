@@ -9,9 +9,9 @@ namespace Forum.DTOin
     {
         public string Id { get; set; }
 
-        public string UserId { get; set; }
-
         public string PostId { get; set; }
+
+        public string ParentComentId { get; set; }
 
         public string Text { get; set; }
     }

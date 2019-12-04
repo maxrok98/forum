@@ -94,5 +94,17 @@ namespace Forum.Services
                 return new ComentResponse($"An error occurred when updating the coment: {ex.Message}");
             }
         }
+
+        public async Task<bool> UserOwnsComentAsync(string ComentId, string UserId)
+        {
+            var coment = await _comentRepository.UserOwnsComentAsync(ComentId, UserId);
+
+            if (coment == null)
+                return false;
+            if (coment.UserId != UserId)
+                return false;
+
+            return true;
+        }
     }
 }

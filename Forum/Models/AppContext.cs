@@ -16,6 +16,7 @@ namespace Forum.Models
         public DbSet<Thread> Threads { get; set; }
         //public DbSet<User> Users { get; set; }
         public DbSet<Vote> Votes { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public AppContext(DbContextOptions<AppContext> options)
                     : base(options)
         {
@@ -41,7 +42,7 @@ namespace Forum.Models
 
             modelBuilder.Entity<Coment>().HasOne(p => p.User).WithMany(t => t.Coments).HasForeignKey(t => t.UserId).OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<Coment>().HasOne(p => p.Post).WithMany(t => t.Coments).HasForeignKey(t => t.PostId).OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<Coment>().HasMany(p => p.Coments).WithOne(t => t.ParentComent).HasForeignKey(t => t.ParentComentId);
+            modelBuilder.Entity<Coment>().HasMany(p => p.SubComents).WithOne(t => t.ParentComent).HasForeignKey(t => t.ParentComentId);
             modelBuilder.Entity<Coment>().Property(t => t.Date).HasDefaultValueSql("GETDATE()").ValueGeneratedOnAdd();
             modelBuilder.Entity<Coment>().Property(t => t.Text).HasMaxLength(300).IsRequired();
 

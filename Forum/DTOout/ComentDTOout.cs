@@ -15,5 +15,6 @@ namespace Forum.DTOout
 
         public string Text { get; set; }
         public DateTime Date { get; set; }
+        public virtual ICollection<ComentDTOout> SubComents { get; set; }
     }
 }

@@ -4,17 +4,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Forum.Services;
 using AutoMapper;
 using Forum.DTOin;
 using Forum.DTOout;
 using Forum.Models;
+using Forum.Extensions;
+using Forum.Contracts.Responses;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Forum.Controllers
 {
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class PostController : ControllerBase
     {
         private readonly IPostService _postService;
@@ -50,6 +57,7 @@ namespace Forum.Controllers
         public async Task<IActionResult> Post([FromBody] PostDTOin post)
         {
             var pt = _mapper.Map<PostDTOin, Post>(post);
+            pt.UserId = HttpContext.GetUserId();
             var result = await _postService.AddAsync(pt);
 
             if (!result.Success)
@@ -65,6 +73,13 @@ namespace Forum.Controllers
         [HttpPut("put/{id}", Name = "PutPost")]
         public async Task<IActionResult> Put(string id, [FromBody] PostDTOin post)
         {
+            var userOwnsPost = await _postService.UserOwnsPostAsync(id, HttpContext.GetUserId());
+
+            if (!userOwnsPost)
+            {
+                return BadRequest(new ErrorResponse(new ErrorModel { Message = "You do not own this post" }));
+            }
+
             var pt = _mapper.Map<PostDTOin, Post>(post);
             var result = await _postService.UpdateAsync(id, pt);
 
@@ -81,6 +96,13 @@ namespace Forum.Controllers
         [HttpDelete("delete/{id}", Name = "DeletePost")]
         public async Task<IActionResult> Delete(string id)
         {
+            var userOwnsPost = await _postService.UserOwnsPostAsync(id, HttpContext.GetUserId());
+
+            if (!userOwnsPost)
+            {
+                return BadRequest(new ErrorResponse(new ErrorModel { Message = "You do not own this post" }));
+            }
+
             var result = await _postService.RemoveAsync(id);
 
             if (!result.Success)
@@ -90,6 +112,36 @@ namespace Forum.Controllers
 
             var ptDTO = _mapper.Map<Post, PostDTOout>(result.Resource);
             return Ok(ptDTO);
+        }
+        
+        [HttpPost("vote/{id}", Name = "VotePost")]
+        public async Task<IActionResult> Vote(string id)
+        {
+            var UserId = HttpContext.GetUserId();
+
+            var result = await _postService.Vote(id, UserId);
+
+            if(!result.Success)
+            {
+                return BadRequest(new ErrorViewModel());
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete("unvote/{id}", Name = "UnVotePost")]
+        public async Task<IActionResult> UnVote(string id)
+        {
+            var UserId = HttpContext.GetUserId();
+
+            var result = await _postService.UnVote(id, UserId);
+
+            if(!result.Success)
+            {
+                return BadRequest(new ErrorViewModel());
+            }
+
+            return Ok();
         }
     }
 }

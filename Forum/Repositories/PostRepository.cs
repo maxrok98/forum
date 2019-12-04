@@ -33,13 +33,20 @@ namespace Forum.Repositories
 
         public override async Task<IEnumerable<Post>> GetAllAsync()
         {
-            return await _context.Posts.Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).ToListAsync();
+            return await _context.Posts.Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).ToListAsync();
         }
         public override async Task<Post> GetAsync(string id)
         {
             return await (from p in _context.Posts
                           where p.Id == id
-                          select p).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).FirstAsync();
+                          select p).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).Include(p => p.Coments).FirstAsync();
+        }
+        public async Task<Post> UserOwnsPostAsync(string PostId, string UserId)
+        {
+            return await (from p in _context.Posts
+                          where p.Id == PostId
+                          where p.UserId == UserId
+                          select p).FirstAsync();
         }
     }
 }

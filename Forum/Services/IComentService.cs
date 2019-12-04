@@ -16,6 +16,7 @@ namespace Forum.Services
         Task<ComentResponse> AddAsync(Coment coment);
         Task<ComentResponse> UpdateAsync(string id, Coment coment);
         Task<ComentResponse> RemoveAsync(string id);
+        Task<bool> UserOwnsComentAsync(string ComentId, string UserId);
 
     }
 }

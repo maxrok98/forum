@@ -6,7 +6,8 @@ using Forum.Models;
 
 namespace Forum.Repositories
 {
-    interface IVoteRepository : IRepository<Vote>
+    public interface IVoteRepository : IRepository<Vote>
     {
+        Task<Vote> FindInstance(string PostId, string UserId);
     }
 }

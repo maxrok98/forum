@@ -9,12 +9,17 @@ using Forum.DTOin;
 using Forum.DTOout;
 using Forum.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Forum.Extensions;
+using Forum.Contracts.Responses;
 
 namespace Forum.Controllers
 {
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ComentController : ControllerBase
     {
         private readonly IComentService _comentService;
@@ -49,6 +54,7 @@ namespace Forum.Controllers
         public async Task<IActionResult> Post([FromBody] ComentDTOin coment)
         {
             var cm = _mapper.Map<ComentDTOin, Coment>(coment);
+            cm.UserId = HttpContext.GetUserId();
             var result = await _comentService.AddAsync(cm);
 
             if (!result.Success)
@@ -64,6 +70,12 @@ namespace Forum.Controllers
         [HttpPut("put/{id}", Name = "PutComent")]
         public async Task<IActionResult> Put(string id, [FromBody] ComentDTOin coment)
         {
+            var userOwnsComent = await _comentService.UserOwnsComentAsync(id, HttpContext.GetUserId());
+
+            if (!userOwnsComent)
+            {
+                return BadRequest(new ErrorResponse(new ErrorModel { Message = "You do not own this coment" }));
+            }
             var cm = _mapper.Map<ComentDTOin, Coment>(coment);
             var result = await _comentService.UpdateAsync(id, cm);
 
@@ -80,6 +92,12 @@ namespace Forum.Controllers
         [HttpDelete("delete/{id}", Name = "DeleteComent")]
         public async Task<IActionResult> Delete(string id)
         {
+            var userOwnsComent = await _comentService.UserOwnsComentAsync(id, HttpContext.GetUserId());
+
+            if (!userOwnsComent)
+            {
+                return BadRequest(new ErrorResponse(new ErrorModel { Message = "You do not own this coment" }));
+            }
             var result = await _comentService.RemoveAsync(id);
 
             if (!result.Success)

@@ -16,5 +16,8 @@ namespace Forum.Services
         Task<PostResponse> AddAsync(Post post);
         Task<PostResponse> UpdateAsync(string id, Post post);
         Task<PostResponse> RemoveAsync(string id);
+        Task<VoteResponse> Vote(string PostId, string UserId);
+        Task<VoteResponse> UnVote(string PostId, string UserId);
+        Task<bool> UserOwnsPostAsync(string PostId, string UserId);
     }
 }

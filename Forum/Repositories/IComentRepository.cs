@@ -10,5 +10,6 @@ namespace Forum.Repositories
     {
         Task<IEnumerable<Coment>> GetAllFromUserAsync(string id);
         Task<IEnumerable<Coment>> GetAllFromPostAsync(string id);
+        Task<Coment> UserOwnsComentAsync(string ComentId, string UserId);
     }
 }

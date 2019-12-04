@@ -11,9 +11,11 @@ namespace Forum.Models
         public string Id { get; set; }
 
         public string Text { get; set; }
+
         public string ParentComentId { get; set; }
         public virtual Coment ParentComent { get; set; }
-        public virtual ICollection<Coment> Coments { get; set; }
+
+        public virtual ICollection<Coment> SubComents { get; set; }
 
         public string UserId { get; set; }
         public virtual User User { get; set; }

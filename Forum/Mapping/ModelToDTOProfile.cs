@@ -19,6 +19,7 @@ namespace Forum.Mapping
             CreateMap<Thread, ThreadDTOout>();
             CreateMap<Post, PostDTOout>().ForMember(dest => dest.ThreadName, opt => opt.MapFrom(src => src.Thread.Name))
                                          .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
+                                                                                  
             CreateMap<Coment, ComentDTOout>();
             //CreateMap<ThreadImage, ThreadDTO>().ForMember(x => x.Id, opt => opt.Ignore());
             //CreateMap<Post, PostDTO>();
