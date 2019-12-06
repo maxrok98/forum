@@ -8,7 +8,7 @@ namespace Forum.Services
 {
     public interface IIdentityService
     {
-        Task<AuthentificationResult> RegisterAsync(string email, string password);
+        Task<AuthentificationResult> RegisterAsync(string email, string password, byte[] image, string UserName);
 
         Task<AuthentificationResult> LoginAsync(string email, string password);
 

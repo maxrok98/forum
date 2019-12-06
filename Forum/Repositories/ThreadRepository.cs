@@ -10,7 +10,7 @@ namespace Forum.Repositories
     public class ThreadRepository : Repository<Thread>, IThreadRepository
     {
         private readonly DbSet<Thread> _entity;
-        public ThreadRepository(Models.AppContext context) : base(context) {
+        public ThreadRepository(Models.ForumAppDbContext context) : base(context) {
             _entity = context.Threads;
         }
 

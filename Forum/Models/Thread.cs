@@ -15,5 +15,6 @@ namespace Forum.Models
         public virtual ThreadImage Image { get; set; }
 
         public virtual ICollection<Post> Posts { get; set; }
+        public virtual ICollection<Subscription> Subscriptions { get; set; }
     }
 }

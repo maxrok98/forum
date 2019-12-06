@@ -12,10 +12,12 @@ namespace Forum.Services
     {
         private readonly IThreadRepository _threadRepository;
         private readonly IUnitOfWork _unitOfWork;
-        public ThreadService(IThreadRepository threadRepository, IUnitOfWork unitOfWork)
+        private readonly ISubscriptionRepository _subscriptionRepository;
+        public ThreadService(IThreadRepository threadRepository, ISubscriptionRepository subscriptionRepository, IUnitOfWork unitOfWork)
         {
             _threadRepository = threadRepository;
             _unitOfWork = unitOfWork;
+            _subscriptionRepository = subscriptionRepository;
         }
         public async Task<ThreadResponse> RemoveAsync(string id)
         {
@@ -85,6 +87,57 @@ namespace Forum.Services
                 return new ThreadResponse($"An error occurred when updating the thread: {ex.Message}");
             }
 
+        }
+
+        public async Task<SubscriptionResponse> Subscribe(string userId, string threadId)
+        {
+            var thread = await _threadRepository.GetAsync(threadId);
+
+            if (thread == null)
+                return new SubscriptionResponse("Thread not found.");
+
+            var sub = await _subscriptionRepository.FindInstance(userId, threadId);
+            if (sub != null)
+                return new SubscriptionResponse("You already subscribed.");
+
+            var Sub = new Subscription { ThreadId = threadId, UserId = userId };
+            try
+            {
+                await _subscriptionRepository.AddAsync(Sub);
+                await _unitOfWork.CompleteAsync();
+
+                return new SubscriptionResponse(Sub);
+            }
+            catch(Exception ex)
+            {
+                return new SubscriptionResponse($"An error occurred when saving the subscription: {ex.Message}");
+            }
+
+        }
+
+        public async Task<SubscriptionResponse> UnSubscribe(string userId, string threadId)
+        {
+            var thread = await _threadRepository.GetAsync(threadId);
+
+            if (thread == null)
+                return new SubscriptionResponse("Thread not found.");
+
+            var sub = await _subscriptionRepository.FindInstance(userId, threadId);
+            if (sub == null)
+                return new SubscriptionResponse("You are not subscribed.");
+
+            var Sub = new Subscription { ThreadId = threadId, UserId = userId };
+            try
+            {
+                _subscriptionRepository.Remove(Sub);
+                await _unitOfWork.CompleteAsync();
+
+                return new SubscriptionResponse(Sub);
+            }
+            catch(Exception ex)
+            {
+                return new SubscriptionResponse($"An error occurred when deleting the subscription: {ex.Message}");
+            }
         }
     }
 }

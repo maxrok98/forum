@@ -9,7 +9,7 @@ namespace Forum.Repositories
 {
     public class PostRepository : Repository<Post>, IPostRepository
     {
-        public PostRepository(Models.AppContext context) : base(context) { }
+        public PostRepository(Models.ForumAppDbContext context) : base(context) { }
 
         public async Task<IEnumerable<Post>> GetOrderByVoteAsync()
         {

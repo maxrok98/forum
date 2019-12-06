@@ -72,16 +72,17 @@ namespace Forum
 
             services.AddSingleton(tokenValidationParameters);
 
-            services.AddDbContext<Models.AppContext>(options =>
+            services.AddDbContext<Models.ForumAppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<Models.AppContext>();
+                .AddEntityFrameworkStores<Models.ForumAppDbContext>();
 
             services.AddScoped<IThreadRepository, ThreadRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IComentRepository, ComentRepository>();
             services.AddScoped<IVoteRepository, VoteRepository>();
+            services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -89,6 +90,7 @@ namespace Forum
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IComentService, ComentService>();
             services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -148,7 +150,7 @@ namespace Forum
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=swagger}/{action=Index}/{id?}");
+                    template: "{controller=swagger}/{action=index}/{id?}");
             });
         }
     }

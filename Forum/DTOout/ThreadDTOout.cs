@@ -13,6 +13,6 @@ namespace Forum.DTOout
         public string Description { get; set; }
 
         public string ImageId { get; set; }
-        public ThreadImage Image { get; set; }
+        public byte[] Image { get; set; }
     }
 }

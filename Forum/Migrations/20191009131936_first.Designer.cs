@@ -9,7 +9,7 @@ using Forum.Models;
 
 namespace Forum.Migrations
 {
-    [DbContext(typeof(Models.AppContext))]
+    [DbContext(typeof(Models.ForumAppDbContext))]
     [Migration("20191009131936_first")]
     partial class first
     {

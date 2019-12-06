@@ -22,4 +22,5 @@ namespace Forum.ViewModels
 
         public string ReturnUrl { get; set; }
     }
+
 }

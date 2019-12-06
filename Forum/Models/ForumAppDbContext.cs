@@ -7,32 +7,28 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Forum.Models
 {
-    public class AppContext : IdentityDbContext<User>
+    public class ForumAppDbContext : IdentityDbContext<User>
     {
         public DbSet<Chat> Chats { get; set; }
         public DbSet<Coment> Coments { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Thread> Threads { get; set; }
-        //public DbSet<User> Users { get; set; }
         public DbSet<Vote> Votes { get; set; }
+        public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
-        public AppContext(DbContextOptions<AppContext> options)
+        public ForumAppDbContext(DbContextOptions<ForumAppDbContext> options)
                     : base(options)
         {
             Database.EnsureCreated();
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseLazyLoadingProxies();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            //modelBuilder.Entity<User>().HasOne(p => p.Image)
-            //                           .WithOne(t => t.User)
-            //                           .HasForeignKey<UserImage>(t => t.UserId);
             modelBuilder.Entity<UserImage>().Property(i => i.Image).HasMaxLength(10000000);
             modelBuilder.Entity<UserImage>().HasOne(p => p.User).WithOne(t => t.Image).HasForeignKey<User>(t => t.ImageId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<PostImage>().Property(i => i.Image).HasMaxLength(10000000);
@@ -65,6 +61,11 @@ namespace Forum.Models
             modelBuilder.Entity<Message>().HasOne(p => p.User).WithMany(t => t.Messages).HasForeignKey(t => t.UserId).OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<Message>().HasOne(p => p.Chat).WithMany(t => t.Messages).HasForeignKey(t => t.ChatId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Message>().Property(p => p.Text).HasMaxLength(300).IsRequired();
+
+            //modelBuilder.Entity<RefreshToken>().HasOne(p => p.User).WithOne(t => t.RefreshToken).HasForeignKey<RefreshToken>(p => p.UserId).OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Subscription>().HasOne(p => p.Thread).WithMany(t => t.Subscriptions).HasForeignKey(t => t.ThreadId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Subscription>().HasOne(p => p.User).WithMany(t => t.Subscriptions).HasForeignKey(t => t.UserId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Thread>().HasData
             (

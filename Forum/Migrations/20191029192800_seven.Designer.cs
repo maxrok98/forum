@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Forum.Migrations
 {
-    [DbContext(typeof(Models.AppContext))]
+    [DbContext(typeof(Models.ForumAppDbContext))]
     [Migration("20191029192800_seven")]
     partial class seven
     {

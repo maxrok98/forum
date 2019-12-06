@@ -9,7 +9,7 @@ namespace Forum.Repositories
 {
     public class ComentRepository : Repository<Coment>, IComentRepository
     {
-        public ComentRepository(Models.AppContext context) : base(context) { }
+        public ComentRepository(Models.ForumAppDbContext context) : base(context) { }
 
         public async Task<IEnumerable<Coment>> GetAllFromPostAsync(string id)
         {

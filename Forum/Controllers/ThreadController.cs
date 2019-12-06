@@ -11,13 +11,14 @@ using Forum.DTOout;
 using Forum.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Forum.Extensions;
 
 namespace Forum.Controllers
 {
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ThreadController : ControllerBase
     {
         private readonly IThreadService _threadService;
@@ -30,7 +31,7 @@ namespace Forum.Controllers
         // GET: api/Thread
         [HttpGet("get/", Name = "GetThreads")]
         [ProducesResponseType(typeof(IEnumerable<ThreadDTOout>), 200)]
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<IEnumerable<ThreadDTOout>> Get()
         {
             var thread = await _threadService.GetAllAsync();
@@ -41,7 +42,7 @@ namespace Forum.Controllers
 
         // GET: api/Thread/5
         [HttpGet("get/{id}", Name = "GetThread")]
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ThreadDTOout> Get(string id)
         {
             var thread = await _threadService.GetAsync(id);
@@ -52,7 +53,7 @@ namespace Forum.Controllers
 
         // POST: api/Thread
         [HttpPost("post", Name = "PostThread")]
-        [RequestSizeLimit(valueCountLimit: 209715200)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Post([FromBody] ThreadDTOin threadDto)
         {
             var thread = _mapper.Map<ThreadDTOin, Thread>(threadDto);
@@ -70,6 +71,7 @@ namespace Forum.Controllers
 
         // PUT: api/Thread/5
         [HttpPut("put/{id}", Name = "PutThread")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Put(string id, [FromBody] ThreadDTOin threadDto)
         {
             var thread = _mapper.Map<ThreadDTOin, Thread>(threadDto);
@@ -86,6 +88,7 @@ namespace Forum.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("delete/{id}", Name = "DeleteThread")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             var result = await _threadService.RemoveAsync(id);
@@ -97,6 +100,36 @@ namespace Forum.Controllers
 
             var threadDTO = _mapper.Map<Thread, ThreadDTOout>(result.Resource);
             return Ok(threadDTO);
+        }
+        [HttpPost("subscribe/{id}", Name = "SubscribeThread")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<IActionResult> Subscribe(string id)
+        {
+            var UserId = HttpContext.GetUserId();
+
+            var result = await _threadService.Subscribe(UserId, id);
+
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok("Succesfuly subscribed!");
+        }
+        [HttpDelete("unsubscribe/{id}", Name = "UnSubscribeThread")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<IActionResult> UnSubscribe(string id)
+        {
+            var UserId = HttpContext.GetUserId();
+
+            var result = await _threadService.UnSubscribe(UserId, id);
+
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok("Succesfuly unsubscribed!");
         }
     }
 }

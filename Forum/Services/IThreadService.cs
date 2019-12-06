@@ -14,5 +14,7 @@ namespace Forum.Services
         Task<ThreadResponse> AddAsync(Thread thread);
         Task<ThreadResponse> UpdateAsync(string id, Thread thread);
         Task<ThreadResponse> RemoveAsync(string id);
+        Task<SubscriptionResponse> Subscribe(string userId, string threadId);
+        Task<SubscriptionResponse> UnSubscribe(string userId, string threadId);
     }
 }

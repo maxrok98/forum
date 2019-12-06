@@ -22,9 +22,9 @@ namespace Forum.Services
         private readonly JwtSettings _jwtSettings;
         private readonly TokenValidationParameters _tokenValidationParameters;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly Models.AppContext _context;
+        private readonly Models.ForumAppDbContext _context;
 
-        public IdentityService(UserManager<User> userManager, JwtSettings jwtSettings, TokenValidationParameters tokenValidationParameters, Models.AppContext context, IUnitOfWork unitOfWork, RoleManager<IdentityRole> roleManager)
+        public IdentityService(UserManager<User> userManager, JwtSettings jwtSettings, TokenValidationParameters tokenValidationParameters, Models.ForumAppDbContext context, IUnitOfWork unitOfWork, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings;
@@ -34,7 +34,7 @@ namespace Forum.Services
             _context = context;
         }
 
-        public async Task<AuthentificationResult> RegisterAsync(string email, string password)
+        public async Task<AuthentificationResult> RegisterAsync(string email, string password, byte[] image, string UserName)
         {
             var existingUser = await _userManager.FindByEmailAsync(email);
 
@@ -47,11 +47,13 @@ namespace Forum.Services
             }
 
             var newUserId = Guid.NewGuid();
+            var newImageId = Guid.NewGuid();
             var newUser = new User
             {
                 Id = newUserId.ToString(),
                 Email = email,
-                UserName = email
+                UserName = UserName,
+                Image = new UserImage { Id = newImageId.ToString(), Image = image}
             };
 
 

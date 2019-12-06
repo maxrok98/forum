@@ -34,7 +34,7 @@ namespace Forum.Controllers
                 });
             }
 
-            var authResponse = await _identityService.RegisterAsync(request.Email, request.Password);
+            var authResponse = await _identityService.RegisterAsync(request.Email, request.Password, request.Image, request.UserName);
 
             if (!authResponse.Success)
             {

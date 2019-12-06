@@ -21,7 +21,8 @@ namespace Forum.DTOout
         public string Content { get; set; }
 
         public string ImageId { get; set; }
-        public PostImage Image { get; set; }
+        public byte[] Image { get; set; }
+        //public PostImage Image { get; set; }
         //image
         public DateTime Date;
         public int Rating;

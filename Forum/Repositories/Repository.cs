@@ -9,9 +9,9 @@ namespace Forum.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        protected readonly Models.AppContext _context;
+        protected readonly Models.ForumAppDbContext _context;
         private readonly DbSet<T> _entities;
-        public Repository(Models.AppContext context)
+        public Repository(Models.ForumAppDbContext context)
         {
             _context = context;
             _entities = _context.Set<T>();

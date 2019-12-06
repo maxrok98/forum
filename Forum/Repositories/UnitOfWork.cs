@@ -8,8 +8,8 @@ namespace Forum.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly Models.AppContext _context;
-        public UnitOfWork(Models.AppContext context)
+        private readonly Models.ForumAppDbContext _context;
+        public UnitOfWork(Models.ForumAppDbContext context)
         {
             _context = context;
         }
