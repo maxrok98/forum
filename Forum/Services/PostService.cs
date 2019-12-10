@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Forum.Models;
 using Forum.Services.Communication;
 using Forum.Repositories;
+using Forum.Contracts;
 
 namespace Forum.Services
 {
@@ -20,9 +21,14 @@ namespace Forum.Services
             _voteRepository = voteRepository;
         }
 
-        public async Task<IEnumerable<Post>> GetAllAsync()
+        public async Task<IEnumerable<Post>> GetAllAsync(PaginationFilter paginationFilter = null)
         {
-            return await _postRepository.GetAllAsync(); 
+            if(paginationFilter == null)
+            {
+                return await _postRepository.GetAllAsync(); 
+            }
+            var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
+            return await _postRepository.GetPaged(paginationFilter, skip);
         }
 
         public async Task<Post> GetAsync(string id)

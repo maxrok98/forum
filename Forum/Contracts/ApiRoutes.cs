@@ -11,19 +11,19 @@ namespace Forum.Contracts
 
         public const string Version = "v1";
 
-        public const string Base = Root + "/" + Version;
+        public const string Base = Root;
 
         public static class Posts
         {
-            public const string GetAll = Base + "/posts";
+            public const string GetAll = Base + "/post/get";
 
-            public const string Update = Base + "/posts/{postId}";
+            public const string Update = Base + "/post/put/{postId}";
 
-            public const string Delete = Base + "/posts/{postId}";
+            public const string Delete = Base + "/post/delet/{postId}";
 
-            public const string Get = Base + "/posts/{postId}";
+            public const string Get = Base + "/post/get/{postId}";
 
-            public const string Create = Base + "/posts";
+            public const string Create = Base + "/post/post";
         }
 
         public static class Tags

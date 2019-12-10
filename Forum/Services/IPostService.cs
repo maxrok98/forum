@@ -4,12 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Forum.Models;
 using Forum.Services.Communication;
+using Forum.Contracts;
 
 namespace Forum.Services
 {
     public interface IPostService
     {
-        Task<IEnumerable<Post>> GetAllAsync();
+        Task<IEnumerable<Post>> GetAllAsync(PaginationFilter paginationFilter = null);
         Task<Post> GetAsync(string id);
         Task<IEnumerable<Post>> GetOrderByVoteAsync();
         Task<IEnumerable<Post>> GetOrderByDateAsync();

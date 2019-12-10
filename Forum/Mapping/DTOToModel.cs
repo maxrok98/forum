@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Forum.DTOin;
 using Forum.Models;
+using Forum.Contracts;
+using Forum.Contracts.Requests.Queries;
 
 namespace Forum.Mapping
 {
@@ -18,6 +20,7 @@ namespace Forum.Mapping
                 );
             CreateMap<PostDTOin, Post>().ForMember(dest => dest.Image, opts => opts.MapFrom(src => new PostImage { Image = src.Image }));
             CreateMap<ComentDTOin, Coment>();
+            CreateMap<PaginationQuery, PaginationFilter>();
         }
     }
 }

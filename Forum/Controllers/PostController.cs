@@ -15,6 +15,9 @@ using Forum.Contracts.Responses;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Forum.Contracts.Requests.Queries;
+using Forum.Contracts;
+using Forum.Helpers;
 
 namespace Forum.Controllers
 {
@@ -25,31 +28,41 @@ namespace Forum.Controllers
     public class PostController : ControllerBase
     {
         private readonly IPostService _postService;
+        private readonly IUriService _uriService;
         private readonly IMapper _mapper;
-        public PostController(IPostService postService, IMapper mapper)
+        public PostController(IPostService postService, IUriService uriService, IMapper mapper)
         {
             _postService = postService;
+            _uriService = uriService;
             _mapper = mapper;
         }
         // GET: api/Post
         [HttpGet("get", Name = "GetPosts")]
-        [ProducesResponseType(typeof(IEnumerable<PostDTOout>), 200)]
-        public async Task<IEnumerable<PostDTOout>> Get()
+        public async Task<IActionResult> Get([FromQuery]PaginationQuery paginationQuery)
         {
-            var post = await _postService.GetAllAsync();
+            var pagination = _mapper.Map<PaginationFilter>(paginationQuery);
+            var post = await _postService.GetAllAsync(pagination);
             var dto = _mapper.Map<IEnumerable<Post>, IEnumerable<PostDTOout>>(post);
 
-            return dto;
+            if(pagination == null || pagination.PageNumber < 1 || pagination.PageSize < 1)
+            {
+                return Ok(new PageResponse<PostDTOout>(dto));
+            }
+
+
+            var paginationResponse = PaginationHelpers.CreatePaginatedResponse(_uriService, pagination, dto, ApiRoutes.Posts.GetAll);
+
+            return Ok(paginationResponse);
         }
 
         // GET: api/Post/5
         [HttpGet("get/{id}", Name = "GetPost")]
-        public async Task<PostDTOout> Get(string id)
+        public async Task<IActionResult> Get(string id)
         {
             var post = await _postService.GetAsync(id);
             var dto = _mapper.Map<Post, PostDTOout>(post);
 
-            return dto;
+            return Ok(new Response<PostDTOout>(dto));
         }
 
         // POST: api/Post
@@ -66,7 +79,7 @@ namespace Forum.Controllers
             }
 
             var ptDTO = _mapper.Map<Post, PostDTOout>(result.Resource);
-            return Ok(ptDTO);
+            return Ok(new Response<PostDTOout>(ptDTO));
         }
 
         // PUT: api/Post/5
@@ -89,7 +102,7 @@ namespace Forum.Controllers
             }
 
             var ptDTO = _mapper.Map<Post, PostDTOout>(result.Resource);
-            return Ok(ptDTO);
+            return Ok(new Response<PostDTOout>(ptDTO));
         }
 
         // DELETE: api/ApiWithActions/5

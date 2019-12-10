@@ -22,6 +22,11 @@ using Forum.Option;
 using Swashbuckle.AspNetCore.Swagger;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using System.Reflection;
+using System.IO;
+using Swashbuckle.AspNetCore.Filters;
+using Microsoft.OpenApi.Models;
+using Forum.Authorization;
 
 namespace Forum
 {
@@ -70,6 +75,16 @@ namespace Forum
                 x.TokenValidationParameters = tokenValidationParameters;
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("MustWorkForChapsas", policy =>
+                {
+                    policy.AddRequirements(new WorksForCompanyRequirement("chapsas.com"));
+                });
+            });
+
+            services.AddSingleton<IAuthorizationHandler, WorksForCompanyHandler>();
+
             services.AddSingleton(tokenValidationParameters);
 
             services.AddDbContext<Models.ForumAppDbContext>(options =>
@@ -91,6 +106,12 @@ namespace Forum
             services.AddScoped<IComentService, ComentService>();
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<IUriService>(provider => {
+                var accessor = provider.GetRequiredService<IHttpContextAccessor>();
+                var request = accessor.HttpContext.Request;
+                var absoluteUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent(), "/");
+                return new UriService(absoluteUri);
+            });
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -99,6 +120,7 @@ namespace Forum
             services.AddSwaggerGen(x =>
             {
                 x.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Title = "Forum API", Version = "v1" });
+                x.ExampleFilters();
                 var security = new Dictionary<string, IEnumerable<string>>
                 {
                     {"Bearer", new string[0] }
@@ -112,6 +134,7 @@ namespace Forum
                     Type = "apiKey"
                 });
             });
+            services.AddSwaggerExamplesFromAssemblyOf<Startup>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -145,6 +168,7 @@ namespace Forum
             app.UseStaticFiles();
             //app.UseCookiePolicy();
             app.UseAuthentication();
+            //app.UseAuthorization();
 
             app.UseMvc(routes =>
             {

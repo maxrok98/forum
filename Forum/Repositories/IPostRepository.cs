@@ -11,5 +11,6 @@ namespace Forum.Repositories
         Task<IEnumerable<Post>> GetOrderByVoteAsync();
         Task<IEnumerable<Post>> GetOrderByDateAsync();
         Task<Post> UserOwnsPostAsync(string PostId, string UserId);
+        Task<IEnumerable<Post>> GetPaged(PaginationFilter paginationFilter, int skip);
     }
 }
