@@ -21,11 +21,15 @@ namespace Forum.Services
             _voteRepository = voteRepository;
         }
 
-        public async Task<IEnumerable<Post>> GetAllAsync(PaginationFilter paginationFilter = null)
+        public async Task<IEnumerable<Post>> GetAllAsync(string postName = null, PaginationFilter paginationFilter = null)
         {
             if(paginationFilter == null)
             {
                 return await _postRepository.GetAllAsync(); 
+            }
+            if(!string.IsNullOrEmpty(postName))
+            {
+                return await _postRepository.GetFilteredAsync(postName);
             }
             var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
             return await _postRepository.GetPaged(paginationFilter, skip);

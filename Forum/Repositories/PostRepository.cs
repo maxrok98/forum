@@ -39,6 +39,10 @@ namespace Forum.Repositories
         {
             return await _context.Posts.Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
         }
+        public async Task<IEnumerable<Post>> GetFilteredAsync(string postName)
+        {
+            return await _context.Posts.Where(p => p.Name.Contains(postName)).ToListAsync();
+        }
         public override async Task<Post> GetAsync(string id)
         {
             return await (from p in _context.Posts
