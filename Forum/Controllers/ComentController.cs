@@ -5,14 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Forum.Models;
-using Forum.DTOin;
-using Forum.DTOout;
 using Forum.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Forum.Extensions;
 using Forum.Contracts.Responses;
+using Forum.Contracts.Requests;
 
 namespace Forum.Controllers
 {
@@ -31,29 +30,29 @@ namespace Forum.Controllers
         }
         // GET: api/Coment
         [HttpGet("get", Name = "GetComents")]
-        public async Task<IEnumerable<ComentDTOout>> Get()
+        public async Task<IEnumerable<ComentResponse>> Get()
         {
             var coments = await _comentService.GetAllAsync();
-            var dto = _mapper.Map<IEnumerable<Coment>, IEnumerable<ComentDTOout>>(coments);
+            var dto = _mapper.Map<IEnumerable<Coment>, IEnumerable<ComentResponse>>(coments);
 
             return dto;
         }
 
         // GET: api/Coment/5
         [HttpGet("get/{id}", Name = "GetComent")]
-        public async Task<ComentDTOout> Get(string id)
+        public async Task<ComentResponse> Get(string id)
         {
             var coment = await _comentService.GetAsync(id);
-            var dto = _mapper.Map<Coment, ComentDTOout>(coment);
+            var dto = _mapper.Map<Coment, ComentResponse>(coment);
 
             return dto;
         }
 
         // POST: api/Coment
         [HttpPost("post", Name = "PostComent")]
-        public async Task<IActionResult> Post([FromBody] ComentDTOin coment)
+        public async Task<IActionResult> Post([FromBody] ComentRequest coment)
         {
-            var cm = _mapper.Map<ComentDTOin, Coment>(coment);
+            var cm = _mapper.Map<ComentRequest, Coment>(coment);
             cm.UserId = HttpContext.GetUserId();
             var result = await _comentService.AddAsync(cm);
 
@@ -62,13 +61,13 @@ namespace Forum.Controllers
                 return BadRequest(new ErrorViewModel());
             }
 
-            var cmDTO = _mapper.Map<Coment, ComentDTOout>(result.Resource);
+            var cmDTO = _mapper.Map<Coment, ComentResponse>(result.Resource);
             return Ok(cmDTO);
         }
 
         // PUT: api/Coment/5
         [HttpPut("put/{id}", Name = "PutComent")]
-        public async Task<IActionResult> Put(string id, [FromBody] ComentDTOin coment)
+        public async Task<IActionResult> Put(string id, [FromBody] ComentRequest coment)
         {
             var userOwnsComent = await _comentService.UserOwnsComentAsync(id, HttpContext.GetUserId());
 
@@ -76,7 +75,7 @@ namespace Forum.Controllers
             {
                 return BadRequest(new ErrorResponse(new ErrorModel { Message = "You do not own this coment" }));
             }
-            var cm = _mapper.Map<ComentDTOin, Coment>(coment);
+            var cm = _mapper.Map<ComentRequest, Coment>(coment);
             var result = await _comentService.UpdateAsync(id, cm);
 
             if (!result.Success)
@@ -84,7 +83,7 @@ namespace Forum.Controllers
                 return BadRequest(new ErrorViewModel());
             }
 
-            var cmDTO = _mapper.Map<Coment, ComentDTOout>(result.Resource);
+            var cmDTO = _mapper.Map<Coment, ComentResponse>(result.Resource);
             return Ok(cmDTO);
         }
 
@@ -105,7 +104,7 @@ namespace Forum.Controllers
                 return BadRequest(new ErrorViewModel());
             }
 
-            var cmDTO = _mapper.Map<Coment, ComentDTOout>(result.Resource);
+            var cmDTO = _mapper.Map<Coment, ComentResponse>(result.Resource);
             return Ok(cmDTO);
         }
     }

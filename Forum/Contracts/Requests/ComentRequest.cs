@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Forum.DTOin
+namespace Forum.Contracts.Requests
 {
-    public class ComentDTOin
+    public class ComentRequest
     {
         public string Id { get; set; }
 

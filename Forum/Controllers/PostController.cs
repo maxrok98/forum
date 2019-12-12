@@ -7,11 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Forum.Services;
 using AutoMapper;
-using Forum.DTOin;
-using Forum.DTOout;
 using Forum.Models;
 using Forum.Extensions;
 using Forum.Contracts.Responses;
+using Forum.Contracts.Requests;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
@@ -42,11 +41,11 @@ namespace Forum.Controllers
         {
             var pagination = _mapper.Map<PaginationFilter>(paginationQuery);
             var post = await _postService.GetAllAsync(postName, pagination);
-            var dto = _mapper.Map<IEnumerable<Post>, IEnumerable<PostDTOout>>(post);
+            var dto = _mapper.Map<IEnumerable<Post>, IEnumerable<PostResponse>>(post);
 
             if(pagination == null || pagination.PageNumber < 1 || pagination.PageSize < 1)
             {
-                return Ok(new PageResponse<PostDTOout>(dto));
+                return Ok(new PageResponse<PostResponse>(dto));
             }
 
 
@@ -60,16 +59,16 @@ namespace Forum.Controllers
         public async Task<IActionResult> Get(string id)
         {
             var post = await _postService.GetAsync(id);
-            var dto = _mapper.Map<Post, PostDTOout>(post);
+            var dto = _mapper.Map<Post, PostResponse>(post);
 
-            return Ok(new Response<PostDTOout>(dto));
+            return Ok(new Response<PostResponse>(dto));
         }
 
         // POST: api/Post
         [HttpPost("post", Name = "PostPost")]
-        public async Task<IActionResult> Post([FromBody] PostDTOin post)
+        public async Task<IActionResult> Post([FromBody] PostRequest post)
         {
-            var pt = _mapper.Map<PostDTOin, Post>(post);
+            var pt = _mapper.Map<PostRequest, Post>(post);
             pt.UserId = HttpContext.GetUserId();
             var result = await _postService.AddAsync(pt);
 
@@ -78,13 +77,13 @@ namespace Forum.Controllers
                 return BadRequest(new ErrorViewModel());
             }
 
-            var ptDTO = _mapper.Map<Post, PostDTOout>(result.Resource);
-            return Ok(new Response<PostDTOout>(ptDTO));
+            var ptDTO = _mapper.Map<Post, PostResponse>(result.Resource);
+            return Ok(new Response<PostResponse>(ptDTO));
         }
 
         // PUT: api/Post/5
         [HttpPut("put/{id}", Name = "PutPost")]
-        public async Task<IActionResult> Put(string id, [FromBody] PostDTOin post)
+        public async Task<IActionResult> Put(string id, [FromBody] PostRequest post)
         {
             var userOwnsPost = await _postService.UserOwnsPostAsync(id, HttpContext.GetUserId());
 
@@ -93,7 +92,7 @@ namespace Forum.Controllers
                 return BadRequest(new ErrorResponse(new ErrorModel { Message = "You do not own this post" }));
             }
 
-            var pt = _mapper.Map<PostDTOin, Post>(post);
+            var pt = _mapper.Map<PostRequest, Post>(post);
             var result = await _postService.UpdateAsync(id, pt);
 
             if (!result.Success)
@@ -101,8 +100,8 @@ namespace Forum.Controllers
                 return BadRequest(new ErrorViewModel());
             }
 
-            var ptDTO = _mapper.Map<Post, PostDTOout>(result.Resource);
-            return Ok(new Response<PostDTOout>(ptDTO));
+            var ptDTO = _mapper.Map<Post, PostResponse>(result.Resource);
+            return Ok(new Response<PostResponse>(ptDTO));
         }
 
         // DELETE: api/ApiWithActions/5
@@ -123,7 +122,7 @@ namespace Forum.Controllers
                 return BadRequest(new ErrorViewModel());
             }
 
-            var ptDTO = _mapper.Map<Post, PostDTOout>(result.Resource);
+            var ptDTO = _mapper.Map<Post, PostResponse>(result.Resource);
             return Ok(ptDTO);
         }
         

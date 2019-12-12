@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Forum.Services;
 using AutoMapper;
-using Forum.DTOout;
-using Forum.DTOin;
+using Forum.Contracts.Responses;
+using Forum.Contracts.Requests;
 using Forum.Models;
 using Forum.Extensions;
 
@@ -30,27 +30,27 @@ namespace Forum.Controllers
         }
 
         [HttpGet("get", Name = "GetUsers")]
-        [ProducesResponseType(typeof(IEnumerable<UserDTOout>), 200)]
-        public async Task<IEnumerable<UserDTOout>> Get()
+        [ProducesResponseType(typeof(IEnumerable<UserResponse>), 200)]
+        public async Task<IEnumerable<UserResponse>> Get()
         {
             var users = await _userService.GetAllAsync();
-            var dto = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTOout>>(users);
+            var dto = _mapper.Map<IEnumerable<User>, IEnumerable<UserResponse>>(users);
 
             return dto;
         }
 
         [HttpGet("get/{id}", Name = "GetUser")]
-        [ProducesResponseType(typeof(IEnumerable<UserDTOout>), 200)]
-        public async Task<UserDTOout> Get(string id)
+        [ProducesResponseType(typeof(IEnumerable<UserResponse>), 200)]
+        public async Task<UserResponse> Get(string id)
         {
             var user = await _userService.GetAsync(id);
-            var dto = _mapper.Map<User, UserDTOout>(user);
+            var dto = _mapper.Map<User, UserResponse>(user);
 
             return dto;
         }
 
         [HttpPut("ChangePassword/{id}", Name = "ChangePassword")]
-        public async Task<IActionResult> ChangePassword(string id, ChangePasswordDTOin password)
+        public async Task<IActionResult> ChangePassword(string id, ChangePasswordRequest password)
         {
             var userId = HttpContext.GetUserId();
             if(id != userId)

@@ -4,15 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Forum.Models;
 
-namespace Forum.DTOout
+namespace Forum.Contracts.Requests
 {
-    public class ThreadDTOout
+    public class ThreadRequest
     {
         public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public string ImageId { get; set; }
         public byte[] Image { get; set; }
     }
 }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Forum.Models;
 
-namespace Forum.DTOout
+namespace Forum.Contracts.Responses
 {
-    public class SubForUserDTOout
+    public class SubForUserResponse
     {
        public string Id { get; set; }
         public string UserId { get; set; }

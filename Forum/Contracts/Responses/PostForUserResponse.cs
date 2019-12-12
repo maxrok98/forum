@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Forum.DTOout
+namespace Forum.Contracts.Responses
 {
-    public class PostForUserDTOout
+    public class PostForUserResponse
     {
         public string Id { get; set; }
         public string Name { get; set; }

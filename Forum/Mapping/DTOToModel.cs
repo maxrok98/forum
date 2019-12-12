@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Forum.DTOin;
 using Forum.Models;
 using Forum.Contracts;
 using Forum.Contracts.Requests.Queries;
+using Forum.Contracts.Requests;
 
 namespace Forum.Mapping
 {
@@ -14,12 +14,12 @@ namespace Forum.Mapping
     {
         public DTOToModel()
         {
-            CreateMap<ThreadDTOin, Thread>().ForMember(
+            CreateMap<ThreadRequest, Thread>().ForMember(
                 dest => dest.Image, opts => opts.MapFrom(
                     src => new ThreadImage { Image = src.Image })
                 );
-            CreateMap<PostDTOin, Post>().ForMember(dest => dest.Image, opts => opts.MapFrom(src => new PostImage { Image = src.Image }));
-            CreateMap<ComentDTOin, Coment>();
+            CreateMap<PostRequest, Post>().ForMember(dest => dest.Image, opts => opts.MapFrom(src => new PostImage { Image = src.Image }));
+            CreateMap<ComentRequest, Coment>();
             CreateMap<PaginationQuery, PaginationFilter>();
         }
     }

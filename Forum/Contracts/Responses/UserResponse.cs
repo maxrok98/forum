@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Forum.Models;
 
-namespace Forum.DTOout
+namespace Forum.Contracts.Responses
 {
-    public class UserDTOout
+    public class UserResponse
     {
         public string Id { get; set; }
         public string UserName { get; set; }
@@ -15,7 +15,7 @@ namespace Forum.DTOout
         public string ImageId { get; set; }
         public byte[] Image { get; set; }
 
-        public virtual ICollection<PostForUserDTOout> myPosts { get; set; }
-        public virtual ICollection<ThreadDTOout> myThread { get; set; }
+        public virtual ICollection<PostForUserResponse> myPosts { get; set; }
+        public virtual ICollection<ThreadResponse> myThread { get; set; }
     }
 }

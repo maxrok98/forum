@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Forum.Models;
 
-namespace Forum.DTOout
+namespace Forum.Contracts.Responses
 {
-    public class ComentDTOout
+    public class ComentResponse
     {
         public string Id { get; set; }
 
@@ -15,6 +15,6 @@ namespace Forum.DTOout
 
         public string Text { get; set; }
         public DateTime Date { get; set; }
-        public virtual ICollection<ComentDTOout> SubComents { get; set; }
+        public virtual ICollection<ComentResponse> SubComents { get; set; }
     }
 }

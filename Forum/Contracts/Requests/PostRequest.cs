@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Forum.Models;
 
-namespace Forum.DTOin
+namespace Forum.Contracts.Requests
 {
-    public class PostDTOin
+    public class PostRequest
     {
         public string ThreadId { get; set; }
 
