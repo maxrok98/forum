@@ -11,7 +11,7 @@ namespace Forum.Services
     public interface IPostService
     {
         Task<IEnumerable<Post>> GetAllAsync(string postName = null, PaginationFilter paginationFilter = null);
-        Task<Post> GetAsync(string id);
+        Task<PostResponse> GetAsync(string id);
         Task<IEnumerable<Post>> GetOrderByVoteAsync();
         Task<IEnumerable<Post>> GetOrderByDateAsync();
         Task<PostResponse> AddAsync(Post post);

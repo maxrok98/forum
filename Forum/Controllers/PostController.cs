@@ -58,8 +58,13 @@ namespace Forum.Controllers
         [HttpGet("get/{id}", Name = "GetPost")]
         public async Task<IActionResult> Get(string id)
         {
-            var post = await _postService.GetAsync(id);
-            var dto = _mapper.Map<Post, PostResponse>(post);
+            var result = await _postService.GetAsync(id);
+
+            if (!result.Success)
+            {
+                return BadRequest(new ErrorViewModel());
+            }
+            var dto = _mapper.Map<Post, PostResponse>(result.Resource);
 
             return Ok(new Response<PostResponse>(dto));
         }

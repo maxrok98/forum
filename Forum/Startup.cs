@@ -27,6 +27,7 @@ using System.IO;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.OpenApi.Models;
 using Forum.Authorization;
+using Microsoft.Extensions.Hosting;
 
 namespace Forum
 {
@@ -49,6 +50,10 @@ namespace Forum
             //     options.CheckConsentNeeded = context => true;
             //     options.MinimumSameSitePolicy = SameSiteMode.None;
             //});
+
+            //MvcOptions.EnableEndpointRouting = false;
+
+           
 
             var jwtSettings = new JwtSettings();
             Configuration.Bind(nameof(jwtSettings), jwtSettings);
@@ -116,29 +121,43 @@ namespace Forum
             services.AddAutoMapper(typeof(Startup));
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(optinos => optinos.EnableEndpointRouting = false).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddSwaggerGen(x =>
             {
-                x.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Title = "Forum API", Version = "v1" });
+                x.SwaggerDoc("v1", new OpenApiInfo { Title = "Forum API", Version = "v1" });
                 x.ExampleFilters();
                 var security = new Dictionary<string, IEnumerable<string>>
                 {
                     {"Bearer", new string[0] }
                 };
 
-                x.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "JWT Authorization header using the bearer scheme",
                     Name = "Authorization",
-                    In = "header",
-                    Type = "apiKey"
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                });
+                x.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {new OpenApiSecurityScheme{Reference = new OpenApiReference
+                    {
+                        Id = "Bearer",
+                        Type = ReferenceType.SecurityScheme
+                    }
+                    }, new List<string>() }
                 });
             });
             services.AddSwaggerExamplesFromAssemblyOf<Startup>();
+            services.AddCors(o => o.AddPolicy("Policy", builder => {
+                builder.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -169,6 +188,7 @@ namespace Forum
             //app.UseCookiePolicy();
             app.UseAuthentication();
             //app.UseAuthorization();
+            app.UseCors("Policy");
 
             app.UseMvc(routes =>
             {

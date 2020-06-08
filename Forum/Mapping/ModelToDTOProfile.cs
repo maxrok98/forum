@@ -12,15 +12,10 @@ namespace Forum.Mapping
     {
         public ModelToDTOProfile()
         {
-            //CreateMap<Thread, ThreadDTO>().ForMember(
-            //    dest => dest.Image, opts => opts.MapFrom(
-            //        src => src.Image.Image ?? new byte[0])
-            //    );
             CreateMap<Thread, ThreadResponse>().ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image.Image));
             CreateMap<Post, PostResponse>().ForMember(dest => dest.ThreadName, opt => opt.MapFrom(src => src.Thread.Name))
                                          .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
                                          .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image.Image));
-                                                                                  
             CreateMap<Coment, ComentResponse>().ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
             CreateMap<Post, PostForUserResponse>().ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                                                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
@@ -28,8 +23,6 @@ namespace Forum.Mapping
             CreateMap<User, UserResponse>().ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image.Image))
                                          .ForMember(dest => dest.myPosts, opt => opt.MapFrom(src => src.Posts))
                                          .ForMember(dest => dest.myThread, opt => opt.MapFrom(src => src.Subscriptions.Select(y => y.Thread)));
-            //CreateMap<ThreadImage, ThreadDTO>().ForMember(x => x.Id, opt => opt.Ignore());
-            //CreateMap<Post, PostDTO>();
         }
     }
 }
