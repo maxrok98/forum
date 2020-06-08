@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forum", "Forum\Forum.csproj", "{E0203CBE-8E24-4D00-89B5-2744BDD7E032}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ForumUnitTesting", "ForumTesting\ForumUnitTesting.csproj", "{6A8613CE-F57A-4AEE-8111-28953A525B21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ForumUnitTests", "ForumTesting\ForumUnitTests.csproj", "{6A8613CE-F57A-4AEE-8111-28953A525B21}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ForumIntegrationTesting", "ForumIntegrationTesting\ForumIntegrationTesting.csproj", "{96AA628B-B5D5-4055-A824-5914DE6931CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ForumIntegrationTests", "ForumIntegrationTesting\ForumIntegrationTests.csproj", "{96AA628B-B5D5-4055-A824-5914DE6931CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
