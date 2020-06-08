@@ -35,9 +35,14 @@ namespace Forum.Services
             return await _postRepository.GetPaged(paginationFilter, skip);
         }
 
-        public async Task<Post> GetAsync(string id)
+        public async Task<PostResponse> GetAsync(string id)
         {
-            return await _postRepository.GetAsync(id);
+            var existingPost = await _postRepository.GetAsync(id);
+
+            if (existingPost == null)
+                return new PostResponse("Post not found.");
+
+            return new PostResponse(existingPost);
         }
 
         public async Task<IEnumerable<Post>> GetOrderByDateAsync()
@@ -97,6 +102,7 @@ namespace Forum.Services
 
         public async Task<PostResponse> AddAsync(Post post)
         {
+            post.Id = Guid.NewGuid().ToString();
             try
             {
                 await _postRepository.AddAsync(post);

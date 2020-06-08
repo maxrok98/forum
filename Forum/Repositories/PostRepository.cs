@@ -47,7 +47,7 @@ namespace Forum.Repositories
         {
             return await (from p in _context.Posts
                           where p.Id == id
-                          select p).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).Include(p => p.Coments).FirstAsync();
+                          select p).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).Include(p => p.Coments).FirstOrDefaultAsync();
         }
         public async Task<Post> UserOwnsPostAsync(string PostId, string UserId)
         {

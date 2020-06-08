@@ -14,10 +14,6 @@ namespace Forum.Models
 
         public string ImageId { get; set; }
         public virtual UserImage Image { get; set; }
-
-        //public string RefreshTokenId { get; set; }
-        //public virtual RefreshToken RefreshToken { get; set; }
-
         public virtual ICollection<Chat> MyChats { get; set; }
         public virtual ICollection<Chat> OtherChats { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
