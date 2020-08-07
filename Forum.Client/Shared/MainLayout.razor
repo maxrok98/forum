@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject Blazored.LocalStorage.ILocalStorageService Storage 
 
 <div class="sidebar">
     <NavMenu />
@@ -13,3 +15,10 @@
         @Body
     </div>
 </div>
+
+@code{      
+    protected override void OnInitialized()
+    {
+        Storage.SetItemAsync("environment_uri", "https://localhost:44394/api");
+    }
+}
