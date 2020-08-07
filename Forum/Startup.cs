@@ -169,7 +169,6 @@ namespace Forum
                 app.UseHsts();
             }
 
-            //app.UseAuthentication();
 
             var swaggerOptions = new Forum.Option.SwaggerOptions();
             Configuration.GetSection(nameof(Option.SwaggerOptions)).Bind(swaggerOptions);
@@ -185,9 +184,9 @@ namespace Forum
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            //app.UseCookiePolicy();
+            
             app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthorization();
             app.UseCors("Policy");
 
             app.UseMvc(routes =>
