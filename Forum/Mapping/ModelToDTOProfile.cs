@@ -19,7 +19,7 @@ namespace Forum.Mapping
             CreateMap<Coment, ComentResponse>().ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
             CreateMap<Post, PostForUserResponse>().ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                                                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-            CreateMap<Subscription, SubForUserResponse>();
+            //CreateMap<Subscription, SubForUserResponse>();
             CreateMap<User, UserResponse>().ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image.Image))
                                          .ForMember(dest => dest.myPosts, opt => opt.MapFrom(src => src.Posts))
                                          .ForMember(dest => dest.myThread, opt => opt.MapFrom(src => src.Subscriptions.Select(y => y.Thread)));
