@@ -1,0 +1,68 @@
+﻿@page "/user/login"
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+
+<h3>Login</h3>
+
+<div class="form-signin">
+    <div class="text-center">
+        <img src="img/blazorbrand.png" />
+    </div>
+    <EditForm Model="@login" OnValidSubmit="LogonUser">
+        <DataAnnotationsValidator />
+
+        <h1 class="h3 mb-3 text-center">Please sign in</h1>
+        <div class="form-group">
+            <InputText id="Username" class="form-control" placeholder="Email" @bind-Value="login.Email" />
+            <ValidationMessage For="@(() => login.Email)" />
+        </div>
+        <div class="form-group">
+            <InputText id="Password" class="form-control" type="password" placeholder="Password" @bind-Value="login.Password" />
+            <ValidationMessage For="@(() => login.Password)" />
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-lg btn-primary btn-block">Sign in</button>
+        </div>
+    </EditForm>
+    <NavLink class="btn btn-lg btn-danger btn-block" href="user/registration">Registration</NavLink>
+    @foreach(var er in err)
+    {
+        <p>@er</p>
+    }
+    
+</div>
+
+@code {
+    UserLoginRequest login = new UserLoginRequest();
+    List<string> err = new List<string>();
+
+    protected async Task LogonUser()
+    {
+        //var response = await Http.PostAsync(Storage.GetItemAsStringAsync("environment_uri") + ApiRoutes.Identity.Login, new StringContent(login.ToString()));
+        //string baseUri = Storage.GetItemAsStringAsync("back_uri").Result;
+        var response = await Http.PostAsJsonAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Identity.Login, login);
+        if (response.IsSuccessStatusCode)
+        {
+            AuthSuccessResponse cont = await response.Content.ReadFromJsonAsync<AuthSuccessResponse>();
+            await Storage.SetItemAsync<string>("JWT-Token", cont.Token);
+            await Storage.SetItemAsync<string>("JWT-RefreshToken", cont.RefreshToken);
+            UriHelper.NavigateTo("/");
+        }
+        else if(response == null)
+        {
+            err.Add("Can not connect to server");
+        }
+        else
+        {
+            AuthFailedResponse cont = await response.Content.ReadFromJsonAsync<AuthFailedResponse>();
+            foreach(var er in cont.Errors)
+            {
+                Console.WriteLine(er);
+                err.Add(er);
+            }
+        }
+
+    }
+
+}
