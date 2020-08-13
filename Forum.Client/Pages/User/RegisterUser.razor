@@ -1,0 +1,100 @@
+﻿@page "/user/registration"
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+
+<h3>RegisterUser</h3>
+
+<div class="form-signin">
+    <div class="text-center">
+        <img src="img/blazorbrand.png" />
+    </div>
+    <EditForm Model="@user" OnValidSubmit="RegUser">
+        <DataAnnotationsValidator />
+
+        <h1 class="h3 mb-3 text-center">Please sign in</h1>
+        <div class="form-group">
+            <InputText id="email" class="form-control" placeholder="Email" @bind-Value="user.Email" />
+            <ValidationMessage For="@(() => user.Email)" />
+        </div>
+        <div class="form-group">
+            <InputText id="username" class="form-control" placeholder="Username" @bind-Value="user.UserName" />
+            <ValidationMessage For="@(() => user.UserName)" />
+        </div>
+        <div class="form-group">
+            <InputText id="Password" class="form-control" type="password" placeholder="Password" @bind-Value="user.Password" />
+            <ValidationMessage For="@(() => user.Password)" />
+        </div>
+
+        <InputFile OnChange="HandleSelection" />
+        <p>@status</p>
+        @if (!string.IsNullOrEmpty(imageDataUri))
+        {
+            <img src="@imageDataUri" />
+        }
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-lg btn-primary btn-block">Registration</button>
+        </div>
+    </EditForm>
+    @foreach (var er in err)
+    {
+        <p>@er</p>
+    }
+
+</div>
+
+
+@code {
+    string status;
+    string imageDataUri;
+    byte[] base64image;
+
+    UserRegistrationRequest user = new UserRegistrationRequest();
+    List<string> err = new List<string>();
+
+    async Task RegUser()
+    {
+        user.Image = base64image;
+        var response = await Http.PostAsJsonAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Identity.Register, user);
+        if (response.IsSuccessStatusCode)
+        {
+            AuthSuccessResponse cont = await response.Content.ReadFromJsonAsync<AuthSuccessResponse>();
+            await Storage.SetItemAsync<string>("JWT-Token", cont.Token);
+            await Storage.SetItemAsync<string>("JWT-RefreshToken", cont.RefreshToken);
+            UriHelper.NavigateTo("/");
+        }
+        else if (response == null)
+        {
+            err.Add("Can not connect to server");
+        }
+        else
+        {
+            AuthFailedResponse cont = await response.Content.ReadFromJsonAsync<AuthFailedResponse>();
+            foreach (var er in cont.Errors)
+            {
+                Console.WriteLine(er);
+                err.Add(er);
+            }
+        }
+    }
+
+    async Task HandleSelection(IFileListEntry[] files)
+    {
+        var rawFile = files.FirstOrDefault();
+        if (rawFile != null)
+        {
+            // Load as an image file in memory
+            var format = "image/jpeg";
+            var imageFile = await rawFile.ToImageFileAsync(format, 640, 480);
+            var ms = new MemoryStream();
+            await imageFile.Data.CopyToAsync(ms);
+
+            // Make a data URL so we can display it
+            base64image = ms.ToArray();
+            imageDataUri = $"data:{format};base64,{Convert.ToBase64String(base64image)}";
+
+            status = $"Finished loading {ms.Length} bytes from {imageFile.Name}";
+        }
+    }
+}

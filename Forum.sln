@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ForumIntegrationTests", "Fo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{FB70B2E9-53A4-4F87-A3D5-6AC61139EBEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forum.Client", "Forum.Client\Forum.Client.csproj", "{5AB4CF12-8DA2-4991-B8A7-8859BF2C4749}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forum.Client", "Forum.Client\Forum.Client.csproj", "{5AB4CF12-8DA2-4991-B8A7-8859BF2C4749}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forum.Shared", "Forum.Shared\Forum.Shared.csproj", "{96290AB0-372F-4B6B-8F67-68BBD197E0D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forum.Shared", "Forum.Shared\Forum.Shared.csproj", "{96290AB0-372F-4B6B-8F67-68BBD197E0D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
