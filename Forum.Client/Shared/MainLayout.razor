@@ -11,11 +11,12 @@
         @if (Loged)
         {
             //<a href="LogoutUser" class="ml-md-auto">Logout</a>
-            <button class="btn-danger" @onclick="LogOut">Log Out</button>
+            <button class="btn btn-danger" @onclick="LogOut"> <span class="oi oi-account-logout" aria-hidden="true"></span> Log Out</button>
         }
         else
         {
-            <NavLink class="nav-link" href="user/login" >Login</NavLink>
+            //<NavLink class="nav-link" href="user/login"> Login</NavLink>
+            <NavLink href="user/login"><button class="btn btn-primary"> <span class="oi oi-account-login" aria-hidden="true"></span> Login </button></NavLink>
         }
         <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
     </div>
@@ -41,5 +42,8 @@
     {
         await Storage.RemoveItemAsync("JWT-Token");
         await Storage.RemoveItemAsync("JWT-RefreshToken");
+        await isLoggedOn();
+        //await base.InvokeAsync(StateHasChanged);
+        //this.StateHasChanged();
     }
 }

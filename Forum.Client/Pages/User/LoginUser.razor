@@ -39,8 +39,6 @@
 
     protected async Task LogonUser()
     {
-        //var response = await Http.PostAsync(Storage.GetItemAsStringAsync("environment_uri") + ApiRoutes.Identity.Login, new StringContent(login.ToString()));
-        //string baseUri = Storage.GetItemAsStringAsync("back_uri").Result;
         var response = await Http.PostAsJsonAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Identity.Login, login);
         if (response.IsSuccessStatusCode)
         {
@@ -62,7 +60,6 @@
                 err.Add(er);
             }
         }
-
     }
 
 }

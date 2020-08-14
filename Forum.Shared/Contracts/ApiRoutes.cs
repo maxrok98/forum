@@ -26,6 +26,11 @@ namespace Forum.Contracts
             public const string Create = Base + "/post/post";
         }
 
+        public static class User
+        {
+            public const string Get = Base + "/user/get/";
+        }
+
         public static class Tags
         {
             public const string GetAll = Base + "/tags";
