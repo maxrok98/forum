@@ -1,0 +1,153 @@
+﻿@page "/threadpage"
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+
+<h3>ThreadPage</h3>
+
+@if (!Loged)
+{
+    <p>You have to login!</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Image</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach(var thread in tresponces)
+        {
+            <tr>
+                <td>@thread.Name</td>
+                <td>@thread.Description</td>
+                <td><img src="data:image/jpeg;base64,@Convert.ToBase64String(thread.Image)" height="100" /></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    @if (Admin)
+    {
+    <EditForm Model="@newThread" OnValidSubmit="CreateNewThread">
+        <DataAnnotationsValidator />
+
+        <h1 class="h3 mb-3 text-center">Create new thread</h1>
+        <div class="form-group">
+            <InputText id="name" class="form-control" placeholder="Name" @bind-Value="newThread.Name" />
+            <ValidationMessage For="@(() => newThread.Name)" />
+        </div>
+        <div class="form-group">
+            <InputText id="username" class="form-control" placeholder="Description" @bind-Value="newThread.Description" />
+            <ValidationMessage For="@(() => newThread.Description)" />
+        </div>
+
+        <InputFile OnChange="HandleSelection" />
+        <p>@status</p>
+        @if (!string.IsNullOrEmpty(imageDataUri))
+        {
+            <img src="@imageDataUri" />
+        }
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-lg btn-primary btn-block">Create</button>
+        </div>
+    </EditForm>
+    }
+    @foreach (var er in err)
+    {
+        <p>@er</p>
+    }
+}
+
+
+@code {
+    bool Loged = false;
+    bool Admin = false;
+    List<ThreadResponse> tresponces = new List<ThreadResponse>();
+
+    ThreadRequest newThread = new ThreadRequest();
+    string status;
+    string imageDataUri;
+    byte[] base64image;
+
+    List<string> err = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Loged = await isLoggedOn())
+        {
+            Admin = await isAdmin();
+            await loadThreads();
+        }
+    }
+
+    protected async Task<bool> isLoggedOn()
+    {
+        return !string.IsNullOrEmpty(await Storage.GetItemAsStringAsync("JWT-Token"));
+    }
+
+    protected async Task<bool> isAdmin()
+    {
+        JwtSecurityTokenHandler jwt = new JwtSecurityTokenHandler();
+        var token = await Storage.GetItemAsStringAsync("JWT-Token");
+        var tokenDecoded = jwt.ReadJwtToken(token) as JwtSecurityToken;
+
+        var role = tokenDecoded.Claims.Where(x => x.Type == "role").FirstOrDefault().Value;
+
+        return role == "Admin";
+    }
+    protected async Task loadThreads()
+    {
+        var token = await Storage.GetItemAsStringAsync("JWT-Token");
+        Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        var responce = await Http.GetAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Threads.GetAll);
+
+        if (responce.IsSuccessStatusCode)
+        {
+            tresponces = await responce.Content.ReadFromJsonAsync<List<ThreadResponse>>();
+
+        }
+        else
+        {
+            Console.WriteLine(responce.Content);
+        }
+    }
+
+    async Task HandleSelection(IFileListEntry[] files)
+    {
+        var rawFile = files.FirstOrDefault();
+        if (rawFile != null)
+        {
+            // Load as an image file in memory
+            var format = "image/jpeg";
+            var imageFile = await rawFile.ToImageFileAsync(format, 640, 480);
+            var ms = new MemoryStream();
+            await imageFile.Data.CopyToAsync(ms);
+
+            // Make a data URL so we can display it
+            base64image = ms.ToArray();
+            imageDataUri = $"data:{format};base64,{Convert.ToBase64String(base64image)}";
+
+            status = $"Finished loading {ms.Length} bytes from {imageFile.Name}";
+        }
+    }
+
+    async Task CreateNewThread()
+    {
+        newThread.Image = base64image;
+        var response = await Http.PostAsJsonAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Threads.Create, newThread);
+        if (response.IsSuccessStatusCode)
+        {
+            UriHelper.NavigateTo("/threadpage");
+        }
+        else
+        {
+            err.Add("Something went wrong");
+        }
+    }
+}

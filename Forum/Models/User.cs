@@ -9,6 +9,7 @@ namespace Forum.Models
 {
     public class User : IdentityUser
     {
+        //public string Id { get; set; }
         public int Year { get; set; }
         public string PublicKey { get; set; }
 

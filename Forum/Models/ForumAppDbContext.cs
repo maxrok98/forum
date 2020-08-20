@@ -10,6 +10,7 @@ namespace Forum.Models
 {
     public class ForumAppDbContext : IdentityDbContext<User>
     {
+        public DbSet<User> Users { get; set; }
         public DbSet<Chat> Chats { get; set; }
         public DbSet<Coment> Coments { get; set; }
         public DbSet<Message> Messages { get; set; }
@@ -29,6 +30,8 @@ namespace Forum.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            //modelBuilder.Entity<User>().HasKey(k => k.Id);
 
             modelBuilder.Entity<UserImage>().Property(i => i.Image).HasMaxLength(10000000);
             modelBuilder.Entity<UserImage>().HasOne(p => p.User).WithOne(t => t.Image).HasForeignKey<User>(t => t.ImageId).OnDelete(DeleteBehavior.Cascade);
@@ -72,19 +75,19 @@ namespace Forum.Models
 
             var admRolId = Guid.NewGuid().ToString();
             var usrRolId = Guid.NewGuid().ToString();
-            modelBuilder.Entity<IdentityRole>().HasData(new List<IdentityRole>
-            {
-                new IdentityRole {
-                    Id = admRolId,
-                    Name = "Admin",
-                    NormalizedName = "ADMIN"
-                },
-                new IdentityRole {
-                    Id = usrRolId,
-                    Name = "User",
-                    NormalizedName = "USER"
-                },
-            });
+            //modelBuilder.Entity<IdentityRole>().HasData(new List<IdentityRole>
+            //{
+            //    new IdentityRole {
+            //        Id = admRolId,
+            //        Name = "Admin",
+            //        NormalizedName = "ADMIN"
+            //    },
+            //    new IdentityRole {
+            //        Id = usrRolId,
+            //        Name = "User",
+            //        NormalizedName = "USER"
+            //    },
+            //});
 
             //var admUserId = Guid.NewGuid().ToString();
             //var UserId = Guid.NewGuid().ToString();
@@ -104,7 +107,7 @@ namespace Forum.Models
             //        UserName = "new",
             //        Email = "new@example.com",
             //        NormalizedUserName = "NEW",
-            //        PasswordHash = "AQAAAAEAACcQAAAAEDzAMV52gbDLFZ5x7/7knU0Di4uZ7OmIIP+/FfQpqID1pNWnCm4MmCJxfl3U7sPTNw=="
+            //        PasswordHash = hasher.HashPassword(null, "123456mM-")
             //    }
             //);
 
@@ -122,71 +125,71 @@ namespace Forum.Models
             //     }
             //);
 
-            // modelBuilder.Entity<IdentityDbContext<User>>().HasData
-            // (
-            //     new User
-            //     {
-            //         Id = Guid.NewGuid().ToString(),
-            //         Email = "new@example.com",
-            //         UserName = "new",
-            //         PasswordHash = "AQAAAAEAACcQAAAAEKBesXjO3tMAR4tplSoeJOukEK/Uh77xqcJRuvssD7lFhrInhbDRfanwbepAq4S8yw=="
-            //     }
-            // ) ;
+             //modelBuilder.Entity<IdentityDbContext<User>>().HasData
+             //(
+             //    new User
+             //    {
+             //        Id = Guid.NewGuid().ToString(),
+             //        Email = "new@example.com",
+             //        UserName = "new",
+             //        PasswordHash = "AQAAAAEAACcQAAAAEKBesXjO3tMAR4tplSoeJOukEK/Uh77xqcJRuvssD7lFhrInhbDRfanwbepAq4S8yw=="
+             //    }
+             //) ;
 
 
-            modelBuilder.Entity<Thread>().HasData
-            (
-                new Thread
-                {
-                    Id = threadId1,
-                    Name = "CS",
-                    Description = "Thread about computer science"
-                },
-                new Thread
-                {
-                    Id = threadId2,
-                    Name = "Electrical engeneering",
-                    Description = "Thread about electrical engeneering"
-                }
-            );
+            //modelBuilder.Entity<Thread>().HasData
+            //(
+            //    new Thread
+            //    {
+            //        Id = threadId1,
+            //        Name = "CS",
+            //        Description = "Thread about computer science"
+            //    },
+            //    new Thread
+            //    {
+            //        Id = threadId2,
+            //        Name = "Electrical engeneering",
+            //        Description = "Thread about electrical engeneering"
+            //    }
+            //);
 
-            var postId1 = Guid.NewGuid().ToString();
-            var postId2 = Guid.NewGuid().ToString();
-            modelBuilder.Entity<Post>().HasData
-            (
-                new Post
-                {
-                    Id = postId1,
-                    Name = "Little bit about OS",
-                    Content = "Here we are going to talk about OS",
-                    ThreadId = threadId1
-                },
-                new Post
-                {
-                    Id = postId2,
-                    Name = "Little bit about ARM architecture",
-                    Content = "ARM is beter then x86",
-                    ThreadId = threadId2
-                }
-            );
+            //var postId1 = Guid.NewGuid().ToString();
+            //var postId2 = Guid.NewGuid().ToString();
+            //modelBuilder.Entity<Post>().HasData
+            //(
+            //    new Post
+            //    {
+            //        Id = postId1,
+            //        Name = "Little bit about OS",
+            //        Content = "Here we are going to talk about OS",
+            //        ThreadId = threadId1
+            //    },
+            //    new Post
+            //    {
+            //        Id = postId2,
+            //        Name = "Little bit about ARM architecture",
+            //        Content = "ARM is beter then x86",
+            //        ThreadId = threadId2
+            //    }
+            //);
 
-            var comentId1 = Guid.NewGuid().ToString();
-            var comentId2 = Guid.NewGuid().ToString();
-            modelBuilder.Entity<Coment>().HasData
-            (
-                new Coment
-                {
-                    Id = comentId1,
-                    PostId = postId1,
-                    Text = "Realy cool article"
-                },
-                new Coment
-                {
-                    Id = comentId2,
-                    PostId = postId2,
-                    Text = "ARM the best!!"
-                }
-            );
+            //var comentId1 = Guid.NewGuid().ToString();
+            //var comentId2 = Guid.NewGuid().ToString();
+            //modelBuilder.Entity<Coment>().HasData
+            //(
+            //    new Coment
+            //    {
+            //        Id = comentId1,
+            //        PostId = postId1,
+            //        Text = "Realy cool article"
+            //    },
+            //    new Coment
+            //    {
+            //        Id = comentId2,
+            //        PostId = postId2,
+            //        Text = "ARM the best!!"
+            //    }
+            //);
         }
     }
 }

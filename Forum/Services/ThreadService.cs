@@ -51,6 +51,7 @@ namespace Forum.Services
 
         public async Task<ThreadResponse> AddAsync(Thread thread)
         {
+            thread.Id = Guid.NewGuid().ToString();
             try
             {
                 await _threadRepository.AddAsync(thread);
