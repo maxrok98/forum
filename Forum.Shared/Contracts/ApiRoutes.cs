@@ -31,11 +31,11 @@ namespace Forum.Contracts
         {
             public const string GetAll = Base + "/thread/get";
 
-            public const string Update = Base + "/thread/put/{Id}";
+            public const string Update = Base + "/thread/put/{id}";
 
-            public const string Delete = Base + "/thread/delet/{Id}";
+            public const string Delete = Base + "/thread/delete/{id}";
 
-            public const string Get = Base + "/thread/get/{Id}";
+            public const string Get = Base + "/thread/get/{id}";
 
             public const string Create = Base + "/thread/post";
 

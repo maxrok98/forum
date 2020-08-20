@@ -26,6 +26,10 @@ else
                 <td>@thread.Name</td>
                 <td>@thread.Description</td>
                 <td><img src="data:image/jpeg;base64,@Convert.ToBase64String(thread.Image)" height="100" /></td>
+                @if (Admin)
+                {
+                    <td><button class="btn btn-danger" @onclick="@(async () => await DeleteThread(thread.Id))">Delete</button></td>
+                }
             </tr>
         }
         </tbody>
@@ -148,6 +152,18 @@ else
         else
         {
             err.Add("Something went wrong");
+        }
+    }
+    private async Task DeleteThread(string id)
+    {
+        var response = await Http.DeleteAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Threads.Delete.Replace("{id}", id)) ;
+        if (response.IsSuccessStatusCode)
+        {
+            tresponces.RemoveAll(x => x.Id == id);
+        }
+        else
+        {
+            Console.WriteLine("Could not delete thread");
         }
     }
 }
