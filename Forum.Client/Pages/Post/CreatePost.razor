@@ -1,0 +1,105 @@
+﻿@page "/createpost"
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+
+<h3>CreatePost</h3>
+
+<EditForm Model="@newPost" OnValidSubmit="CreateNewPost">
+    <DataAnnotationsValidator />
+
+    <h1 class="h3 mb-3 text-center">Create new post</h1>
+    <div class="form-group">
+        <InputText id="name" class="form-control" placeholder="Name" @bind-Value="newPost.Name" />
+        <ValidationMessage For="@(() => newPost.Name)" />
+    </div>
+    <div class="form-group">
+        <InputTextArea id="content" class="form-control" placeholder="Content" @bind-Value="newPost.Content" />
+        <ValidationMessage For="@(() => newPost.Content)" />
+    </div>
+    <div class="form-group">
+        <InputSelect id="thread" class="form-control" @bind-Value="newPost.ThreadId">
+            @foreach(var thread in threads)
+            {
+                <option value="@thread.Id">@thread.Name</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => newPost.ThreadId)"/>
+    </div>
+
+    <InputFile OnChange="HandleSelection" />
+    <p>@status</p>
+    @if (!string.IsNullOrEmpty(imageDataUri))
+    {
+        <img src="@imageDataUri" />
+    }
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-lg btn-primary btn-block">Create</button>
+    </div>
+</EditForm>
+
+@foreach (var er in err)
+{
+    <p class="alert-warning">@er</p>
+}
+
+@code {
+    string status;
+    string imageDataUri;
+    byte[] base64image;
+
+    PostRequest newPost = new PostRequest();
+    List<ThreadResponse> threads = new List<ThreadResponse>();
+    string selectedThreadId;
+
+    List<string> err = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var responce = await Http.GetAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Threads.GetAll);
+        if (responce.IsSuccessStatusCode)
+        {
+            threads = await responce.Content.ReadFromJsonAsync<List<ThreadResponse>>();
+        }
+        else
+        {
+            err.Add("Could not get thread list");
+        }
+    }
+
+    async Task CreateNewPost()
+    {
+        newPost.Image = base64image;
+
+        var responce = await Http.PostAsJsonAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.Create, newPost);
+
+        if (responce.IsSuccessStatusCode)
+        {
+            UriHelper.NavigateTo("/userpage");
+        }
+        else
+        {
+            err.Add("Could not create new post!");
+        }
+    }
+
+    async Task HandleSelection(IFileListEntry[] files)
+    {
+        var rawFile = files.FirstOrDefault();
+        if (rawFile != null)
+        {
+            // Load as an image file in memory
+            var format = "image/jpeg";
+            var imageFile = await rawFile.ToImageFileAsync(format, 640, 480);
+            var ms = new MemoryStream();
+            await imageFile.Data.CopyToAsync(ms);
+
+            // Make a data URL so we can display it
+            base64image = ms.ToArray();
+            imageDataUri = $"data:{format};base64,{Convert.ToBase64String(base64image)}";
+
+            status = $"Finished loading {ms.Length} bytes from {imageFile.Name}";
+        }
+    }
+}

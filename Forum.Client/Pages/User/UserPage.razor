@@ -7,13 +7,32 @@
 <h3>UserPage</h3>
 @if (!Loged)
 {
-    <p>You have to login to see you page!</p>
+    <p>You have to login to see your page!</p>
 }
 else
 {
     <p>Email: @user.Email</p>
     <p>Usermane: @user.UserName</p>
     <img src="@imageDataUri" />
+
+    <h1>Your posts</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var post in user.myPosts)
+            {
+            <tr>
+                <th><a href="post/@post.Id" class="nav-link" >@post.Name</a></th>
+                <th><button class="btn btn-danger" @onclick="@(async () => await DeletePostAsync(post.Id))">Delete</button></th>
+            </tr>
+            }
+        </tbody>
+    </table>
 
 }
 
@@ -53,6 +72,15 @@ else
             user = await responce.Content.ReadFromJsonAsync<UserResponse>();
             imageDataUri = $"data:{format};base64,{Convert.ToBase64String(user.Image)}";
 
+        }
+    }
+
+    protected async Task DeletePostAsync(string postId)
+    {
+        var responce = await Http.DeleteAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.Delete.Replace("{id}", postId));
+        if (responce.IsSuccessStatusCode)
+        {
+            user.myPosts.RemoveAll(x => x.Id == postId);
         }
     }
 
