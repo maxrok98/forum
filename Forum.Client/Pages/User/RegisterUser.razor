@@ -62,6 +62,7 @@
             AuthSuccessResponse cont = await response.Content.ReadFromJsonAsync<AuthSuccessResponse>();
             await Storage.SetItemAsync<string>("JWT-Token", cont.Token);
             await Storage.SetItemAsync<string>("JWT-RefreshToken", cont.RefreshToken);
+            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cont.Token);
             UriHelper.NavigateTo("/");
         }
         else if (response == null)

@@ -18,11 +18,11 @@ namespace Forum.Contracts
         {
             public const string GetAll = Base + "/post/get";
 
-            public const string Update = Base + "/post/put/{postId}";
+            public const string Update = Base + "/post/put/{id}";
 
-            public const string Delete = Base + "/post/delet/{postId}";
+            public const string Delete = Base + "/post/delete/{id}";
 
-            public const string Get = Base + "/post/get/{postId}";
+            public const string Get = Base + "/post/get/{id}";
 
             public const string Create = Base + "/post/post";
         }
