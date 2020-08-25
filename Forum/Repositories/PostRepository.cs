@@ -35,6 +35,10 @@ namespace Forum.Repositories
         {
             return await _context.Posts.Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).ToListAsync();
         }
+        public async Task<int> GetCountOfAllPostsAsync()
+        {
+            return await _context.Posts.CountAsync();
+        }
         public async Task<IEnumerable<Post>> GetPaged(PaginationFilter paginationFilter, int skip)
         {
             return await _context.Posts.Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).Skip(skip).Take(paginationFilter.PageSize).ToListAsync();

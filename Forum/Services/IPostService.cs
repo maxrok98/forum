@@ -12,6 +12,7 @@ namespace Forum.Services
     {
         Task<IEnumerable<Post>> GetAllAsync(string postName = null, PaginationFilter paginationFilter = null);
         Task<PostResponse> GetAsync(string id);
+        Task<int> GetCountOfAllPostsAsync();
         Task<IEnumerable<Post>> GetOrderByVoteAsync();
         Task<IEnumerable<Post>> GetOrderByDateAsync();
         Task<PostResponse> AddAsync(Post post);

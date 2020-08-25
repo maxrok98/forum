@@ -1,0 +1,86 @@
+﻿@page "/posts/list/{Page}"
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+
+<h3>PostsList</h3>
+@if (!Loged)
+{
+    <p>You have to login!</p>
+}
+else
+{
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>User name</th>
+                <th>Rating</th>
+                <th>Coments count</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var post in posts.Results)
+            {
+                <tr>
+                    <th>@post.Name</th>
+                    <th>@post.UserName</th>
+                    <th>@post.Rating</th>
+                    <th>@post.Coments.Count</th>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="pagination pull-right">
+            @foreach(var i in Enumerable.Range(1, (int)posts.PageCount))
+            {
+                <li>
+                    <button class="btn btn-dark" type="button" @onclick="@( async () => await PagerPageChanged(i))">@i</button>
+                </li>
+            }
+
+            </ul>
+        </div>
+    </div>
+
+}
+
+
+@code {
+    [Parameter]
+    public string Page { get; set; } = "1";
+    bool Loged = false;
+
+    PageResponse<PostResponse> posts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Loged = await isLoggedOn())
+        {
+            var token = await Storage.GetItemAsStringAsync("JWT-Token");
+            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            //Admin = await isAdmin();
+            await loadPosts();
+        }
+    }
+
+    async Task loadPosts()
+    {
+        posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=2");
+    }
+
+    protected async Task<bool> isLoggedOn()
+    {
+        return !string.IsNullOrEmpty(await Storage.GetItemAsStringAsync("JWT-Token"));
+    }
+
+    protected async Task PagerPageChanged(int page)
+    {
+        UriHelper.NavigateTo("/posts/list/" + page);
+        await loadPosts();
+    }
+
+}

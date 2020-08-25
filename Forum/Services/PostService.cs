@@ -23,10 +23,10 @@ namespace Forum.Services
 
         public async Task<IEnumerable<Post>> GetAllAsync(string postName = null, PaginationFilter paginationFilter = null)
         {
-            if(paginationFilter == null)
-            {
-                return await _postRepository.GetAllAsync(); 
-            }
+            //if(paginationFilter == null)
+            //{
+            //    return await _postRepository.GetAllAsync(); 
+            //}
             if(!string.IsNullOrEmpty(postName))
             {
                 return await _postRepository.GetFilteredAsync(postName);
@@ -43,6 +43,11 @@ namespace Forum.Services
                 return new PostResponse("Post not found.");
 
             return new PostResponse(existingPost);
+        }
+
+        public async Task<int> GetCountOfAllPostsAsync()
+        {
+            return await _postRepository.GetCountOfAllPostsAsync();
         }
 
         public async Task<IEnumerable<Post>> GetOrderByDateAsync()

@@ -48,8 +48,8 @@ namespace Forum.Controllers
                 return Ok(new PageResponse<PostResponse>(dto));
             }
 
-
-            var paginationResponse = PaginationHelpers.CreatePaginatedResponse(_uriService, pagination, dto, ApiRoutes.Posts.GetAll);
+            int countOfAllPosts = await _postService.GetCountOfAllPostsAsync();
+            var paginationResponse = PaginationHelpers.CreatePaginatedResponse(_uriService, pagination, dto, countOfAllPosts, ApiRoutes.Posts.GetAll);
 
             return Ok(paginationResponse);
         }

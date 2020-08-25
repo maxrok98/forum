@@ -11,11 +11,12 @@ namespace Forum.Contracts.Responses
 
         public PageResponse(IEnumerable<T> data)
         {
-            Data = data;
+            Results = data;
         }
 
-        public IEnumerable<T> Data { get; set; }
-        public int? PageNumber { get; set; }
+        public IEnumerable<T> Results { get; set; }
+        public int? PageCount { get; set; }
+        public int? CurrentPage { get; set; }
         public int? PageSize { get; set; }
         public string NextPage { get; set; }
         public string PreviousPage { get; set; }
