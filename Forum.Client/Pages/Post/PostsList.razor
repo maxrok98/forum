@@ -10,24 +10,39 @@
 }
 else
 {
+<div class="row mb-3">
+    <div class="input-group col-md-5 text-md-right">
+        <input name="PatientSearchInput" type="text" class="form-control" placeholder="Patient Name" @bind="this.SearchTerm" @onkeyup="SearchBoxKeyPress" />
+        <div class="input-group-btn">
+            <button name="PatientSearchButton" class="btn btn-default" @onclick="SearchClick">
+                <i class="oi oi-magnifying-glass" title="search" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="input-group-btn">
+            <button name="PatientSearchClear" class="btn btn-default" @onclick="ClearSearch">
+                <i class="oi oi-x" title="clear" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</div>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>User name</th>
-                <th>Rating</th>
-                <th>Coments count</th>
+                <th scope="col">Name</th>
+                <th scope="col">User name</th>
+                <th scope="col">Rating</th>
+                <th scope="col">Coments count</th>
             </tr>
         </thead>
         <tbody>
-            @foreach(var post in posts.Results)
+            @foreach (var post in posts.Results)
             {
                 <tr>
-                    <th>@post.Name</th>
-                    <th>@post.UserName</th>
-                    <th>@post.Rating</th>
-                    <th>@post.Coments.Count</th>
+                    <td>@post.Name</td>
+                    <td>@post.UserName</td>
+                    <td>@post.Rating</td>
+                    <td>@post.Coments.Count</td>
                 </tr>
             }
         </tbody>
@@ -35,12 +50,19 @@ else
     <div class="row">
         <div class="col-md-12">
             <ul class="pagination pull-right">
-            @foreach(var i in Enumerable.Range(1, (int)posts.PageCount))
-            {
-                <li>
-                    <button class="btn btn-dark" type="button" @onclick="@( async () => await PagerPageChanged(i))">@i</button>
-                </li>
-            }
+                @foreach (var i in Enumerable.Range(1, (int)posts.PageCount))
+                {
+                    <li>
+                        @if(i == Convert.ToInt32(Page))
+                        {
+                            <button class="btn btn-dark" type="button" disabled >@i</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-dark" type="button" @onclick="@( async () => await PagerPageChanged(i))">@i</button>
+                        }
+                    </li>
+                }
 
             </ul>
         </div>
@@ -52,6 +74,7 @@ else
 @code {
     [Parameter]
     public string Page { get; set; } = "1";
+    public string SearchTerm = string.Empty;
     bool Loged = false;
 
     PageResponse<PostResponse> posts;
@@ -80,6 +103,29 @@ else
     protected async Task PagerPageChanged(int page)
     {
         UriHelper.NavigateTo("/posts/list/" + page);
+        await loadPosts();
+    }
+    protected async Task SearchBoxKeyPress(KeyboardEventArgs ev)
+    {
+        if (ev.Key == "Enter")
+        {
+            await SearchClick();
+        }
+    }
+
+    protected async Task SearchClick()
+    {
+        if (!string.IsNullOrEmpty(SearchTerm))
+        {
+            posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.GetAll + "/?postName=" + SearchTerm);
+            return;
+        }
+    }
+
+    protected async Task ClearSearch()
+    {
+        SearchTerm = string.Empty;
+        UriHelper.NavigateTo("/posts/list/" + Page);
         await loadPosts();
     }
 
