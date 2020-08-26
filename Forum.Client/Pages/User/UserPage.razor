@@ -11,12 +11,19 @@
 }
 else
 {
-    <p>Email: @user.Email</p>
-    <p>Usermane: @user.UserName</p>
-    <img src="@imageDataUri" />
+    <div class="profile d-flex mb-5 mt-5 p-2 shadow rounded">
+        <div class="profile_img">
+            <img class="" src="@imageDataUri" alt="Avatar">
+        </div>
+        <div class="profile_data ml-5">
+            <p>Email: @user.Email</p>
+            <p>Usermane: @user.UserName</p>
+        </div>
+    </div>
 
     <h1>Your posts</h1>
-    <table class="table">
+
+    <table class="table shadow">
         <thead>
             <tr>
                 <th scope="col">Name</th>
