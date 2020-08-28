@@ -16,6 +16,8 @@ namespace Forum.Mapping
             CreateMap<Post, PostResponse>().ForMember(dest => dest.ThreadName, opt => opt.MapFrom(src => src.Thread.Name))
                                          .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
                                          .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image.Image));
+                                         //.ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString()));
+
             CreateMap<Coment, ComentResponse>().ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
             CreateMap<Post, PostForUserResponse>().ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                                                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));

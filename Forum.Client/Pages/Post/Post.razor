@@ -1,0 +1,44 @@
+﻿@page "/post/{Id}"
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+
+<h3>Post</h3>
+@if(post == null)
+{
+    <p>Loading.....</p>
+}
+else
+{
+    <h4>Created by @post.UserName at @post.Date</h4>
+    <h1>Title: @post.Name</h1>
+    <img src="data:image/jpeg;base64,@Convert.ToBase64String(post.Image)" height="100" />
+    <p>@post.Content</p>
+    <p><span class="oi oi-chat"></span>@post.Coments.Count()</p>
+    <p>Rating: @post.Rating</p> 
+}
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    PostResponse post;
+
+    protected async override Task OnInitializedAsync()
+    {
+        await loadPost();
+    }
+
+    async Task loadPost()
+    {
+        var response = await Http.GetAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.Get.Replace("{id}", Id));
+        if (response.IsSuccessStatusCode)
+        {
+            var resp = await response.Content.ReadFromJsonAsync<Response<PostResponse>>();
+            post = resp.Data;
+            //DateTime.Parse()
+        }
+    }
+
+}

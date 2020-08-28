@@ -23,8 +23,8 @@ namespace Forum.Contracts.Responses
         public byte[] Image { get; set; }
         //public PostImage Image { get; set; }
         //image
-        public DateTime Date;
-        public int Rating;
+        public DateTime Date { get; set; }
+        public int Rating { get; set; }
         public virtual ICollection<ComentResponse> Coments { get; set; }
     }
 }

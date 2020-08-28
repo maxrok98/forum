@@ -39,7 +39,7 @@ else
             @foreach (var post in posts.Results)
             {
                 <tr>
-                    <td>@post.Name</td>
+                    <td><a href="/post/@post.Id" class="nav-link">@post.Name</a></td>
                     <td>@post.UserName</td>
                     <td>@post.Rating</td>
                     <td>@post.Coments.Count</td>
