@@ -10,7 +10,7 @@ namespace Forum.Services
 {
     public interface IPostService
     {
-        Task<IEnumerable<Post>> GetAllAsync(string postName = null, PaginationFilter paginationFilter = null);
+        Task<PostsResponse> GetAllAsync(string postName = null, string threadId = null, PaginationFilter paginationFilter = null);
         Task<PostResponse> GetAsync(string id);
         Task<int> GetCountOfAllPostsAsync();
         Task<IEnumerable<Post>> GetOrderByVoteAsync();

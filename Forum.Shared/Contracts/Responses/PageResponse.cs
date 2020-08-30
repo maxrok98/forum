@@ -18,7 +18,5 @@ namespace Forum.Contracts.Responses
         public int? PageCount { get; set; }
         public int? CurrentPage { get; set; }
         public int? PageSize { get; set; }
-        public string NextPage { get; set; }
-        public string PreviousPage { get; set; }
     }
 }

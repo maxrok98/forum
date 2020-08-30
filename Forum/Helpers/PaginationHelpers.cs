@@ -13,14 +13,6 @@ namespace Forum.Helpers
     {
         public static PageResponse<T> CreatePaginatedResponse<T>(IUriService uriService, PaginationFilter pagination, IEnumerable<T> response, int countOfAll, string url)
         {
-            var nextPage = pagination.PageNumber >= 1
-                ? uriService
-                    .GetAllPostUri(url, new PaginationQuery(pagination.PageNumber + 1, pagination.PageSize)).ToString()
-                : null;
-            var previousPage = pagination.PageNumber - 1 >= 1
-                ? uriService
-                    .GetAllPostUri(url, new PaginationQuery(pagination.PageNumber - 1, pagination.PageSize)).ToString()
-                : null;
             var count = (double)countOfAll / pagination.PageSize;
             var pageCount = count == Math.Floor(count) ? count : Math.Floor(count) + 1;
 
@@ -30,8 +22,6 @@ namespace Forum.Helpers
                 CurrentPage = pagination.PageNumber >= 1 ? pagination.PageNumber : (int?)null,
                 PageSize = pagination.PageSize >= 1 ? pagination.PageSize : (int?)null,
                 PageCount = (int)pageCount,
-                NextPage = response.Any() ? nextPage.ToString() : null,
-                PreviousPage = previousPage
             };
         }
     }
