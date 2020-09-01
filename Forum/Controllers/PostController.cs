@@ -37,10 +37,10 @@ namespace Forum.Controllers
         }
         // GET: api/Post
         [HttpGet("get", Name = "GetPosts")]
-        public async Task<IActionResult> Get([FromQuery]string postName, [FromQuery]string threadId, [FromQuery]PaginationQuery paginationQuery)
+        public async Task<IActionResult> Get([FromQuery]string postName, [FromQuery]string threadId, [FromQuery]PaginationQuery paginationQuery, string orderBy)
         {
             var pagination = _mapper.Map<PaginationFilter>(paginationQuery);
-            var postsResponce = await _postService.GetAllAsync(postName, threadId, pagination);
+            var postsResponce = await _postService.GetAllAsync(postName, threadId, pagination, orderBy);
             var dto = _mapper.Map<IEnumerable<Post>, IEnumerable<PostResponse>>(postsResponce.Resource);
 
             if(pagination == null || pagination.PageNumber < 1 || pagination.PageSize < 1)

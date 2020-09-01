@@ -23,7 +23,7 @@ else
         @foreach(var thread in tresponces)
         {
             <tr>
-                <td>@thread.Name</td>
+                <td><a href="/thread/@thread.Id">@thread.Name</a></td>
                 <td>@thread.Description</td>
                 <td><img src="data:image/jpeg;base64,@Convert.ToBase64String(thread.Image)" height="100" /></td>
                 @if (Admin)

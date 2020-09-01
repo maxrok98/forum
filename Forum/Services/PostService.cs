@@ -21,58 +21,11 @@ namespace Forum.Services
             _voteRepository = voteRepository;
         }
 
-        public async Task<PostsResponse> GetAllAsync(string postName = null, string threadId = null, PaginationFilter paginationFilter = null)
+        public async Task<PostsResponse> GetAllAsync(string postName = null, string threadId = null, PaginationFilter paginationFilter = null, string orderByQueryString = null)
         {
-            if(postName == null && threadId == null && paginationFilter == null)
-            {
-                var posts = await _postRepository.GetAllAsync();
-                var amount = await _postRepository.GetCountOfAllPostsAsync();
-                return new PostsResponse(posts, amount);
-            }
-            if(postName == null && threadId == null && paginationFilter != null)
-            {
-                var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
-                var posts = await _postRepository.GetPaged(paginationFilter, skip);
-                var amount = await _postRepository.GetCountOfAllPostsAsync();
-                return new PostsResponse(posts, amount);
-            }
-            if(postName == null && threadId != null && paginationFilter == null)
-            {
-                var posts = await _postRepository.GetFromThreadAsync(threadId);
-                var amount = await _postRepository.GetCountOfPostsInThreadAsync(threadId);
-                return new PostsResponse(posts, amount);
-            }
-            if(postName == null && threadId != null && paginationFilter != null)
-            {
-                var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
-                var posts = await _postRepository.GetPagedFromThreadAsync(threadId, paginationFilter, skip);
-                var amount = await _postRepository.GetCountOfPostsInThreadAsync(threadId);
-                return new PostsResponse(posts, amount);
-            }
-            if(postName != null && threadId == null && paginationFilter == null)
-            {
-                var posts = await _postRepository.GetFilteredAsync(postName);
-                var amount = await _postRepository.GetCountOfFilteredPostsAsync(postName);
-                return new PostsResponse(posts, amount);
-            }
-            if(postName != null && threadId == null && paginationFilter != null)
-            {
-                var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
-                var posts = await _postRepository.GetFilteredAndPagedAsync(postName, paginationFilter, skip);
-                var amount = await _postRepository.GetCountOfFilteredPostsAsync(postName);
-                return new PostsResponse(posts, amount);
-            }
-            if(postName != null && threadId != null && paginationFilter == null)
-            {
-                var posts = await _postRepository.GetFilteredFromThreadAsync(postName, threadId);
-                var amount = await _postRepository.GetCountOfPostsInThreadAsync(threadId);
-                return new PostsResponse(posts, amount);
-            }
-
-            var skip1 = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
-            var posts1 = await _postRepository.GetFilteredAndPagedFromThreadAsync(postName, threadId, paginationFilter, skip1);
-            var amount1 = await _postRepository.GetCountOfFilteredPostsInThreadAsync(postName, threadId);
-            return new PostsResponse(posts1, amount1);
+            var posts = await _postRepository.GetFilteredAndPagedFromThreadAsync(postName, threadId, paginationFilter, orderByQueryString);
+            var amount = await _postRepository.GetCountOfFilteredPostsInThreadAsync(postName, threadId);
+            return new PostsResponse(posts, amount);
         }
 
         public async Task<PostResponse> GetAsync(string id)

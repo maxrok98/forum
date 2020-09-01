@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Forum.Models;
+using Forum.Repositories.Helpers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Forum.Repositories
 {
     public class PostRepository : Repository<Post>, IPostRepository
     {
-        public PostRepository(Models.ForumAppDbContext context) : base(context) { }
+        public PostSorting sorting;
+        public PostRepository(Models.ForumAppDbContext context) : base(context) {
+            sorting = new PostSorting();
+        }
 
         public async Task<IEnumerable<Post>> GetOrderByVoteAsync()
         {
@@ -35,52 +41,37 @@ namespace Forum.Repositories
         {
             return await _context.Posts.CountAsync();
         }
-        public async Task<int> GetCountOfFilteredPostsAsync(string postName)
-        {
-            return await _context.Posts.Where(p => p.Name.Contains(postName)).CountAsync();
-        }
-        public async Task<int> GetCountOfPostsInThreadAsync(string threadId)
-        {
-            return await _context.Posts.Where(p => p.ThreadId == threadId).CountAsync();
-        }
+
         public async Task<int> GetCountOfFilteredPostsInThreadAsync(string postName, string threadId)
         {
-            return await _context.Posts.Where(p => p.Name.Contains(postName)).Where(p => p.ThreadId == threadId).CountAsync();
+            IQueryable<Post> query = _context.Posts;
+            if (!string.IsNullOrEmpty(postName))
+                query = query.Where(p => p.Name.Contains(postName));
+            if (!string.IsNullOrEmpty(threadId))
+                query = query.Where(p => p.ThreadId == threadId);
+            return query.Count();
         }
 
         public override async Task<IEnumerable<Post>> GetAllAsync()
         {
             return await _context.Posts.Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).ToListAsync();
         }
-        public async Task<IEnumerable<Post>> GetPaged(PaginationFilter paginationFilter, int skip)
+        public async Task<IEnumerable<Post>> GetFilteredAndPagedFromThreadAsync(string postName, string threadId, PaginationFilter paginationFilter, string orderByQueryString)
         {
-            return await _context.Posts.Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
-        }
-        public async Task<IEnumerable<Post>> GetFilteredAsync(string postName)
-        {
-            return await _context.Posts.Where(p => p.Name.Contains(postName)).Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).ToListAsync();
-        }
-        public async Task<IEnumerable<Post>> GetFromThreadAsync(string threadId)
-        {
-            return await _context.Posts.Where(p => p.ThreadId == threadId).Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).ToListAsync();
-        }
-        public async Task<IEnumerable<Post>> GetPagedFromThreadAsync(string threadId, PaginationFilter paginationFilter, int skip)
-        {
-            return await _context.Posts.Where(p => p.ThreadId == threadId).Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
-        }
-        public async Task<IEnumerable<Post>> GetFilteredAndPagedAsync(string postName, PaginationFilter paginationFilter, int skip)
-        {
-            return await _context.Posts.Where(p => p.Name.Contains(postName)).Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
-        }
-        public async Task<IEnumerable<Post>> GetFilteredFromThreadAsync(string postName, string threadId)
-        {
-            return await _context.Posts.Where(p => p.Name.Contains(postName)).Where(p => p.ThreadId == threadId).Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).ToListAsync();
-        }
-        public async Task<IEnumerable<Post>> GetFilteredAndPagedFromThreadAsync(string postName, string threadId, PaginationFilter paginationFilter, int skip)
-        {
-            return await _context.Posts.Where(p => p.Name.Contains(postName)).Where(p => p.ThreadId == threadId).Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
-        }
+            IQueryable<Post> query = _context.Posts.Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image);
+            if (!string.IsNullOrEmpty(postName))
+                query = query.Where(p => p.Name.Contains(postName));
+            if (!string.IsNullOrEmpty(threadId))
+                query = query.Where(p => p.ThreadId == threadId);
+            query = query.OrderBy(sorting.ApplySort(orderByQueryString));
+            if (paginationFilter != null)
+            {
+                var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
+                query = query.Skip(skip).Take(paginationFilter.PageSize);
+            }
+            return await query.AsNoTracking().ToListAsync();
 
+        }
 
         public override async Task<Post> GetAsync(string id)
         {

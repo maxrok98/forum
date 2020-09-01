@@ -1,0 +1,147 @@
+﻿@page "/thread/{ThreadId}/list/{Page}"
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+
+<h3>PostsList</h3>
+@if (!Loged)
+{
+    <p>You have to login!</p>
+}
+else
+{
+
+    <div class="row mb-3">
+        <div class="input-group col-md-5 text-md-right">
+            <input type="text" class="form-control" placeholder="Patient Name" @bind="this.SearchTerm" @onkeyup="SearchBoxKeyPress" />
+            <div class="input-group-btn">
+                <button class="btn btn-default" @onclick="SearchClick">
+                    <i class="oi oi-magnifying-glass" title="search" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="input-group-btn">
+                <button class="btn btn-default" @onclick="ClearSearch">
+                    <i class="oi oi-x" title="clear" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">User name</th>
+                <th scope="col">Rating</th>
+                <th scope="col">Coments count</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var post in posts.Results)
+            {
+                <tr>
+                    <td><a href="/post/@post.Id" class="nav-link">@post.Name</a></td>
+                    <td>@post.UserName</td>
+                    <td>@post.Rating</td>
+                    <td>@post.Coments.Count</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="pagination pull-right">
+                @foreach (var i in Enumerable.Range(1, (int)posts.PageCount))
+                {
+                    <li>
+                        @if (i == Convert.ToInt32(Page))
+                        {
+                            <button class="btn btn-dark" type="button" disabled>@i</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-dark" type="button" @onclick="@( async () => await PagerPageChanged(i))">@i</button>
+                        }
+                    </li>
+                }
+
+            </ul>
+        </div>
+    </div>
+
+}
+
+
+@code {
+    [Parameter]
+    public string ThreadId { get; set; }
+    [Parameter]
+    public string Page { get; set; } = "1";
+    public string SearchTerm = string.Empty;
+    bool Loged = false;
+
+    ThreadResponse thread;
+    PageResponse<PostResponse> posts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Loged = await isLoggedOn())
+        {
+            var token = await Storage.GetItemAsStringAsync("JWT-Token");
+            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            //Admin = await isAdmin();
+            await loadPosts();
+            await loadThread();
+        }
+    }
+
+    async Task loadThread()
+    {
+        var resp = await Http.GetAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Threads.Get.Replace("{id}", ThreadId));
+        if(resp.IsSuccessStatusCode)
+        {
+            thread = await resp.Content.ReadFromJsonAsync<ThreadResponse>();
+        }
+    }
+
+    async Task loadPosts()
+    {
+        posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=2" + "&threadId=" + ThreadId);
+    }
+
+    protected async Task<bool> isLoggedOn()
+    {
+        return !string.IsNullOrEmpty(await Storage.GetItemAsStringAsync("JWT-Token"));
+    }
+
+    protected async Task PagerPageChanged(int page)
+    {
+        UriHelper.NavigateTo("/thread/" + ThreadId + "/list/" + Page);
+        await loadPosts();
+    }
+    protected async Task SearchBoxKeyPress(KeyboardEventArgs ev)
+    {
+        if (ev.Key == "Enter")
+        {
+            await SearchClick();
+        }
+    }
+
+    protected async Task SearchClick()
+    {
+        if (!string.IsNullOrEmpty(SearchTerm))
+        {
+            posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.GetAll + "/?postName=" + SearchTerm + "&threadId=" + ThreadId);
+            return;
+        }
+    }
+
+    protected async Task ClearSearch()
+    {
+        SearchTerm = string.Empty;
+        UriHelper.NavigateTo("/thread/" + ThreadId + "/list/" + Page);
+        await loadPosts();
+    }
+
+}
+
