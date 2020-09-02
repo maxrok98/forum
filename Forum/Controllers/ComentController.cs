@@ -30,6 +30,7 @@ namespace Forum.Controllers
         }
         // GET: api/Coment
         [HttpGet("get", Name = "GetComents")]
+        [AllowAnonymous]
         public async Task<IEnumerable<ComentResponse>> Get()
         {
             var coments = await _comentService.GetAllAsync();
@@ -40,6 +41,7 @@ namespace Forum.Controllers
 
         // GET: api/Coment/5
         [HttpGet("get/{id}", Name = "GetComent")]
+        [AllowAnonymous]
         public async Task<ComentResponse> Get(string id)
         {
             var coment = await _comentService.GetAsync(id);

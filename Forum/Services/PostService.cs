@@ -43,15 +43,6 @@ namespace Forum.Services
             return await _postRepository.GetCountOfAllPostsAsync();
         }
 
-        public async Task<IEnumerable<Post>> GetOrderByDateAsync()
-        {
-            return await _postRepository.GetOrderByDateAsync();
-        }
-
-        public async Task<IEnumerable<Post>> GetOrderByVoteAsync()
-        {
-            return await _postRepository.GetOrderByVoteAsync(); 
-        }
 
         public async Task<PostResponse> RemoveAsync(string id)
         {

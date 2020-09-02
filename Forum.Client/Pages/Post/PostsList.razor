@@ -4,12 +4,6 @@
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 
 <h3>PostsList</h3>
-@if (!Loged)
-{
-    <p>You have to login!</p>
-}
-else
-{
 <div class="row mb-3">
     <div class="input-group col-md-5 text-md-right">
         <input name="PatientSearchInput" type="text" class="form-control" placeholder="Patient Name" @bind="this.SearchTerm" @onkeyup="SearchBoxKeyPress" />
@@ -24,8 +18,13 @@ else
             </button>
         </div>
     </div>
+    <select id="ordering" class="form-control"  value="@OrderBy" @onchange="@(async (ChangeEventArgs e) => await ChangeOrdering(e))">
+        <option selected="selected" value="date">Date</option>
+        <option value="rating">Rating</option>
+    </select>
 </div>
-
+@if (posts != null)
+{
     <table class="table">
         <thead>
             <tr>
@@ -53,7 +52,7 @@ else
                 @foreach (var i in Enumerable.Range(1, (int)posts.PageCount))
                 {
                     <li>
-                        @if(i == Convert.ToInt32(Page))
+                        @if (i == Convert.ToInt32(Page))
                         {
                             <button class="btn btn-dark" type="button" disabled >@i</button>
                         }
@@ -67,32 +66,36 @@ else
             </ul>
         </div>
     </div>
-
 }
+else
+{
+    <p>Loading.....</p>
+}
+
 
 
 @code {
     [Parameter]
     public string Page { get; set; } = "1";
     public string SearchTerm = string.Empty;
-    bool Loged = false;
+    public string OrderBy { get; set; }
 
     PageResponse<PostResponse> posts;
 
     protected override async Task OnInitializedAsync()
     {
-        if (Loged = await isLoggedOn())
-        {
-            var token = await Storage.GetItemAsStringAsync("JWT-Token");
-            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            //Admin = await isAdmin();
-            await loadPosts();
-        }
+        //if (Loged = await isLoggedOn())
+        //{
+        //var token = await Storage.GetItemAsStringAsync("JWT-Token");
+        //Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        //Admin = await isAdmin();
+        await loadPosts();
+        //}
     }
 
     async Task loadPosts()
     {
-        posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=2");
+        posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=2" + "&orderBy=" + OrderBy);
     }
 
     protected async Task<bool> isLoggedOn()
@@ -117,7 +120,7 @@ else
     {
         if (!string.IsNullOrEmpty(SearchTerm))
         {
-            posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.GetAll + "/?postName=" + SearchTerm);
+            posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.GetAll + "/?postName=" + SearchTerm + "&orderBy=" + OrderBy);
             return;
         }
     }
@@ -127,6 +130,11 @@ else
         SearchTerm = string.Empty;
         UriHelper.NavigateTo("/posts/list/" + Page);
         await loadPosts();
+    }
+    protected async Task ChangeOrdering(ChangeEventArgs e)
+    {
+        OrderBy = e.Value.ToString();
+        await PagerPageChanged(1);
     }
 
 }

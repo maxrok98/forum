@@ -5,9 +5,9 @@
 
 <h3>ThreadPage</h3>
 
-@if (!Loged)
+@if (tresponces == null)
 {
-    <p>You have to login!</p>
+    <p>Loading.......</p>
 }
 else
 {
@@ -23,7 +23,7 @@ else
         @foreach(var thread in tresponces)
         {
             <tr>
-                <td><a href="/thread/@thread.Id">@thread.Name</a></td>
+                <td><a href="/thread/@thread.Id/list/1">@thread.Name</a></td>
                 <td>@thread.Description</td>
                 <td><img src="data:image/jpeg;base64,@Convert.ToBase64String(thread.Image)" height="100" /></td>
                 @if (Admin)
@@ -69,7 +69,7 @@ else
 
 
 @code {
-    bool Loged = false;
+    //bool Loged = false;
     bool Admin = false;
     List<ThreadResponse> tresponces = new List<ThreadResponse>();
 
@@ -82,11 +82,9 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        if (Loged = await isLoggedOn())
-        {
+        await loadThreads();
+        if(await isLoggedOn())
             Admin = await isAdmin();
-            await loadThreads();
-        }
     }
 
     protected async Task<bool> isLoggedOn()

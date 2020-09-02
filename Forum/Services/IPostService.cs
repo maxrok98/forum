@@ -13,8 +13,6 @@ namespace Forum.Services
         Task<PostsResponse> GetAllAsync(string postName = null, string threadId = null, PaginationFilter paginationFilter = null, string orderByQueryString = null);
         Task<PostResponse> GetAsync(string id);
         Task<int> GetCountOfAllPostsAsync();
-        Task<IEnumerable<Post>> GetOrderByVoteAsync();
-        Task<IEnumerable<Post>> GetOrderByDateAsync();
         Task<PostResponse> AddAsync(Post post);
         Task<PostResponse> UpdateAsync(string id, Post post);
         Task<PostResponse> RemoveAsync(string id);

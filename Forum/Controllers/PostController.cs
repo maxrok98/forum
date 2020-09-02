@@ -37,6 +37,7 @@ namespace Forum.Controllers
         }
         // GET: api/Post
         [HttpGet("get", Name = "GetPosts")]
+        [AllowAnonymous]
         public async Task<IActionResult> Get([FromQuery]string postName, [FromQuery]string threadId, [FromQuery]PaginationQuery paginationQuery, string orderBy)
         {
             var pagination = _mapper.Map<PaginationFilter>(paginationQuery);
@@ -55,6 +56,7 @@ namespace Forum.Controllers
 
         // GET: api/Post/5
         [HttpGet("get/{id}", Name = "GetPost")]
+        [AllowAnonymous]
         public async Task<IActionResult> Get(string id)
         {
             var result = await _postService.GetAsync(id);

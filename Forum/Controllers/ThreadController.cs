@@ -31,7 +31,7 @@ namespace Forum.Controllers
         // GET: api/Thread
         [HttpGet("get/", Name = "GetThreads")]
         [ProducesResponseType(typeof(IEnumerable<ThreadResponse>), 200)]
-        [Authorize(Roles = "User, Admin")]
+        [AllowAnonymous]
         public async Task<IEnumerable<ThreadResponse>> Get()
         {
             var thread = await _threadService.GetAllAsync();
@@ -42,7 +42,7 @@ namespace Forum.Controllers
 
         // GET: api/Thread/5
         [HttpGet("get/{id}", Name = "GetThread")]
-        [Authorize(Roles = "User, Admin")]
+        [AllowAnonymous]
         public async Task<ThreadResponse> Get(string id)
         {
             var thread = await _threadService.GetAsync(id);

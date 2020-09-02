@@ -4,9 +4,9 @@
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 
 <h3>PostsList</h3>
-@if (!Loged)
+@if (posts == null && thread == null)
 {
-    <p>You have to login!</p>
+    <p>Loading......</p>
 }
 else
 {
@@ -25,6 +25,10 @@ else
                 </button>
             </div>
         </div>
+        <select id="ordering" class="form-control"  value="@OrderBy" @onchange="@(async (ChangeEventArgs e) => await ChangeOrdering(e))">
+            <option selected="selected" value="date">Date</option>
+            <option value="rating">Rating</option>
+        </select>
     </div>
 
     <table class="table">
@@ -78,21 +82,15 @@ else
     [Parameter]
     public string Page { get; set; } = "1";
     public string SearchTerm = string.Empty;
-    bool Loged = false;
+    public string OrderBy { get; set; } = string.Empty;
 
     ThreadResponse thread;
     PageResponse<PostResponse> posts;
 
     protected override async Task OnInitializedAsync()
     {
-        if (Loged = await isLoggedOn())
-        {
-            var token = await Storage.GetItemAsStringAsync("JWT-Token");
-            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            //Admin = await isAdmin();
-            await loadPosts();
-            await loadThread();
-        }
+        await loadPosts();
+        await loadThread();
     }
 
     async Task loadThread()
@@ -141,6 +139,11 @@ else
         SearchTerm = string.Empty;
         UriHelper.NavigateTo("/thread/" + ThreadId + "/list/" + Page);
         await loadPosts();
+    }
+    protected async Task ChangeOrdering(ChangeEventArgs e)
+    {
+        OrderBy = e.Value.ToString();
+        await PagerPageChanged(1);
     }
 
 }

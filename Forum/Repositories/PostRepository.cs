@@ -17,26 +17,6 @@ namespace Forum.Repositories
             sorting = new PostSorting();
         }
 
-        public async Task<IEnumerable<Post>> GetOrderByVoteAsync()
-        {
-            var query = from vote in _context.Votes
-                        join post in _context.Posts on vote.PostId equals post.Id
-                        group vote by post.Id into grouped
-                        select new { postId = grouped.Key, Count = grouped.Count(t => t.Id != null) };
-
-            return await (from p in query
-                    from post in _context.Posts
-                    where post.Id == p.postId
-                    orderby p.Count descending
-                    select post).ToListAsync();
-        }
-        public async Task<IEnumerable<Post>> GetOrderByDateAsync()
-        {
-            return await (from p in _context.Posts
-                    orderby p.Date descending
-                    select p).ToListAsync();
-        }
-
         public async Task<int> GetCountOfAllPostsAsync()
         {
             return await _context.Posts.CountAsync();
@@ -49,7 +29,7 @@ namespace Forum.Repositories
                 query = query.Where(p => p.Name.Contains(postName));
             if (!string.IsNullOrEmpty(threadId))
                 query = query.Where(p => p.ThreadId == threadId);
-            return query.Count();
+            return await query.CountAsync();
         }
 
         public override async Task<IEnumerable<Post>> GetAllAsync()
