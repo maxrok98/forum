@@ -15,14 +15,14 @@ namespace Forum.Repositories
         {
             return await (from c in _context.Coments
                          where c.PostId == id
-                         select c).ToListAsync();
+                         select c).AsQueryable().ToListAsync();
         }
 
         public async Task<IEnumerable<Coment>> GetAllFromUserAsync(string id)
         {
             return await (from c in _context.Coments
                           where c.UserId == id
-                          select c).ToListAsync();
+                          select c).AsQueryable().ToListAsync();
         }
 
         public override async Task<IEnumerable<Coment>> GetAllAsync()

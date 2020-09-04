@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Blazored.LocalStorage;
+using Sotsera.Blazor.Toaster.Core.Models;
 
 namespace Forum.Client
 {
@@ -21,6 +22,14 @@ namespace Forum.Client
             builder.Services.AddBlazoredLocalStorage();
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddToaster(config =>
+            {
+                //example customizations
+                config.PositionClass = Defaults.Classes.Position.BottomRight;
+                config.PreventDuplicates = true;
+                config.NewestOnTop = false;
+            });
+
 
             await builder.Build().RunAsync();
         }

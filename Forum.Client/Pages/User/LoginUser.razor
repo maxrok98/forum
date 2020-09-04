@@ -2,6 +2,7 @@
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject Sotsera.Blazor.Toaster.IToaster Toaster
 
 <h3>Login</h3>
 
@@ -26,11 +27,11 @@
         </div>
     </EditForm>
     <NavLink class="btn btn-lg btn-danger btn-block" href="user/registration">Registration</NavLink>
-    @foreach(var er in err)
+    @foreach (var er in err)
     {
         <p>@er</p>
     }
-    
+
 </div>
 
 @code {
@@ -46,19 +47,19 @@
             await Storage.SetItemAsync<string>("JWT-Token", cont.Token);
             await Storage.SetItemAsync<string>("JWT-RefreshToken", cont.RefreshToken);
             Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cont.Token);
+            Toaster.Success("You seccessfully entered to your account");
             UriHelper.NavigateTo("/");
         }
-        else if(response == null)
+        else if (response == null)
         {
-            err.Add("Can not connect to server");
+            Toaster.Error("Can not connect to server");
         }
         else
         {
             AuthFailedResponse cont = await response.Content.ReadFromJsonAsync<AuthFailedResponse>();
-            foreach(var er in cont.Errors)
+            foreach (var er in cont.Errors)
             {
-                Console.WriteLine(er);
-                err.Add(er);
+                Toaster.Error(er);
             }
         }
     }
