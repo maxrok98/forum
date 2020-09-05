@@ -104,6 +104,7 @@ else
     public string Id { get; set; }
 
     PostResponse post;
+    ComentRequest coment;
 
     protected async override Task OnInitializedAsync()
     {
@@ -117,7 +118,6 @@ else
         {
             var resp = await response.Content.ReadFromJsonAsync<Response<PostResponse>>();
             post = resp.Data;
-            //DateTime.Parse()
         }
     }
 

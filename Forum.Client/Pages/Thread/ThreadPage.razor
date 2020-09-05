@@ -2,6 +2,7 @@
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject Sotsera.Blazor.Toaster.IToaster Toaster
 
 <h3>ThreadPage</h3>
 
@@ -61,10 +62,6 @@ else
         </div>
     </EditForm>
     }
-    @foreach (var er in err)
-    {
-        <p>@er</p>
-    }
 }
 
 
@@ -77,8 +74,6 @@ else
     string status;
     string imageDataUri;
     byte[] base64image;
-
-    List<string> err = new List<string>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -145,11 +140,12 @@ else
         var response = await Http.PostAsJsonAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Threads.Create, newThread);
         if (response.IsSuccessStatusCode)
         {
+            Toaster.Info("New thread is created!");
             UriHelper.NavigateTo("/threadpage");
         }
         else
         {
-            err.Add("Something went wrong");
+            Toaster.Error("Something went wrong when creating new thread!");
         }
     }
     private async Task DeleteThreadAsync(string id)
@@ -158,10 +154,11 @@ else
         if (response.IsSuccessStatusCode)
         {
             tresponces.RemoveAll(x => x.Id == id);
+            Toaster.Warning("Thread is deleted!");
         }
         else
         {
-            Console.WriteLine("Could not delete thread");
+            Toaster.Error("Could not delete thread!");
         }
     }
 }

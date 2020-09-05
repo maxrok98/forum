@@ -2,6 +2,7 @@
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject Sotsera.Blazor.Toaster.IToaster Toaster
 
 <h3>CreatePost</h3>
 
@@ -39,10 +40,6 @@
     </div>
 </EditForm>
 
-@foreach (var er in err)
-{
-    <p class="alert-warning">@er</p>
-}
 
 @code {
     string status;
@@ -53,7 +50,6 @@
     List<ThreadResponse> threads = new List<ThreadResponse>();
     string selectedThreadId;
 
-    List<string> err = new List<string>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -64,7 +60,7 @@
         }
         else
         {
-            err.Add("Could not get thread list");
+            Toaster.Error("Could not get thread list");
         }
     }
 
@@ -76,11 +72,12 @@
 
         if (responce.IsSuccessStatusCode)
         {
+            Toaster.Success("You succesfuly created post!");
             UriHelper.NavigateTo("/userpage");
         }
         else
         {
-            err.Add("Could not create new post!");
+            Toaster.Error("Could not create new post!");
         }
     }
 
