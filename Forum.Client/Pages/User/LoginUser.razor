@@ -27,16 +27,10 @@
         </div>
     </EditForm>
     <NavLink class="btn btn-lg btn-danger btn-block" href="user/registration">Registration</NavLink>
-    @foreach (var er in err)
-    {
-        <p>@er</p>
-    }
-
 </div>
 
 @code {
     UserLoginRequest login = new UserLoginRequest();
-    List<string> err = new List<string>();
 
     protected async Task LogonUser()
     {

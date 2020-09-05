@@ -2,6 +2,7 @@
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject Sotsera.Blazor.Toaster.IToaster Toaster
 
 <h3>Post</h3>
 @if (post == null)
@@ -49,14 +50,27 @@ else
                 <div class="card my-4">
                     <h5 class="card-header">Leave a Comment:</h5>
                     <div class="card-body">
-                        <form>
+                        <EditForm Model="@coment" OnValidSubmit="CreateNewComent">
+                            <DataAnnotationsValidator />
+
                             <div class="form-group">
-                                <textarea class="form-control" rows="3"></textarea>
+                                <InputText id="name" class="form-control" rows="3" placeholder="Write comment...." @bind-Value="coment.Text" />
+                                <ValidationMessage For="@(() => coment.Text)" />
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
-                        </form>
+                        </EditForm>
                     </div>
                 </div>
+                @foreach(var coment in post.Coments)
+                {
+                    <div class="media mb-4">
+                        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                        <div class="media-body">
+                            <h5 class="mt-0"><a href="user/@coment.UserId">@coment.UserName</a></h5>
+                            @coment.Text
+                        </div>
+                    </div>
+                }
 
                 <!-- Single Comment -->
                 <div class="media mb-4">
@@ -104,7 +118,7 @@ else
     public string Id { get; set; }
 
     PostResponse post;
-    ComentRequest coment;
+    ComentRequest coment = new ComentRequest();
 
     protected async override Task OnInitializedAsync()
     {
@@ -118,6 +132,24 @@ else
         {
             var resp = await response.Content.ReadFromJsonAsync<Response<PostResponse>>();
             post = resp.Data;
+        }
+    }
+    async Task CreateNewComent()
+    {
+        coment.PostId = Id;
+        var response = await Http.PostAsJsonAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Coments.Create, coment);
+        if(response.IsSuccessStatusCode)
+        {
+            Toaster.Success("You succesfuly comented this post!");
+            await loadPost();
+        }
+        else if(response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            Toaster.Warning("You have to login to leave a coment");
+        }
+        else
+        {
+            Toaster.Error("Something went wrong while commenting this post");
         }
     }
 

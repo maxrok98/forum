@@ -75,6 +75,10 @@
             Toaster.Success("You succesfuly created post!");
             UriHelper.NavigateTo("/userpage");
         }
+        else if(responce.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            Toaster.Warning("You have to login to create a post");
+        }
         else
         {
             Toaster.Error("Could not create new post!");

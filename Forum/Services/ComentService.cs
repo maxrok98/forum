@@ -20,6 +20,7 @@ namespace Forum.Services
 
         public async Task<ComentResponse> AddAsync(Coment coment)
         {
+            coment.Id = Guid.NewGuid().ToString();
             try
             {
                 await _comentRepository.AddAsync(coment);

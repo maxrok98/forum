@@ -26,6 +26,18 @@ namespace Forum.Contracts
 
             public const string Create = Base + "/post/post";
         }
+        public static class Coments
+        {
+            public const string GetAll = Base + "/coment/get";
+
+            public const string Update = Base + "/coment/put/{id}";
+
+            public const string Delete = Base + "/coment/delete/{id}";
+
+            public const string Get = Base + "/coment/get/{id}";
+
+            public const string Create = Base + "/coment/post";
+        }
 
         public static class Threads
         {
