@@ -8,6 +8,7 @@ namespace Forum.Contracts.Responses
     public class ComentResponse
     {
         public string Id { get; set; }
+        public string ParentComentId { get; set; }
 
         public string UserId { get; set; }
         public string  UserName { get; set; }

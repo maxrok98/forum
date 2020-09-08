@@ -61,16 +61,12 @@ else
                         </EditForm>
                     </div>
                 </div>
-                @foreach(var coment in post.Coments)
+
+                @foreach(var subComent in post.Coments.Where(p => p.ParentComentId == null))
                 {
-                    <div class="media mb-4">
-                        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-                        <div class="media-body">
-                            <h5 class="mt-0"><a href="user/@coment.UserId">@coment.UserName</a></h5>
-                            @coment.Text
-                        </div>
-                    </div>
+                    <Coment coment="@subComent" OnCreateComent="@CreateComentHandler"></Coment>
                 }
+
 
                 <!-- Single Comment -->
                 <div class="media mb-4">
@@ -138,12 +134,22 @@ else
     {
         coment.PostId = Id;
         var response = await Http.PostAsJsonAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Coments.Create, coment);
-        if(response.IsSuccessStatusCode)
+        await CheckIfOk(response);
+    }
+    async Task CreateComentHandler(ComentRequest comentreq)
+    {
+        comentreq.PostId = Id;
+        var response = await Http.PostAsJsonAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Coments.Create, comentreq);
+        await CheckIfOk(response);
+    }
+    async Task CheckIfOk(HttpResponseMessage response)
+    {
+        if (response.IsSuccessStatusCode)
         {
             Toaster.Success("You succesfuly comented this post!");
             await loadPost();
         }
-        else if(response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
         {
             Toaster.Warning("You have to login to leave a coment");
         }
@@ -151,6 +157,7 @@ else
         {
             Toaster.Error("Something went wrong while commenting this post");
         }
+
     }
 
 }
