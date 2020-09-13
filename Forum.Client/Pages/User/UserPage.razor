@@ -3,6 +3,7 @@
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject Sotsera.Blazor.Toaster.IToaster Toaster
 
 <h3>UserPage</h3>
 @if (!Loged)
@@ -36,6 +37,26 @@ else
             <tr>
                 <th><a href="post/@post.Id" class="nav-link" >@post.Name</a></th>
                 <th><button class="btn btn-danger" @onclick="@(async () => await DeletePostAsync(post.Id))">Delete</button></th>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+    <h1>Your subscription</h1>
+
+    <table class="table shadow">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var thread in user.Subscription)
+            {
+            <tr>
+                <th><a href="thread/@thread.Id/list/1" class="nav-link" >@thread.Name</a></th>
+                <th><button class="btn btn-danger" @onclick="@(async () => await DeleteSubscriptionAsync(thread.Id))">Unsibscribe</button></th>
             </tr>
             }
         </tbody>
@@ -88,7 +109,19 @@ else
         if (responce.IsSuccessStatusCode)
         {
             user.myPosts.RemoveAll(x => x.Id == postId);
+            Toaster.Error("Post is deleted!");
         }
+    }
+
+    protected async Task DeleteSubscriptionAsync(string threadId)
+    {
+        var responce = await Http.DeleteAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Threads.Unsubscribe.Replace("{id}", threadId));
+        if (responce.IsSuccessStatusCode)
+        {
+            user.Subscription.RemoveAll(x => x.Id == threadId);
+            Toaster.Error("Thread is deleted!");
+        }
+        
     }
 
 }

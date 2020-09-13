@@ -101,7 +101,7 @@ namespace Forum.Services
             if (sub != null)
                 return new SubscriptionResponse("You already subscribed.");
 
-            var Sub = new Subscription { ThreadId = threadId, UserId = userId };
+            var Sub = new Subscription { ThreadId = threadId, UserId = userId, Id = Guid.NewGuid().ToString() };
             try
             {
                 await _subscriptionRepository.AddAsync(Sub);
@@ -127,13 +127,13 @@ namespace Forum.Services
             if (sub == null)
                 return new SubscriptionResponse("You are not subscribed.");
 
-            var Sub = new Subscription { ThreadId = threadId, UserId = userId };
+            //var Sub = new Subscription { ThreadId = threadId, UserId = userId };
             try
             {
-                _subscriptionRepository.Remove(Sub);
+                _subscriptionRepository.Remove(sub);
                 await _unitOfWork.CompleteAsync();
 
-                return new SubscriptionResponse(Sub);
+                return new SubscriptionResponse(sub);
             }
             catch(Exception ex)
             {

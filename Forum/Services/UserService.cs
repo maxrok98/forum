@@ -27,7 +27,7 @@ namespace Forum.Services
 
         public async Task<User> GetAsync(string id)
         {
-            return await _userManager.Users.Where(x => x.Id == id).Include(x => x.Posts).Include(x => x.Subscriptions).Include(x => x.Image).FirstAsync();
+            return await _userManager.Users.Where(x => x.Id == id).Include(x => x.Posts).Include(x => x.Subscriptions).ThenInclude(x => x.Thread).Include(x => x.Image).FirstAsync();
         }
 
         public async Task<bool> IsUserAdmin(string id)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Text;
 using System.Threading.Tasks;
 using Forum.Models;
 using Forum.Repositories.Helpers;
@@ -28,7 +29,14 @@ namespace Forum.Repositories
             if (!string.IsNullOrEmpty(postName))
                 query = query.Where(p => p.Name.Contains(postName));
             if (!string.IsNullOrEmpty(threadId))
-                query = query.Where(p => p.ThreadId == threadId);
+            {
+                StringBuilder whereQuery = new StringBuilder();
+                foreach (var thread in threadId.Trim().Split(" "))
+                    whereQuery.Append("ThreadId==\"" + thread + "\" || ");
+
+                var whereQ = whereQuery.ToString().Remove(whereQuery.Length - 3);
+                query = query.Where(whereQ);
+            }
             return await query.CountAsync();
         }
 
@@ -42,7 +50,14 @@ namespace Forum.Repositories
             if (!string.IsNullOrEmpty(postName))
                 query = query.Where(p => p.Name.Contains(postName));
             if (!string.IsNullOrEmpty(threadId))
-                query = query.Where(p => p.ThreadId == threadId);
+            {
+                StringBuilder whereQuery = new StringBuilder();
+                foreach (var thread in threadId.Trim().Split(" "))
+                    whereQuery.Append("ThreadId==\"" + thread + "\" || ");
+
+                var whereQ = whereQuery.ToString().Remove(whereQuery.Length - 3);
+                query = query.Where(whereQ);
+            }
             query = query.OrderBy(sorting.ApplySort(orderByQueryString));
             if (paginationFilter != null)
             {

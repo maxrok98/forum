@@ -2,6 +2,7 @@
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject Sotsera.Blazor.Toaster.IToaster Toaster
 
 <h3>PostsList</h3>
 <div class="container">
@@ -30,6 +31,7 @@
                         <div class="card-footer text-muted">
                             Posted on @post.Date by
                             <a href="user/@post.UserId">@post.UserName</a>
+                            on thread <a href="thread/@post.ThreadId/list/1">@post.ThreadName</a>
                         </div>
                     </div>
                 }
@@ -42,8 +44,8 @@
                     <div class="card-body">
                         <img class="card-img-top" src="data:image/jpeg;base64,@Convert.ToBase64String(thread.Image)" width="200" />
                         <p><b>Description:</b> @thread.Description</p>
-                        <p>Subscribers: #</p>
-                        <button class="btn btn-warning">Subscribe</button>
+                        <p>Subscribers: @thread.NumberOfSubscription</p>
+                        <button class="btn btn-warning" @onclick="SubscribeToThread">Subscribe</button>
                     </div>
                     
                 </div>
@@ -174,6 +176,24 @@
     {
         OrderBy = e.Value.ToString();
         await PagerPageChanged(1);
+    }
+
+    protected async Task SubscribeToThread()
+    {
+        var responce = await Http.PostAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Threads.Subscribe.Replace("{id}", ThreadId), null);
+
+        if (responce.IsSuccessStatusCode)
+        {
+            Toaster.Success(await responce.Content.ReadAsStringAsync());
+        }
+        else if(responce.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            Toaster.Warning("You have to login to subscribe");
+        }
+        else if(responce.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            Toaster.Error(await responce.Content.ReadAsStringAsync());
+        }
     }
 
 }

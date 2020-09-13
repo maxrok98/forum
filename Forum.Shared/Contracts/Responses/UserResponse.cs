@@ -15,6 +15,6 @@ namespace Forum.Contracts.Responses
         public byte[] Image { get; set; }
 
         public virtual List<PostForUserResponse> myPosts { get; set; }
-        public virtual ICollection<ThreadResponse> myThread { get; set; }
+        public virtual List<ThreadResponse> Subscription { get; set; }
     }
 }

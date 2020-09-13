@@ -16,7 +16,7 @@ namespace Forum.Repositories
 
         public override async Task<IEnumerable<Thread>> GetAllAsync()
         {
-            return await _entity.Include(thread => thread.Image).ToListAsync();
+            return await _entity.Include(thread => thread.Image).Include(t => t.Subscriptions).ToListAsync();
         }
 
         public override async Task<Thread> GetAsync(string id)
@@ -24,7 +24,7 @@ namespace Forum.Repositories
             //return await _entity.Include(thread => thread.Image).Where(Id == id);
             return await (from t in _entity
                           where t.Id == id
-                          select t).Include(t => t.Image).FirstAsync();
+                          select t).Include(t => t.Image).Include(t => t.Subscriptions).FirstAsync();
         }
     }
 }

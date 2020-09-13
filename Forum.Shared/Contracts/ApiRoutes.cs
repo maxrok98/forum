@@ -51,9 +51,9 @@ namespace Forum.Contracts
 
             public const string Create = Base + "/thread/post";
 
-            public const string Subscribe = Base + "subscribe/{id}";
+            public const string Subscribe = Base + "/thread/subscribe/{id}";
 
-            public const string Unsubscribe = Base + "unsubscribe/{id}";
+            public const string Unsubscribe = Base + "/thread/unsubscribe/{id}";
         }
 
         public static class User

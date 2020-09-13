@@ -12,7 +12,8 @@ namespace Forum.Mapping
     {
         public ModelToDTOProfile()
         {
-            CreateMap<Thread, ThreadResponse>().ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image.Image));
+            CreateMap<Thread, ThreadResponse>().ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image.Image))
+                                               .ForMember(dest => dest.NumberOfSubscription, opt => opt.MapFrom(src => src.Subscriptions.Count()));
             CreateMap<Post, PostResponse>().ForMember(dest => dest.ThreadName, opt => opt.MapFrom(src => src.Thread.Name))
                                          .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
                                          .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image.Image));
@@ -24,7 +25,7 @@ namespace Forum.Mapping
             //CreateMap<Subscription, SubForUserResponse>();
             CreateMap<User, UserResponse>().ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image.Image))
                                          .ForMember(dest => dest.myPosts, opt => opt.MapFrom(src => src.Posts))
-                                         .ForMember(dest => dest.myThread, opt => opt.MapFrom(src => src.Subscriptions.Select(y => y.Thread)));
+                                         .ForMember(dest => dest.Subscription, opt => opt.MapFrom(src => src.Subscriptions.Select(y => y.Thread)));
         }
     }
 }
