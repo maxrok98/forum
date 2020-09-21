@@ -129,6 +129,7 @@ namespace Forum.Services
                 return new VoteResponse("You already voted.");
 
             var Vote = new Vote { PostId = PostId, UserId = UserId };
+            Vote.Id = Guid.NewGuid().ToString();
             try
             {
                 await _voteRepository.AddAsync(Vote);

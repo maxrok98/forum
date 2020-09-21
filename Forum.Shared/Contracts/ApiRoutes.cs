@@ -25,6 +25,10 @@ namespace Forum.Contracts
             public const string Get = Base + "/post/get/{id}";
 
             public const string Create = Base + "/post/post";
+
+            public const string Vote = Base + "/post/vote/{id}";
+
+            public const string Unvote = Base + "/post/unvote/{id}";
         }
         public static class Coments
         {

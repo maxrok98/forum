@@ -185,6 +185,7 @@
         if (responce.IsSuccessStatusCode)
         {
             Toaster.Success(await responce.Content.ReadAsStringAsync());
+            thread.NumberOfSubscription += 1;
         }
         else if(responce.StatusCode == System.Net.HttpStatusCode.Unauthorized)
         {
