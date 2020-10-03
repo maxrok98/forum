@@ -146,7 +146,7 @@
 
     protected async Task PagerPageChanged(int page)
     {
-        UriHelper.NavigateTo("/thread/" + ThreadId + "/list/" + Page);
+        UriHelper.NavigateTo("/thread/" + ThreadId + "/list/" + page);
         await loadPosts();
     }
     protected async Task SearchBoxKeyPress(KeyboardEventArgs ev)
