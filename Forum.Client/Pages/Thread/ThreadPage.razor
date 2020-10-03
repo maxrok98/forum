@@ -4,65 +4,76 @@
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
 
-<h3>ThreadPage</h3>
 
-@if (tresponces == null)
-{
-    <p>Loading.......</p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Image</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach(var thread in tresponces)
+
+<div class="container">
+
+    <h3>ThreadPage</h3>
+
+    @if (tresponces == null)
+    {
+        <p>Loading.......</p>
+    }
+    else
+    {
+
+        @foreach (var thread in tresponces)
         {
-            <tr>
-                <td><a href="/thread/@thread.Id/list/1">@thread.Name</a></td>
-                <td>@thread.Description</td>
-                <td><img src="data:image/jpeg;base64,@Convert.ToBase64String(thread.Image)" height="100" /></td>
+            <div class="position-relative d-flex mb-4 p-4 shadow bg-light thread-table_row-hover">
+
+                <div class="d-flex justify-content-center align-items-center thread-table_row-img">
+                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(thread.Image)" height="150" width="150" class="shadow-lg" />
+                </div>
+
+                <div class="d-flex flex-column justify-content-between pl-4 thread-table_row_text">
+                    <div>
+                        <div><h2><a class="text-decoration-none thread-table_row_text_heading" href="/thread/@thread.Id/list/1">@thread.Name</a></h2></div>
+                        <div class="text-secondary">@thread.Description</div>
+                    </div>
+                    <div class="d-flex thread-table_row_icons">
+                        <i> <span class="oi oi-list-rich"></span> :21 </i>
+                        <i> <span class="oi oi-people"></span> :@thread.NumberOfSubscription </i>
+                    </div>
+                </div>
+
                 @if (Admin)
                 {
-                    <td><button class="btn btn-danger" @onclick="@(async () => await DeleteThreadAsync(thread.Id))">Delete</button></td>
+                    <button class="btn btn-danger position-absolute thread-table_row_admin-btn" @onclick="@(async () => await DeleteThreadAsync(thread.Id))">Delete</button>
                 }
-            </tr>
+            </div>
         }
-        </tbody>
-    </table>
-    @if (Admin)
-    {
-    <EditForm Model="@newThread" OnValidSubmit="CreateNewThread">
-        <DataAnnotationsValidator />
 
-        <h1 class="h3 mb-3 text-center">Create new thread</h1>
-        <div class="form-group">
-            <InputText id="name" class="form-control" placeholder="Name" @bind-Value="newThread.Name" />
-            <ValidationMessage For="@(() => newThread.Name)" />
-        </div>
-        <div class="form-group">
-            <InputText id="username" class="form-control" placeholder="Description" @bind-Value="newThread.Description" />
-            <ValidationMessage For="@(() => newThread.Description)" />
-        </div>
-
-        <InputFile OnChange="HandleSelection" />
-        <p>@status</p>
-        @if (!string.IsNullOrEmpty(imageDataUri))
+        @if (Admin)
         {
-            <img src="@imageDataUri" />
-        }
+            <EditForm Model="@newThread" OnValidSubmit="CreateNewThread">
+                <DataAnnotationsValidator />
 
-        <div class="form-group">
-            <button type="submit" class="btn btn-lg btn-primary btn-block">Create</button>
-        </div>
-    </EditForm>
+                <div>
+                    <h1 class="h3 mb-3 text-center">Create new thread</h1>
+                    <div class="form-group">
+                        <InputText id="name" class="form-control" placeholder="Name" @bind-Value="newThread.Name" />
+                        <ValidationMessage For="@(() => newThread.Name)" />
+                    </div>
+                    <div class="form-group">
+                        <InputText id="username" class="form-control" placeholder="Description" @bind-Value="newThread.Description" />
+                        <ValidationMessage For="@(() => newThread.Description)" />
+                    </div>
+
+                    <InputFile OnChange="HandleSelection" />
+                    <p>@status</p>
+                    @if (!string.IsNullOrEmpty(imageDataUri))
+                    {
+                        <img src="@imageDataUri" />
+                    }
+
+                    <div class="form-group mt-2">
+                        <button type="submit" class="btn btn-lg btn-primary btn-block">Create</button>
+                    </div>
+                </div>
+            </EditForm>
+        }
     }
-}
+</div>
 
 
 @code {

@@ -2,3 +2,22 @@
     width: 200px;
     height: 200px;
 }
+
+
+/*ThreadPage*/
+.thread-table_row_text_heading {
+    color: #000000;
+}
+
+.thread-table_row_text_heading:hover {
+    color: #3366BB;
+}
+
+.thread-table_row_admin-btn {
+    right: -90px;
+    bottom: 0px;
+}
+
+.thread-table_row_icons i {
+    margin-right: 10px;
+}
