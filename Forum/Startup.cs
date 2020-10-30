@@ -162,6 +162,7 @@ namespace Forum
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseWebAssemblyDebugging();
             }
             else
             {
@@ -182,18 +183,28 @@ namespace Forum
                 option.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description);
             });
 
+            app.UseBlazorFrameworkFiles();
+
             app.UseHttpsRedirection();
+            app.UseRouting();
             app.UseStaticFiles();
             
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseCors("Policy");
 
-            app.UseMvc(routes =>
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller=swagger}/{action=index}/{id?}");
+            //});
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=swagger}/{action=index}/{id?}");
+                    pattern: "{controller=swagger}/{action=index}/{id?}");
+                endpoints.MapFallbackToFile("index.html");
             });
         }
     }

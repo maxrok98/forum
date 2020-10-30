@@ -123,7 +123,7 @@
 
     async Task loadPosts()
     {
-        posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=2" + "&orderBy=" + OrderBy);
+        posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=2" + "&orderBy=" + OrderBy);
     }
 
     protected async Task<bool> isLoggedOn()
@@ -134,7 +134,7 @@
     protected async Task PagerPageChanged(int page)
     {
         UriHelper.NavigateTo("/posts/list/" + page);
-        await loadPosts();
+        //await loadPosts();
     }
     protected async Task SearchBoxKeyPress(KeyboardEventArgs ev)
     {
