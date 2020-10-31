@@ -143,7 +143,7 @@ else
         System.Text.StringBuilder threads = new System.Text.StringBuilder();
         foreach (var threadid in user.Subscription)
             threads.Append(threadid.Id + " ");
-        posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=2" + "&orderBy=" + OrderBy + "&threadId=" + threads.ToString());
+        posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=2" + "&orderBy=" + OrderBy + "&threadId=" + threads.ToString());
     }
 
     protected async Task<bool> isLoggedOn()
@@ -161,7 +161,7 @@ else
 
         Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        var responce = await Http.GetAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.User.Get + id);
+        var responce = await Http.GetAsync(ApiRoutes.User.Get + id);
 
         var format = "image/jpeg";
         if (responce.IsSuccessStatusCode)
@@ -192,7 +192,7 @@ else
             System.Text.StringBuilder threads = new System.Text.StringBuilder();
             foreach (var threadid in user.Subscription)
                 threads.Append(threadid.Id + " ");
-            posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.GetAll + "/?postName=" + SearchTerm + "&orderBy=" + OrderBy + "&threadId=" + threads.ToString());
+            posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?postName=" + SearchTerm + "&orderBy=" + OrderBy + "&threadId=" + threads.ToString());
             return;
         }
     }

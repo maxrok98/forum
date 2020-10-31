@@ -127,7 +127,7 @@
 
     async Task loadThread()
     {
-        var resp = await Http.GetAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Threads.Get.Replace("{id}", ThreadId));
+        var resp = await Http.GetAsync(ApiRoutes.Threads.Get.Replace("{id}", ThreadId));
         if(resp.IsSuccessStatusCode)
         {
             thread = await resp.Content.ReadFromJsonAsync<ThreadResponse>();
@@ -136,7 +136,7 @@
 
     async Task loadPosts()
     {
-        posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=2" + "&threadId=" + ThreadId);
+        posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=2" + "&threadId=" + ThreadId);
     }
 
     protected async Task<bool> isLoggedOn()
@@ -161,7 +161,7 @@
     {
         if (!string.IsNullOrEmpty(SearchTerm))
         {
-            posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.GetAll + "/?postName=" + SearchTerm + "&threadId=" + ThreadId);
+            posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?postName=" + SearchTerm + "&threadId=" + ThreadId);
             return;
         }
     }
@@ -180,7 +180,7 @@
 
     protected async Task SubscribeToThread()
     {
-        var responce = await Http.PostAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Threads.Subscribe.Replace("{id}", ThreadId), null);
+        var responce = await Http.PostAsync(ApiRoutes.Threads.Subscribe.Replace("{id}", ThreadId), null);
 
         if (responce.IsSuccessStatusCode)
         {

@@ -125,7 +125,7 @@ else
 
     protected async Task DeletePostAsync(string postId)
     {
-        var responce = await Http.DeleteAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.Delete.Replace("{id}", postId));
+        var responce = await Http.DeleteAsync(ApiRoutes.Posts.Delete.Replace("{id}", postId));
         if (responce.IsSuccessStatusCode)
         {
             user.myPosts.RemoveAll(x => x.Id == postId);
@@ -135,7 +135,7 @@ else
 
     protected async Task DeleteSubscriptionAsync(string threadId)
     {
-        var responce = await Http.DeleteAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Threads.Unsubscribe.Replace("{id}", threadId));
+        var responce = await Http.DeleteAsync(ApiRoutes.Threads.Unsubscribe.Replace("{id}", threadId));
         if (responce.IsSuccessStatusCode)
         {
             user.Subscription.RemoveAll(x => x.Id == threadId);
@@ -146,7 +146,7 @@ else
 
     protected async Task DownvotePostAsync(string postId)
     {
-        var responce = await Http.DeleteAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.Unvote.Replace("{id}", postId));
+        var responce = await Http.DeleteAsync(ApiRoutes.Posts.Unvote.Replace("{id}", postId));
         if (responce.IsSuccessStatusCode)
         {
             user.Votes.RemoveAll(x => x.Id == postId);

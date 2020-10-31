@@ -34,7 +34,7 @@
 
     protected async Task LogonUser()
     {
-        var response = await Http.PostAsJsonAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Identity.Login, login);
+        var response = await Http.PostAsJsonAsync(ApiRoutes.Identity.Login, login);
         if (response.IsSuccessStatusCode)
         {
             AuthSuccessResponse cont = await response.Content.ReadFromJsonAsync<AuthSuccessResponse>();

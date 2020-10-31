@@ -53,7 +53,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var responce = await Http.GetAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Threads.GetAll);
+        var responce = await Http.GetAsync(ApiRoutes.Threads.GetAll);
         if (responce.IsSuccessStatusCode)
         {
             threads = await responce.Content.ReadFromJsonAsync<List<ThreadResponse>>();
@@ -68,7 +68,7 @@
     {
         newPost.Image = base64image;
 
-        var responce = await Http.PostAsJsonAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.Create, newPost);
+        var responce = await Http.PostAsJsonAsync(ApiRoutes.Posts.Create, newPost);
 
         if (responce.IsSuccessStatusCode)
         {

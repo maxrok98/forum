@@ -113,7 +113,7 @@
         var token = await Storage.GetItemAsStringAsync("JWT-Token");
         Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        var responce = await Http.GetAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Threads.GetAll);
+        var responce = await Http.GetAsync(ApiRoutes.Threads.GetAll);
 
         if (responce.IsSuccessStatusCode)
         {
@@ -148,7 +148,7 @@
     async Task CreateNewThread()
     {
         newThread.Image = base64image;
-        var response = await Http.PostAsJsonAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Threads.Create, newThread);
+        var response = await Http.PostAsJsonAsync(ApiRoutes.Threads.Create, newThread);
         if (response.IsSuccessStatusCode)
         {
             Toaster.Info("New thread is created!");
@@ -161,7 +161,7 @@
     }
     private async Task DeleteThreadAsync(string id)
     {
-        var response = await Http.DeleteAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Threads.Delete.Replace("{id}", id)) ;
+        var response = await Http.DeleteAsync(ApiRoutes.Threads.Delete.Replace("{id}", id)) ;
         if (response.IsSuccessStatusCode)
         {
             tresponces.RemoveAll(x => x.Id == id);

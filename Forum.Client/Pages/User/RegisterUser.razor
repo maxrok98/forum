@@ -61,7 +61,7 @@
     async Task RegUser()
     {
         user.Image = base64image;
-        var response = await Http.PostAsJsonAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Identity.Register, user);
+        var response = await Http.PostAsJsonAsync(ApiRoutes.Identity.Register, user);
         if (response.IsSuccessStatusCode)
         {
             AuthSuccessResponse cont = await response.Content.ReadFromJsonAsync<AuthSuccessResponse>();

@@ -130,7 +130,7 @@ else
 
     async Task loadPost()
     {
-        var response = await Http.GetAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.Get.Replace("{id}", Id));
+        var response = await Http.GetAsync(ApiRoutes.Posts.Get.Replace("{id}", Id));
         if (response.IsSuccessStatusCode)
         {
             var resp = await response.Content.ReadFromJsonAsync<Response<PostResponse>>();
@@ -140,13 +140,13 @@ else
     async Task CreateNewComent()
     {
         coment.PostId = Id;
-        var response = await Http.PostAsJsonAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Coments.Create, coment);
+        var response = await Http.PostAsJsonAsync(ApiRoutes.Coments.Create, coment);
         await CheckIfOk(response);
     }
     async Task CreateComentHandler(ComentRequest comentreq)
     {
         comentreq.PostId = Id;
-        var response = await Http.PostAsJsonAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Coments.Create, comentreq);
+        var response = await Http.PostAsJsonAsync(ApiRoutes.Coments.Create, comentreq);
         await CheckIfOk(response);
     }
     async Task CheckIfOk(HttpResponseMessage response)
@@ -168,7 +168,7 @@ else
     }
     async Task Vote()
     {
-        var responce = await Http.PostAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.Vote.Replace("{id}", Id), null);
+        var responce = await Http.PostAsync(ApiRoutes.Posts.Vote.Replace("{id}", Id), null);
 
         if (responce.IsSuccessStatusCode)
         {

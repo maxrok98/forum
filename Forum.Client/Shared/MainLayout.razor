@@ -31,7 +31,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await Storage.SetItemAsync("back_uri", "https://localhost:44394/");
         await isLoggedOn();
     }
     protected async Task isLoggedOn()

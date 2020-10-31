@@ -134,7 +134,7 @@
     protected async Task PagerPageChanged(int page)
     {
         UriHelper.NavigateTo("/posts/list/" + page);
-        //await loadPosts();
+        await loadPosts();
     }
     protected async Task SearchBoxKeyPress(KeyboardEventArgs ev)
     {
@@ -148,7 +148,7 @@
     {
         if (!string.IsNullOrEmpty(SearchTerm))
         {
-            posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.Posts.GetAll + "/?postName=" + SearchTerm + "&orderBy=" + OrderBy);
+            posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?postName=" + SearchTerm + "&orderBy=" + OrderBy);
             return;
         }
     }
