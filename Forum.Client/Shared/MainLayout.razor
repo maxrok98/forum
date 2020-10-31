@@ -8,16 +8,16 @@
 
 <div class="main">
     <div class="top-row px-4">
-        @if (Loged)
-        {
-            //<a href="LogoutUser" class="ml-md-auto">Logout</a>
-            <button class="btn btn-danger" @onclick="LogOut"> <span class="oi oi-account-logout" aria-hidden="true"></span> Log Out</button>
-        }
-        else
-        {
-            //<NavLink class="nav-link" href="user/login"> Login</NavLink>
-            <NavLink href="user/login"><button class="btn btn-primary"> <span class="oi oi-account-login" aria-hidden="true"></span> Login </button></NavLink>
-        }
+        <AuthorizeView>
+            <Authorized>
+                Hello, @context.User.Identity.Name!
+                <a href="user/LogOut">Log out</a>
+            </Authorized>
+            <NotAuthorized>
+                <a href="user/Registration">Register</a>
+                <a href="user/Login">Log in</a>
+            </NotAuthorized>
+        </AuthorizeView>
         <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
     </div>
 
@@ -27,22 +27,5 @@
 </div>
 
 @code{      
-    public bool Loged;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await isLoggedOn();
-    }
-    protected async Task isLoggedOn()
-    {
-        Loged = !string.IsNullOrEmpty(await Storage.GetItemAsStringAsync("JWT-Token"));
-    }
-    async Task LogOut()
-    {
-        await Storage.RemoveItemAsync("JWT-Token");
-        await Storage.RemoveItemAsync("JWT-RefreshToken");
-        await isLoggedOn();
-        //await base.InvokeAsync(StateHasChanged);
-        //this.StateHasChanged();
-    }
 }

@@ -36,16 +36,14 @@
                     </div>
                 </div>
 
-                @if (Admin)
-                {
+                <AuthorizeView Roles="Admin">       
                     <button class="btn btn-danger position-absolute thread-table_row_admin-btn" @onclick="@(async () => await DeleteThreadAsync(thread.Id))">Delete</button>
-                }
+                </AuthorizeView>
             </div>
         }
 
-        @if (Admin)
-        {
-            <EditForm Model="@newThread" OnValidSubmit="CreateNewThread">
+        <AuthorizeView  Roles="Admin">       
+            <EditForm Context="Auth" Model="@newThread" OnValidSubmit="CreateNewThread">
                 <DataAnnotationsValidator />
 
                 <div>
@@ -71,14 +69,12 @@
                     </div>
                 </div>
             </EditForm>
-        }
+        </AuthorizeView>
     }
 </div>
 
 
 @code {
-    //bool Loged = false;
-    bool Admin = false;
     List<ThreadResponse> tresponces = new List<ThreadResponse>();
 
     ThreadRequest newThread = new ThreadRequest();
@@ -89,25 +85,8 @@
     protected override async Task OnInitializedAsync()
     {
         await loadThreads();
-        if(await isLoggedOn())
-            Admin = await isAdmin();
     }
 
-    protected async Task<bool> isLoggedOn()
-    {
-        return !string.IsNullOrEmpty(await Storage.GetItemAsStringAsync("JWT-Token"));
-    }
-
-    protected async Task<bool> isAdmin()
-    {
-        JwtSecurityTokenHandler jwt = new JwtSecurityTokenHandler();
-        var token = await Storage.GetItemAsStringAsync("JWT-Token");
-        var tokenDecoded = jwt.ReadJwtToken(token) as JwtSecurityToken;
-
-        var role = tokenDecoded.Claims.Where(x => x.Type == "role").FirstOrDefault().Value;
-
-        return role == "Admin";
-    }
     protected async Task loadThreads()
     {
         var token = await Storage.GetItemAsStringAsync("JWT-Token");

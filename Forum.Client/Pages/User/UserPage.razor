@@ -4,14 +4,18 @@
 @inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<h3>UserPage</h3>
-@if (!Loged)
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
+
+@if(user == null)
 {
-    <p>You have to login to see your page!</p>
+    <p>Loading ......</p>
 }
 else
 {
+<h3>UserPage</h3>
     <div class="profile d-flex mb-5 mt-5 p-2 shadow rounded">
         <div class="profile_img">
             <img class="" src="@imageDataUri" alt="Avatar">
@@ -32,12 +36,12 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach(var post in user.myPosts)
+            @foreach (var post in user.myPosts)
             {
-            <tr>
-                <th><a href="post/@post.Id" class="nav-link" >@post.Name</a></th>
-                <th><button class="btn btn-danger" @onclick="@(async () => await DeletePostAsync(post.Id))">Delete</button></th>
-            </tr>
+                <tr>
+                    <th><a href="post/@post.Id" class="nav-link">@post.Name</a></th>
+                    <th><button class="btn btn-danger" @onclick="@(async () => await DeletePostAsync(post.Id))">Delete</button></th>
+                </tr>
             }
         </tbody>
     </table>
@@ -52,12 +56,12 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach(var thread in user.Subscription)
+            @foreach (var thread in user.Subscription)
             {
-            <tr>
-                <th><a href="thread/@thread.Id/list/1" class="nav-link" >@thread.Name</a></th>
-                <th><button class="btn btn-danger" @onclick="@(async () => await DeleteSubscriptionAsync(thread.Id))">Unsibscribe</button></th>
-            </tr>
+                <tr>
+                    <th><a href="thread/@thread.Id/list/1" class="nav-link">@thread.Name</a></th>
+                    <th><button class="btn btn-danger" @onclick="@(async () => await DeleteSubscriptionAsync(thread.Id))">Unsibscribe</button></th>
+                </tr>
             }
         </tbody>
     </table>
@@ -72,12 +76,12 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach(var post in user.Votes)
+            @foreach (var post in user.Votes)
             {
-            <tr>
-                <th><a href="post/@post.Id" class="nav-link" >@post.Name</a></th>
-                <th><button class="btn btn-danger" @onclick="@(async () => await DownvotePostAsync(post.Id))">Downvote</button></th>
-            </tr>
+                <tr>
+                    <th><a href="post/@post.Id" class="nav-link">@post.Name</a></th>
+                    <th><button class="btn btn-danger" @onclick="@(async () => await DownvotePostAsync(post.Id))">Downvote</button></th>
+                </tr>
             }
         </tbody>
     </table>
@@ -85,34 +89,37 @@ else
 }
 
 @code {
-    public bool Loged;
-    UserResponse user;
+    UserResponse user { get; set; }
     string imageDataUri;
 
     protected override async Task OnInitializedAsync()
     {
-        if (await isLoggedOn())
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
         {
-            await LoadUserInfo();
+            var _authMessage = $"{user.Identity.Name} is authenticated.";
+            var _claims = user.Claims;
+            var id = user.FindFirst(c => c.Type == "id")?.Value;
+
+            await LoadUserInfo(id);
+        }
+        else
+        {
+            //_authMessage = "The user is NOT authenticated.";
         }
     }
 
-    protected async Task<bool> isLoggedOn()
+
+    protected async Task LoadUserInfo(string id)
     {
-        return Loged = !string.IsNullOrEmpty(await Storage.GetItemAsStringAsync("JWT-Token"));
-    }
+        //JwtSecurityTokenHandler jwt = new JwtSecurityTokenHandler();
+        //var token = await Storage.GetItemAsStringAsync("JWT-Token");
+        //var tokenDecoded = jwt.ReadJwtToken(token) as JwtSecurityToken;
 
-    protected async Task LoadUserInfo()
-    {
-        JwtSecurityTokenHandler jwt = new JwtSecurityTokenHandler();
-        var token = await Storage.GetItemAsStringAsync("JWT-Token");
-        var tokenDecoded = jwt.ReadJwtToken(token) as JwtSecurityToken;
+        //var id2 = tokenDecoded.Claims.Where(x => x.Type == "id").FirstOrDefault().Value;
 
-        var id = tokenDecoded.Claims.Where(x => x.Type == "id").FirstOrDefault().Value;
-
-        Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-
-        var responce = await Http.GetAsync(await Storage.GetItemAsStringAsync("back_uri") + ApiRoutes.User.Get + id);
+        var responce = await Http.GetAsync(ApiRoutes.User.Get + id);
 
         var format = "image/jpeg";
         if (responce.IsSuccessStatusCode)
@@ -141,7 +148,7 @@ else
             user.Subscription.RemoveAll(x => x.Id == threadId);
             Toaster.Error("Thread is deleted!");
         }
-        
+
     }
 
     protected async Task DownvotePostAsync(string postId)

@@ -1,8 +1,7 @@
 ﻿@page "/user/registration"
-@inject HttpClient Http
-@inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
+@inject IAuthService AuthService
 
 <h3>RegisterUser</h3>
 
@@ -61,24 +60,15 @@
     async Task RegUser()
     {
         user.Image = base64image;
-        var response = await Http.PostAsJsonAsync(ApiRoutes.Identity.Register, user);
-        if (response.IsSuccessStatusCode)
+        var result = await AuthService.Register(user);
+        if (result.Success)
         {
-            AuthSuccessResponse cont = await response.Content.ReadFromJsonAsync<AuthSuccessResponse>();
-            await Storage.SetItemAsync<string>("JWT-Token", cont.Token);
-            await Storage.SetItemAsync<string>("JWT-RefreshToken", cont.RefreshToken);
-            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cont.Token);
             Toaster.Success("You succesfuly created account!");
-            UriHelper.NavigateTo("/");
-        }
-        else if (response == null)
-        {
-            Toaster.Error("Can not connect to server");
+            UriHelper.NavigateTo("/userpage");
         }
         else
         {
-            AuthFailedResponse cont = await response.Content.ReadFromJsonAsync<AuthFailedResponse>();
-            foreach (var er in cont.Errors)
+            foreach (var er in result.Errors)
             {
                 Toaster.Error(er);
             }

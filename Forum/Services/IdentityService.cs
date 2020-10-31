@@ -227,7 +227,8 @@ namespace Forum.Services
                     new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
+            //token.Claims[4] = tokenDescriptor.Subject.Claims[4];
 
             var refreshToken = new RefreshToken
             {

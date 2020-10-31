@@ -1,8 +1,7 @@
 ﻿@page "/user/login"
-@inject HttpClient Http
-@inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
+@inject IAuthService AuthService
 
 <h3>Login</h3>
 
@@ -34,24 +33,16 @@
 
     protected async Task LogonUser()
     {
-        var response = await Http.PostAsJsonAsync(ApiRoutes.Identity.Login, login);
-        if (response.IsSuccessStatusCode)
+        //var response = await Http.PostAsJsonAsync(ApiRoutes.Identity.Login, login);
+        var result = await AuthService.Login(login);
+        if (result.Success)
         {
-            AuthSuccessResponse cont = await response.Content.ReadFromJsonAsync<AuthSuccessResponse>();
-            await Storage.SetItemAsync<string>("JWT-Token", cont.Token);
-            await Storage.SetItemAsync<string>("JWT-RefreshToken", cont.RefreshToken);
-            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cont.Token);
-            Toaster.Success("You seccessfully entered to your account");
-            UriHelper.NavigateTo("/");
-        }
-        else if (response == null)
-        {
-            Toaster.Error("Can not connect to server");
+            Toaster.Success("You seccessfully entered to your account!");
+            UriHelper.NavigateTo("/userpage");
         }
         else
         {
-            AuthFailedResponse cont = await response.Content.ReadFromJsonAsync<AuthFailedResponse>();
-            foreach (var er in cont.Errors)
+            foreach (var er in result.Errors)
             {
                 Toaster.Error(er);
             }

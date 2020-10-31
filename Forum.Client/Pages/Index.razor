@@ -2,12 +2,15 @@
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <h3>Posts list from subscribtion</h3>
 
-@if (Loged)
+<AuthorizeView>
+    <Authorized>
+@if(user != null)
 {
-@if(user.Subscription.Count == 0)
+@if (user.Subscription.Count == 0)
 {
     <h1>You need to subscribe to some thread to see you personal subscribtion list</h1>
 }
@@ -93,19 +96,16 @@ else
         }
     </div>
 </div>
-
 }
 }
-else
-{
-    <h1>You need to login to see you personal subscribtion list</h1>
-}
+    </Authorized>
+</AuthorizeView>
 
 
 
 @code {
-    [Parameter]
-    public string Page { get; set; } = "1";
+        [Parameter]
+        public string Page { get; set; } = "1";
     public string SearchTerm = string.Empty;
     public string OrderBy { get; set; }
 
@@ -117,19 +117,20 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        if (Loged = await isLoggedOn())
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var User = authState.User;
+        if (User.Identity.IsAuthenticated)
         {
-            var token = await Storage.GetItemAsStringAsync("JWT-Token");
-            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            await LoadUserInfo();
-            if (user.Subscription.Count != 0)
-            {
-                threads = new System.Text.StringBuilder();
-                foreach (var threadid in user.Subscription)
-                    threads.Append(threadid.Id + " ");
-                await loadPosts();
-            }
+            var _authMessage = $"{User.Identity.Name} is authenticated.";
+            var _claims = User.Claims;
+            var id = User.FindFirst(c => c.Type == "id")?.Value;
+            await LoadUserInfo(id);
         }
+
+        threads = new System.Text.StringBuilder();
+        foreach (var threadid in user.Subscription)
+            threads.Append(threadid.Id + " ");
+        await loadPosts();
     }
 
     async Task loadPosts()
@@ -138,20 +139,8 @@ else
                                                                         "&threadId=" + threads.ToString() + "&postName=" + SearchTerm);
     }
 
-    protected async Task<bool> isLoggedOn()
+    protected async Task LoadUserInfo(string id)
     {
-        return !string.IsNullOrEmpty(await Storage.GetItemAsStringAsync("JWT-Token"));
-    }
-
-    protected async Task LoadUserInfo()
-    {
-        JwtSecurityTokenHandler jwt = new JwtSecurityTokenHandler();
-        var token = await Storage.GetItemAsStringAsync("JWT-Token");
-        var tokenDecoded = jwt.ReadJwtToken(token) as JwtSecurityToken;
-
-        var id = tokenDecoded.Claims.Where(x => x.Type == "id").FirstOrDefault().Value;
-
-        Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
         var responce = await Http.GetAsync(ApiRoutes.User.Get + id);
 
