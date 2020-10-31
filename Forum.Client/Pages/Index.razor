@@ -121,6 +121,7 @@ else
     public string SearchTerm = string.Empty;
     public string OrderBy { get; set; }
 
+    System.Text.StringBuilder threads;
     private bool Loged = false;
 
     UserResponse user;
@@ -133,17 +134,20 @@ else
             var token = await Storage.GetItemAsStringAsync("JWT-Token");
             Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             await LoadUserInfo();
-            if(user.Subscription.Count != 0)
+            if (user.Subscription.Count != 0)
+            {
+                threads = new System.Text.StringBuilder();
+                foreach (var threadid in user.Subscription)
+                    threads.Append(threadid.Id + " ");
                 await loadPosts();
+            }
         }
     }
 
     async Task loadPosts()
     {
-        System.Text.StringBuilder threads = new System.Text.StringBuilder();
-        foreach (var threadid in user.Subscription)
-            threads.Append(threadid.Id + " ");
-        posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=2" + "&orderBy=" + OrderBy + "&threadId=" + threads.ToString());
+        posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=2" + "&orderBy=" + OrderBy +
+                                                                        "&threadId=" + threads.ToString() + "&postName=" + SearchTerm);
     }
 
     protected async Task<bool> isLoggedOn()
@@ -174,6 +178,7 @@ else
 
     protected async Task PagerPageChanged(int page)
     {
+        Page = page.ToString();
         UriHelper.NavigateTo("/subscribtions/list/" + page);
         await loadPosts();
     }
@@ -189,19 +194,14 @@ else
     {
         if (!string.IsNullOrEmpty(SearchTerm))
         {
-            System.Text.StringBuilder threads = new System.Text.StringBuilder();
-            foreach (var threadid in user.Subscription)
-                threads.Append(threadid.Id + " ");
-            posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?postName=" + SearchTerm + "&orderBy=" + OrderBy + "&threadId=" + threads.ToString());
-            return;
+            await loadPosts();
         }
     }
 
     protected async Task ClearSearch()
     {
         SearchTerm = string.Empty;
-        UriHelper.NavigateTo("/subscribtions/list/" + Page);
-        await loadPosts();
+        await PagerPageChanged(1);
     }
     protected async Task ChangeOrdering(ChangeEventArgs e)
     {

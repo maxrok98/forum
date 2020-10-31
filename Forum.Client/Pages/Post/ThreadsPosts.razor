@@ -136,7 +136,7 @@
 
     async Task loadPosts()
     {
-        posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=2" + "&threadId=" + ThreadId);
+        posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=2" + "&threadId=" + ThreadId + "&orderBy=" + OrderBy + "&postName=" + SearchTerm);
     }
 
     protected async Task<bool> isLoggedOn()
@@ -146,6 +146,7 @@
 
     protected async Task PagerPageChanged(int page)
     {
+        Page = page.ToString();
         UriHelper.NavigateTo("/thread/" + ThreadId + "/list/" + page);
         await loadPosts();
     }
@@ -161,16 +162,16 @@
     {
         if (!string.IsNullOrEmpty(SearchTerm))
         {
-            posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?postName=" + SearchTerm + "&threadId=" + ThreadId);
-            return;
+            //posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?postName=" + SearchTerm + "&threadId=" + ThreadId);
+            await loadPosts();
+            //return;
         }
     }
 
     protected async Task ClearSearch()
     {
         SearchTerm = string.Empty;
-        UriHelper.NavigateTo("/thread/" + ThreadId + "/list/" + Page);
-        await loadPosts();
+        await PagerPageChanged(1);
     }
     protected async Task ChangeOrdering(ChangeEventArgs e)
     {
