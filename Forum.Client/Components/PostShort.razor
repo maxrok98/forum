@@ -1,0 +1,22 @@
+﻿<!-- Blog Post -->
+<div class="card mb-4">
+    <img class="card-img-top" src="data:image/jpeg;base64,@Convert.ToBase64String(post.Image)" width="750" />
+    <div class="card-body">
+        <h2 class="card-title">@post.Name</h2>
+        <p class="card-text">@post.Content</p>
+        <a href="post/@post.Id" class="btn btn-primary">Read More &rarr;</a>
+        <div style="float: right"><span class="oi oi-comment-square">: @post.Coments.Count()</span></div>
+    </div>
+    <div class="card-footer text-muted">
+        Posted on @post.Date by
+        <a href="user/@post.UserId">@post.UserName</a>
+        on thread <a href="thread/@post.ThreadId/list/1">@post.ThreadName</a>
+        <div style="float: right">Votes: @post.Rating</div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public PostResponse post { get; set; }
+
+}
