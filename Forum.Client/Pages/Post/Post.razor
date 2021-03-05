@@ -36,7 +36,14 @@ else
                 <hr>
 
                 <!-- Preview Image -->
-                <img class="img-fluid rounded" src="data:image/jpeg;base64,@Convert.ToBase64String(post.Image)" width="920" />
+                @if(post.Image.Length == 0)
+                {
+                    <img class="img-fluid rounded" src="/img/post_placeholder.gif" width="920" />
+                }
+                else
+                {
+                    <img class="img-fluid rounded" src="data:image/jpeg;base64,@Convert.ToBase64String(post.Image)" width="920" />
+                }
 
                 <hr>
 

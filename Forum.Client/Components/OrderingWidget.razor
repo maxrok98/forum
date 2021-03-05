@@ -1,0 +1,19 @@
+﻿<div class="card my-4">
+    <h5 class="card-header">Order by</h5>
+    <div class="card-body">
+        <div class="card-body">
+            <div class="input-group">
+                <select id="ordering" class="form-control" @onchange="@(async (ChangeEventArgs e) => await OnChangeOrdering.InvokeAsync(e))">
+                    <option selected="selected" value="date">Date</option>
+                    <option value="rating">Rating</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<ChangeEventArgs> OnChangeOrdering { get; set; }
+
+}
