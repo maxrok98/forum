@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -17,16 +16,10 @@ using Forum.Models;
 using AutoMapper;
 using Forum.Repositories;
 using Forum.Services;
-using Microsoft.AspNetCore.Http.Features;
 using Forum.Option;
-using Swashbuckle.AspNetCore.Swagger;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
-using System.Reflection;
-using System.IO;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.OpenApi.Models;
-using Forum.Authorization;
 using Microsoft.Extensions.Hosting;
 
 namespace Forum
@@ -43,18 +36,6 @@ namespace Forum
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.Configure<FormOptions>(x => x.ValueLengthLimit = 10000);
-            //services.Configure<CookiePolicyOptions>(options =>
-            //{
-            //    This lambda determines whether user consent for non - essential cookies is needed for a given request.
-            //     options.CheckConsentNeeded = context => true;
-            //     options.MinimumSameSitePolicy = SameSiteMode.None;
-            //});
-
-            //MvcOptions.EnableEndpointRouting = false;
-
-           
-
             var jwtSettings = new JwtSettings();
             Configuration.Bind(nameof(jwtSettings), jwtSettings);
 
@@ -79,16 +60,6 @@ namespace Forum
                 x.SaveToken = true;
                 x.TokenValidationParameters = tokenValidationParameters;
             });
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("MustWorkForChapsas", policy =>
-                {
-                    policy.AddRequirements(new WorksForCompanyRequirement("chapsas.com"));
-                });
-            });
-
-            services.AddSingleton<IAuthorizationHandler, WorksForCompanyHandler>();
 
             services.AddSingleton(tokenValidationParameters);
 
@@ -193,12 +164,6 @@ namespace Forum
             app.UseAuthorization();
             app.UseCors("Policy");
 
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute(
-            //        name: "default",
-            //        template: "{controller=swagger}/{action=index}/{id?}");
-            //});
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

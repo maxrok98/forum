@@ -46,7 +46,7 @@ namespace Forum.Controllers
 
             if(pagination == null || pagination.PageNumber < 1 || pagination.PageSize < 1)
             {
-                return Ok(new PageResponse<PostResponse>(dto));
+                return Ok(dto);
             }
 
             var paginationResponse = PaginationHelpers.CreatePaginatedResponse(_uriService, pagination, dto, postsResponce.amountOfPosts, ApiRoutes.Posts.GetAll);
@@ -63,11 +63,11 @@ namespace Forum.Controllers
 
             if (!result.Success)
             {
-                return BadRequest(new ErrorViewModel());
+                return BadRequest(result.Message);
             }
             var dto = _mapper.Map<Post, PostResponse>(result.Resource);
 
-            return Ok(new Response<PostResponse>(dto));
+            return Ok(dto);
         }
 
         // POST: api/Post
@@ -80,11 +80,11 @@ namespace Forum.Controllers
 
             if (!result.Success)
             {
-                return BadRequest(new ErrorViewModel());
+                return BadRequest(result.Message);
             }
 
             var ptDTO = _mapper.Map<Post, PostResponse>(result.Resource);
-            return Ok(new Response<PostResponse>(ptDTO));
+            return Ok(ptDTO);
         }
 
         // PUT: api/Post/5
@@ -95,7 +95,7 @@ namespace Forum.Controllers
 
             if (!userOwnsPost)
             {
-                return BadRequest(new ErrorResponse(new ErrorModel { Message = "You do not own this post" }));
+                return BadRequest("You do not own this post");
             }
 
             var pt = _mapper.Map<PostRequest, Post>(post);
@@ -103,11 +103,11 @@ namespace Forum.Controllers
 
             if (!result.Success)
             {
-                return BadRequest(new ErrorViewModel());
+                return BadRequest(result.Message);
             }
 
             var ptDTO = _mapper.Map<Post, PostResponse>(result.Resource);
-            return Ok(new Response<PostResponse>(ptDTO));
+            return Ok(ptDTO);
         }
 
         // DELETE: api/ApiWithActions/5
@@ -118,14 +118,14 @@ namespace Forum.Controllers
 
             if (!userOwnsPost)
             {
-                return BadRequest(new ErrorResponse(new ErrorModel { Message = "You do not own this post" }));
+                return BadRequest("You do not own this post");
             }
 
             var result = await _postService.RemoveAsync(id);
 
             if (!result.Success)
             {
-                return BadRequest(new ErrorViewModel());
+                return BadRequest(result.Message);
             }
 
             var ptDTO = _mapper.Map<Post, PostResponse>(result.Resource);
