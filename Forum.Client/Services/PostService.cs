@@ -18,9 +18,9 @@ namespace Forum.Client.Services
             _httpClient = httpClient;
         }
 
-        public async Task<PageResponse<PostResponse>> loadPosts(string Page, string PageSize,  string SearchTerm, string OrderBy)
+        public async Task<PageResponse<PostResponse>> loadPosts(string Page, string PageSize, string ThreadId,  string SearchTerm, string OrderBy)
         {
-            return await _httpClient.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=" + PageSize + "&orderBy=" + OrderBy + "&postName=" + SearchTerm);
+            return await _httpClient.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=" + PageSize + "&threadId=" + ThreadId + "&orderBy=" + OrderBy + "&postName=" + SearchTerm);
         }
     }
 }

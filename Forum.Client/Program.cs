@@ -29,6 +29,7 @@ namespace Forum.Client
             builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IPostService, PostService>();
+            builder.Services.AddScoped<IThreadService, ThreadService>();
             builder.Services.AddToaster(config =>
             {
                 //example customizations

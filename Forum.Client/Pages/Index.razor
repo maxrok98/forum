@@ -1,102 +1,25 @@
-﻿@page "/subscribtions/list/{Page}"
+﻿@page "/subscribtions"
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<h3>Posts list from subscribtion</h3>
-
 <AuthorizeView>
     <Authorized>
 @if(user != null)
 {
-@if (user.Subscription.Count == 0)
-{
-    <h1>You need to subscribe to some thread to see you personal subscribtion list</h1>
-}
-else
-{
-<div class="container">
-
-    <div class="row">
-        @if (posts == null)
-        {
-            <p>Loading......</p>
-        }
-        else
-        {
-
-            <!-- Blog Entries Column -->
-            <div class="col-md-8">
-                @foreach (var post in posts.Results)
-                {
-
-                    <!-- Blog Post -->
-                    <PostShort post="post"/>
-                }
-            </div>
-
-            <div class="col-md-4">
-
-                <!-- Search Widget -->
-                <div class="card my-4">
-                    <h5 class="card-header">Search</h5>
-                    <div class="card-body">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search for..." @bind="this.SearchTerm" @onkeyup="SearchBoxKeyPress">
-                            <div class="input-group-btn">
-                                <button name="PatientSearchButton" class="btn btn-default" @onclick="SearchClick">
-                                    <i class="oi oi-magnifying-glass" title="search" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                            <div class="input-group-btn">
-                                <button name="PatientSearchClear" class="btn btn-default" @onclick="ClearSearch">
-                                    <i class="oi oi-x" title="clear" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card my-4">
-                    <h5 class="card-header">Order by</h5>
-                    <div class="card-body">
-                        <div class="card-body">
-                            <div class="input-group">
-                                <select id="ordering" class="form-control" value="@OrderBy" @onchange="@(async (ChangeEventArgs e) => await ChangeOrdering(e))">
-                                    <option selected="selected" value="date">Date</option>
-                                    <option value="rating">Rating</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <ul class="pagination pull-right">
-                        @foreach (var i in Enumerable.Range(1, (int)posts.PageCount))
-                        {
-                            <li>
-                                @if (i == Convert.ToInt32(Page))
-                                {
-                                    <button class="btn btn-dark" type="button" disabled>@i</button>
-                                }
-                                else
-                                {
-                                    <button class="btn btn-dark" type="button" @onclick="@( async () => await PagerPageChanged(i))">@i</button>
-                                }
-                            </li>
-                        }
-
-                    </ul>
-                </div>
-            </div>
-        }
+    @if (user.Subscription.Count == 0)
+    {
+        <h1>You need to subscribe to some thread to see you personal subscribtion list</h1>
+    }
+    else
+    {
+    <div class="container">
+        <div class="row">
+            <PostsList ThreadId="@threads.ToString()"></PostsList>
+        </div>
     </div>
-</div>
-}
+    }
 }
     </Authorized>
 </AuthorizeView>
@@ -104,16 +27,9 @@ else
 
 
 @code {
-        [Parameter]
-        public string Page { get; set; } = "1";
-    public string SearchTerm = string.Empty;
-    public string OrderBy { get; set; }
-
     System.Text.StringBuilder threads;
-    private bool Loged = false;
 
     UserResponse user;
-    PageResponse<PostResponse> posts;
 
     protected override async Task OnInitializedAsync()
     {
@@ -121,8 +37,6 @@ else
         var User = authState.User;
         if (User.Identity.IsAuthenticated)
         {
-            var _authMessage = $"{User.Identity.Name} is authenticated.";
-            var _claims = User.Claims;
             var id = User.FindFirst(c => c.Type == "id")?.Value;
             await LoadUserInfo(id);
         }
@@ -130,14 +44,8 @@ else
         threads = new System.Text.StringBuilder();
         foreach (var threadid in user.Subscription)
             threads.Append(threadid.Id + " ");
-        await loadPosts();
     }
 
-    async Task loadPosts()
-    {
-        posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=2" + "&orderBy=" + OrderBy +
-                                                                        "&threadId=" + threads.ToString() + "&postName=" + SearchTerm);
-    }
 
     protected async Task LoadUserInfo(string id)
     {
@@ -148,42 +56,7 @@ else
         if (responce.IsSuccessStatusCode)
         {
             user = await responce.Content.ReadFromJsonAsync<UserResponse>();
-            //imageDataUri = $"data:{format};base64,{Convert.ToBase64String(user.Image)}";
-
         }
-    }
-
-    protected async Task PagerPageChanged(int page)
-    {
-        Page = page.ToString();
-        UriHelper.NavigateTo("/subscribtions/list/" + page);
-        await loadPosts();
-    }
-    protected async Task SearchBoxKeyPress(KeyboardEventArgs ev)
-    {
-        if (ev.Key == "Enter")
-        {
-            await SearchClick();
-        }
-    }
-
-    protected async Task SearchClick()
-    {
-        if (!string.IsNullOrEmpty(SearchTerm))
-        {
-            await loadPosts();
-        }
-    }
-
-    protected async Task ClearSearch()
-    {
-        SearchTerm = string.Empty;
-        await PagerPageChanged(1);
-    }
-    protected async Task ChangeOrdering(ChangeEventArgs e)
-    {
-        OrderBy = e.Value.ToString();
-        await PagerPageChanged(1);
     }
 
 }

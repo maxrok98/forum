@@ -1,97 +1,25 @@
-﻿@page "/thread/{ThreadId}/list/{Page}"
+﻿@page "/thread/{ThreadId}"
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
+@inject IThreadService ThreadService
 
-<h3>PostsList</h3>
 <div class="container">
 
-    <div class="row">
-        @if (posts == null || thread == null)
+        @if (thread == null)
         {
             <p>Loading......</p>
         }
         else
         {
+            <ThreadShort thread="thread"></ThreadShort>
 
-                <!-- Blog Entries Column -->
-            <div class="col-md-8">
-                @foreach (var post in posts.Results)
-                {
-
-                    <!-- Blog Post -->
-                    <PostShort post="post"/>
-                }
+            <div class="row">
+            <PostsList ThreadId="@thread.Id"></PostsList>
             </div>
 
-            <div class="col-md-4">
-
-                <div class="card my-4">
-                    <h5 class="card-header">Thread <b>@thread.Name</b></h5>
-                    <div class="card-body">
-                        <img class="card-img-top" src="data:image/jpeg;base64,@Convert.ToBase64String(thread.Image)" width="200" />
-                        <p><b>Description:</b> @thread.Description</p>
-                        <p>Subscribers: @thread.NumberOfSubscription</p>
-                        <button class="btn btn-warning" @onclick="SubscribeToThread">Subscribe</button>
-                    </div>
-                    
-                </div>
-
-                <!-- Search Widget -->
-                <div class="card my-4">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search for..." @bind="this.SearchTerm" @onkeyup="SearchBoxKeyPress">
-                            <div class="input-group-btn">
-                                <button name="PatientSearchButton" class="btn btn-default" @onclick="SearchClick">
-                                    <i class="oi oi-magnifying-glass" title="search" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                            <div class="input-group-btn">
-                                <button name="PatientSearchClear" class="btn btn-default" @onclick="ClearSearch">
-                                    <i class="oi oi-x" title="clear" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                <div class="card my-4">
-                    <h5 class="card-header">Order by</h5>
-                    <div class="card-body">
-                        <div class="card-body">
-                            <div class="input-group">
-                                <select id="ordering" class="form-control" value="@OrderBy" @onchange="@(async (ChangeEventArgs e) => await ChangeOrdering(e))">
-                                    <option selected="selected" value="date">Date</option>
-                                    <option value="rating">Rating</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <ul class="pagination pull-right">
-                            @foreach (var i in Enumerable.Range(1, (int)posts.PageCount))
-                            {
-                                <li>
-                                    @if (i == Convert.ToInt32(Page))
-                                    {
-                                        <button class="btn btn-dark" type="button" disabled>@i</button>
-                                    }
-                                    else
-                                    {
-                                        <button class="btn btn-dark" type="button" @onclick="@( async () => await PagerPageChanged(i))">@i</button>
-                                    }
-                                </li>
-                            }
-
-                        </ul>
-                    </div>
-                </div>
         }
-        </div>
 </div>
 
 
@@ -99,91 +27,17 @@
 @code {
     [Parameter]
     public string ThreadId { get; set; }
-    [Parameter]
-    public string Page { get; set; } = "1";
-    public string SearchTerm = string.Empty;
-    public string OrderBy { get; set; } = string.Empty;
 
     ThreadResponse thread;
-    PageResponse<PostResponse> posts;
 
     protected override async Task OnInitializedAsync()
     {
-        await loadPosts();
         await loadThread();
     }
 
     async Task loadThread()
     {
-        var resp = await Http.GetAsync(ApiRoutes.Threads.Get.Replace("{id}", ThreadId));
-        if(resp.IsSuccessStatusCode)
-        {
-            thread = await resp.Content.ReadFromJsonAsync<ThreadResponse>();
-        }
-    }
-
-    async Task loadPosts()
-    {
-        posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?PageNumber=" + Page + "&PageSize=2" + "&threadId=" + ThreadId + "&orderBy=" + OrderBy + "&postName=" + SearchTerm);
-    }
-
-    protected async Task<bool> isLoggedOn()
-    {
-        return !string.IsNullOrEmpty(await Storage.GetItemAsStringAsync("JWT-Token"));
-    }
-
-    protected async Task PagerPageChanged(int page)
-    {
-        Page = page.ToString();
-        UriHelper.NavigateTo("/thread/" + ThreadId + "/list/" + page);
-        await loadPosts();
-    }
-    protected async Task SearchBoxKeyPress(KeyboardEventArgs ev)
-    {
-        if (ev.Key == "Enter")
-        {
-            await SearchClick();
-        }
-    }
-
-    protected async Task SearchClick()
-    {
-        if (!string.IsNullOrEmpty(SearchTerm))
-        {
-            //posts = await Http.GetFromJsonAsync<PageResponse<PostResponse>>(ApiRoutes.Posts.GetAll + "/?postName=" + SearchTerm + "&threadId=" + ThreadId);
-            await loadPosts();
-            //return;
-        }
-    }
-
-    protected async Task ClearSearch()
-    {
-        SearchTerm = string.Empty;
-        await PagerPageChanged(1);
-    }
-    protected async Task ChangeOrdering(ChangeEventArgs e)
-    {
-        OrderBy = e.Value.ToString();
-        await PagerPageChanged(1);
-    }
-
-    protected async Task SubscribeToThread()
-    {
-        var responce = await Http.PostAsync(ApiRoutes.Threads.Subscribe.Replace("{id}", ThreadId), null);
-
-        if (responce.IsSuccessStatusCode)
-        {
-            Toaster.Success(await responce.Content.ReadAsStringAsync());
-            thread.NumberOfSubscription += 1;
-        }
-        else if(responce.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-        {
-            Toaster.Warning("You have to login to subscribe");
-        }
-        else if(responce.StatusCode == System.Net.HttpStatusCode.BadRequest)
-        {
-            Toaster.Error(await responce.Content.ReadAsStringAsync());
-        }
+        thread = await ThreadService.Get(ThreadId);
     }
 
 }

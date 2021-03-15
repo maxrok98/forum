@@ -3,46 +3,25 @@
 @inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
+@inject IThreadService ThreadService
 
 
 
 <div class="container">
 
-    <h3>ThreadPage</h3>
-
-    @if (tresponces == null)
+    @if (threads == null)
     {
         <p>Loading.......</p>
     }
     else
     {
 
-        @foreach (var thread in tresponces)
+        @foreach (var thread in threads)
         {
-            <div class="position-relative d-flex mb-4 p-4 shadow bg-light thread-table_row-hover">
-
-                <div class="d-flex justify-content-center align-items-center thread-table_row-img">
-                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(thread.Image)" height="150" width="150" class="shadow-lg" />
-                </div>
-
-                <div class="d-flex flex-column justify-content-between pl-4 thread-table_row_text">
-                    <div>
-                        <div><h2><a class="text-decoration-none thread-table_row_text_heading" href="/thread/@thread.Id/list/1">@thread.Name</a></h2></div>
-                        <div class="text-secondary">@thread.Description</div>
-                    </div>
-                    <div class="d-flex thread-table_row_icons">
-                        <i> <span class="oi oi-list-rich"></span> :21 </i>
-                        <i> <span class="oi oi-people"></span> :@thread.NumberOfSubscription </i>
-                    </div>
-                </div>
-
-                <AuthorizeView Roles="Admin">       
-                    <button class="btn btn-danger position-absolute thread-table_row_admin-btn" @onclick="@(async () => await DeleteThreadAsync(thread.Id))">Delete</button>
-                </AuthorizeView>
-            </div>
+            <ThreadShort thread="thread"></ThreadShort>
         }
 
-        <AuthorizeView  Roles="Admin">       
+        <AuthorizeView Roles="Admin">
             <EditForm Context="Auth" Model="@newThread" OnValidSubmit="CreateNewThread">
                 <DataAnnotationsValidator />
 
@@ -75,7 +54,7 @@
 
 
 @code {
-    List<ThreadResponse> tresponces = new List<ThreadResponse>();
+    List<ThreadResponse> threads = new List<ThreadResponse>();
 
     ThreadRequest newThread = new ThreadRequest();
     string status;
@@ -89,20 +68,7 @@
 
     protected async Task loadThreads()
     {
-        var token = await Storage.GetItemAsStringAsync("JWT-Token");
-        Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-
-        var responce = await Http.GetAsync(ApiRoutes.Threads.GetAll);
-
-        if (responce.IsSuccessStatusCode)
-        {
-            tresponces = await responce.Content.ReadFromJsonAsync<List<ThreadResponse>>();
-
-        }
-        else
-        {
-            Console.WriteLine(responce.Content);
-        }
+        threads = await ThreadService.GetAll();
     }
 
     async Task HandleSelection(IFileListEntry[] files)
@@ -136,19 +102,6 @@
         else
         {
             Toaster.Error("Something went wrong when creating new thread!");
-        }
-    }
-    private async Task DeleteThreadAsync(string id)
-    {
-        var response = await Http.DeleteAsync(ApiRoutes.Threads.Delete.Replace("{id}", id)) ;
-        if (response.IsSuccessStatusCode)
-        {
-            tresponces.RemoveAll(x => x.Id == id);
-            Toaster.Warning("Thread is deleted!");
-        }
-        else
-        {
-            Toaster.Error("Could not delete thread!");
         }
     }
 }

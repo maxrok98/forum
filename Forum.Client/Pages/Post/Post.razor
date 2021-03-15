@@ -140,8 +140,7 @@ else
         var response = await Http.GetAsync(ApiRoutes.Posts.Get.Replace("{id}", Id));
         if (response.IsSuccessStatusCode)
         {
-            var resp = await response.Content.ReadFromJsonAsync<Response<PostResponse>>();
-            post = resp.Data;
+            post = await response.Content.ReadFromJsonAsync<PostResponse>();
         }
     }
     async Task CreateNewComent()
