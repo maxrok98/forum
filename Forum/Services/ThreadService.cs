@@ -127,7 +127,6 @@ namespace Forum.Services
             if (sub == null)
                 return new SubscriptionResponse("You are not subscribed.");
 
-            //var Sub = new Subscription { ThreadId = threadId, UserId = userId };
             try
             {
                 _subscriptionRepository.Remove(sub);

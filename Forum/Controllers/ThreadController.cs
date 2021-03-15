@@ -61,7 +61,7 @@ namespace Forum.Controllers
 
             if(!result.Success)
             {
-                return BadRequest(new ErrorViewModel());
+                return BadRequest(result.Message);
             }
 
             var threadDTO = _mapper.Map<Thread, ThreadResponse>(result.Resource);
@@ -79,7 +79,7 @@ namespace Forum.Controllers
 
             if(!result.Success)
             {
-                return BadRequest(new ErrorViewModel());
+                return BadRequest(result.Message);
             }
 
             var threadDTO = _mapper.Map<Thread, ThreadResponse>(result.Resource);
@@ -95,7 +95,7 @@ namespace Forum.Controllers
 
             if(!result.Success)
             {
-                return BadRequest(new ErrorViewModel());
+                return BadRequest(result.Message);
             }
 
             var threadDTO = _mapper.Map<Thread, ThreadResponse>(result.Resource);
