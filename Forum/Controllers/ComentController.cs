@@ -60,7 +60,7 @@ namespace Forum.Controllers
 
             if (!result.Success)
             {
-                return BadRequest(new ErrorViewModel());
+                return BadRequest(result.Message);
             }
 
             var cmDTO = _mapper.Map<Coment, ComentResponse>(result.Resource);
@@ -75,14 +75,14 @@ namespace Forum.Controllers
 
             if (!userOwnsComent)
             {
-                return BadRequest(new ErrorResponse(new ErrorModel { Message = "You do not own this coment" }));
+                return BadRequest("You do not own this coment");
             }
             var cm = _mapper.Map<ComentRequest, Coment>(coment);
             var result = await _comentService.UpdateAsync(id, cm);
 
             if (!result.Success)
             {
-                return BadRequest(new ErrorViewModel());
+                return BadRequest(result.Message);
             }
 
             var cmDTO = _mapper.Map<Coment, ComentResponse>(result.Resource);
@@ -97,13 +97,13 @@ namespace Forum.Controllers
 
             if (!userOwnsComent)
             {
-                return BadRequest(new ErrorResponse(new ErrorModel { Message = "You do not own this coment" }));
+                return BadRequest("You do not own this coment");
             }
             var result = await _comentService.RemoveAsync(id);
 
             if (!result.Success)
             {
-                return BadRequest(new ErrorViewModel());
+                return BadRequest(result.Message);
             }
 
             var cmDTO = _mapper.Map<Coment, ComentResponse>(result.Resource);
