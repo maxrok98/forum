@@ -61,7 +61,7 @@ namespace Forum.Controllers
 
             if (!result.Success)
             {
-                return BadRequest(new ErrorViewModel());
+                return BadRequest(result.Message);
             }
 
             return Ok();
@@ -81,7 +81,7 @@ namespace Forum.Controllers
 
             if (!result.Success)
             {
-                return BadRequest(new ErrorViewModel());
+                return BadRequest(result.Message);
             }
 
             return Ok();

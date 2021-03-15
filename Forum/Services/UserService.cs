@@ -47,7 +47,7 @@ namespace Forum.Services
             var existingUser = await _userManager.FindByIdAsync(id);
 
             if (existingUser == null)
-                return new UserResponse("Post not found.");
+                return new UserResponse("User not found.");
 
             try
             {
@@ -65,6 +65,9 @@ namespace Forum.Services
         public async Task<UserResponse> UpdatePasswordAsync(string id, string currentPassword, string newPassword)
         {
             var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+                return new UserResponse("User not found.");
             try
             {
                 await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
