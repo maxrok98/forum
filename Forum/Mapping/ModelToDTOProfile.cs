@@ -27,6 +27,11 @@ namespace Forum.Mapping
                                          .ForMember(dest => dest.myPosts, opt => opt.MapFrom(src => src.Posts))
                                          .ForMember(dest => dest.Subscription, opt => opt.MapFrom(src => src.Subscriptions.Select(y => y.Thread)))
                                          .ForMember(dest => dest.Votes, opt => opt.MapFrom(src => src.Votes.Select(y => y.Post)));
+
+            CreateMap<User, UserShortResponse>().ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image.Image))
+                                         .ForMember(dest => dest.myPostsAmount, opt => opt.MapFrom(src => src.Posts.Count))
+                                         .ForMember(dest => dest.SubscriptionAmount, opt => opt.MapFrom(src => src.Subscriptions.Count))
+                                         .ForMember(dest => dest.VotesAmount, opt => opt.MapFrom(src => src.Votes.Count));
         }
     }
 }

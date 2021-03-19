@@ -25,6 +25,19 @@ namespace Forum.Services
             return await _userManager.Users.Include(x => x.Posts).Include(x => x.Subscriptions).ThenInclude(x => x.Thread).ToListAsync();
         }
 
+        public async Task<UsersResponse> GetAllAsync(string userName, PaginationFilter paginationFilter)
+        {
+            IQueryable<User> query = _userManager.Users.OrderBy(x => x.UserName).Include(x => x.Image).Include(x => x.Posts).Include(x => x.Subscriptions).ThenInclude(x => x.Thread).Include(x => x.Votes).ThenInclude(x => x.Post);
+            if (!string.IsNullOrEmpty(userName))
+                query = query.Where(u => u.UserName.Contains(userName));
+            if (paginationFilter != null)
+            {
+                var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
+                query = query.Skip(skip).Take(paginationFilter.PageSize);
+            }
+            return new UsersResponse(await query.ToListAsync(), _userManager.Users.Count());
+        }
+
         public async Task<User> GetAsync(string id)
         {
             return await _userManager.Users.Where(x => x.Id == id).Include(x => x.Posts).Include(x => x.Subscriptions).ThenInclude(x => x.Thread).Include(x => x.Image).Include(x => x.Votes).ThenInclude(x => x.Post).FirstAsync();

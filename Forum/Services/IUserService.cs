@@ -10,6 +10,7 @@ namespace Forum.Services
     public interface IUserService
     {
         Task<IEnumerable<User>> GetAllAsync();
+        Task<UsersResponse> GetAllAsync(string userName, PaginationFilter paginationFilter);
         Task<User> GetAsync(string id);
         Task<UserResponse> UpdatePasswordAsync(string id, string currentPassword, string newPassword);
         Task<UserResponse> RemoveAsync(string id);

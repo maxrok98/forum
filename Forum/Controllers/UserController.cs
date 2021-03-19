@@ -12,6 +12,9 @@ using Forum.Contracts.Responses;
 using Forum.Contracts.Requests;
 using Forum.Models;
 using Forum.Extensions;
+using Forum.Contracts.Requests.Queries;
+using Forum.Helpers;
+using Forum.Contracts;
 
 namespace Forum.Controllers
 {
@@ -22,31 +25,42 @@ namespace Forum.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IUriService _uriService;
         private readonly IMapper _mapper;
-        public UserController(IUserService userService, IMapper mapper)
+        public UserController(IUserService userService, IUriService uriService, IMapper mapper)
         {
             _userService = userService;
+            _uriService = uriService;
             _mapper = mapper;
         }
 
         [HttpGet("get", Name = "GetUsers")]
-        [ProducesResponseType(typeof(IEnumerable<UserResponse>), 200)]
-        public async Task<IEnumerable<UserResponse>> Get()
+        [AllowAnonymous]
+        public async Task<IActionResult> Get([FromQuery]string userName, [FromQuery]PaginationQuery paginationQuery)
         {
-            var users = await _userService.GetAllAsync();
-            var dto = _mapper.Map<IEnumerable<User>, IEnumerable<UserResponse>>(users);
+            var pagination = _mapper.Map<PaginationFilter>(paginationQuery);
+            var users = await _userService.GetAllAsync(userName, pagination);
+            var dto = _mapper.Map<IEnumerable<User>, IEnumerable<UserShortResponse>>(users.Resource);
 
-            return dto;
+            if(pagination == null || pagination.PageNumber < 1 || pagination.PageSize < 1)
+            {
+                return Ok(dto);
+            }
+
+            var paginationResponse = PaginationHelpers.CreatePaginatedResponse(_uriService, pagination, dto, users.amountOfUsers, ApiRoutes.User.GetAll);
+
+            return Ok(paginationResponse);
+
         }
 
         [HttpGet("get/{id}", Name = "GetUser")]
-        [ProducesResponseType(typeof(IEnumerable<UserResponse>), 200)]
-        public async Task<UserResponse> Get(string id)
+        [AllowAnonymous]
+        public async Task<IActionResult> Get(string id)
         {
             var user = await _userService.GetAsync(id);
             var dto = _mapper.Map<User, UserResponse>(user);
 
-            return dto;
+            return Ok(dto);
         }
 
         [HttpPut("ChangePassword/{id}", Name = "ChangePassword")]
