@@ -14,5 +14,6 @@ namespace Forum.Contracts.Responses
         public string ImageId { get; set; }
         public byte[] Image { get; set; }
         public int NumberOfSubscription { get; set; }
+        public int NumberOfPost { get; set; }
     }
 }
