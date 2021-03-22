@@ -21,3 +21,11 @@
 .thread-table_row_icons i {
     margin-right: 10px;
 }
+
+img.rounded_small {
+    object-fit: cover;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+}
+

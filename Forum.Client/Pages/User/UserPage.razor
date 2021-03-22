@@ -11,7 +11,7 @@
 
 @if(user == null)
 {
-    <p>Loading ......</p>
+    <Loader/>
 }
 else
 {
@@ -119,7 +119,7 @@ else
 
         //var id2 = tokenDecoded.Claims.Where(x => x.Type == "id").FirstOrDefault().Value;
 
-        var responce = await Http.GetAsync(ApiRoutes.User.Get + id);
+        var responce = await Http.GetAsync(ApiRoutes.User.Get.Replace("{id}", id));
 
         var format = "image/jpeg";
         if (responce.IsSuccessStatusCode)

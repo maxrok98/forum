@@ -8,7 +8,7 @@
 
     @if (posts == null)
     {
-        <p>Loading......</p>
+        <Loader/>
     }
     else
     {
@@ -37,7 +37,7 @@
 
         <div class="row justify-content-center">
             <div class="col-md-8 d-flex justify-content-center">
-                <Pager PageCount="(int)posts.PageCount" Page="Convert.ToInt32(Page)" OnPagerPageChanged="PagerPageChanged"/>
+                <Pager PageCount="Convert.ToInt32(posts.PageCount)" Page="Convert.ToInt32(Page)" OnPagerPageChanged="PagerPageChanged"/>
             </div>
             <div class="col-md-4"></div>
         </div>

@@ -1,0 +1,100 @@
+﻿@page "/userlist"
+@inject IUserService UserService
+
+<div class="container">
+    @if(users == null)
+    {
+        <Loader/>
+    }
+    else
+    {
+    <div class="row">
+        <div class="col-md-8">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Image</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Posts</th>
+                        <th scope="col">Subscriptions</th>
+                        <th scope="col">Votes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var user in users.Results)
+                    {
+                        <tr>
+                            <td>
+                                @if(user.Image.Length != 0)
+                                {
+                                <img class="rounded_small" src="data:image/jpeg;base64,@Convert.ToBase64String(user.Image)" alt="">
+                                }
+                                else
+                                {
+                                <img class="rounded_small" src="/img/post_placeholder.gif" alt="">
+                                }
+                            </td>
+                            <td>@user.UserName</td>
+                            <td>@user.Email</td>
+                            <td>@user.myPostsAmount</td>
+                            <td>@user.SubscriptionAmount</td>
+                            <td>@user.VotesAmount</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+            <div class="col-md-4">
+
+                <SearchWidget OnSearchClick="SearchClickHandler" />
+
+            </div>
+
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 d-flex justify-content-center">
+            <Pager PageCount="@Convert.ToInt32(users.PageCount)" Page="@Convert.ToInt32(Page)" OnPagerPageChanged="PagerPageChanged"/>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+        
+    }
+
+
+</div>
+
+
+
+@code {
+    public string Page { get; set; } = "1";
+    public string PageSize { get; set; } = "2";
+    public string SearchTerm { get; set; } = string.Empty;
+
+    PageResponse<UserShortResponse> users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await loadUsers();
+    }
+
+    protected async Task loadUsers()
+    {
+        users = await UserService.GetAll(Page, PageSize, SearchTerm);
+    }
+
+    protected async Task SearchClickHandler(string searchTerm)
+    {
+        SearchTerm = searchTerm;
+        await PagerPageChanged(1);
+    }
+
+    protected async Task PagerPageChanged(int page)
+    {
+        Page = page.ToString();
+        await loadUsers();
+    }
+
+}

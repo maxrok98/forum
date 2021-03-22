@@ -30,6 +30,7 @@ namespace Forum.Client
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IPostService, PostService>();
             builder.Services.AddScoped<IThreadService, ThreadService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddToaster(config =>
             {
                 //example customizations

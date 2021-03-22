@@ -6,8 +6,13 @@
 
 <AuthorizeView>
     <Authorized>
-@if(user != null)
+@if (user == null)
 {
+    <Loader/>
+}
+else
+{
+
     @if (user.Subscription.Count == 0)
     {
         <h1>You need to subscribe to some thread to see you personal subscribtion list</h1>
@@ -50,7 +55,7 @@
     protected async Task LoadUserInfo(string id)
     {
 
-        var responce = await Http.GetAsync(ApiRoutes.User.Get + id);
+        var responce = await Http.GetAsync(ApiRoutes.User.Get.Replace("{id}", id));
 
         var format = "image/jpeg";
         if (responce.IsSuccessStatusCode)
