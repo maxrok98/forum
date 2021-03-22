@@ -12,6 +12,7 @@ namespace Forum.Contracts.Responses
 
         public string UserId { get; set; }
         public string  UserName { get; set; }
+        public byte[]  UserImage { get; set; }
 
         public string Text { get; set; }
         public DateTime Date { get; set; }

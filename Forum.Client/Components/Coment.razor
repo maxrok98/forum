@@ -1,6 +1,13 @@
 ﻿
 <div class="media mb-4">
-    <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+    @if (coment.UserImage.Length != 0)
+    {
+    <img class="d-flex mr-3 rounded_small" src="data:image/jpeg;base64,@Convert.ToBase64String(coment.UserImage)" alt="">
+    }
+    else
+    {
+    <img class="d-flex mr-3 rounded_small" src="/img/post_placeholder.gif" alt="">
+    }
     <div class="media-body">
         <h5 class="mt-0"><a href="user/@coment.UserId">@coment.UserName</a></h5>
         <p>@coment.Text</p>
