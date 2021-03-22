@@ -29,3 +29,10 @@ img.rounded_small {
     width: 50px;
 }
 
+img.rounded_medium {
+    object-fit: cover;
+    border-radius: 50%;
+    height: 200px;
+    width: 200px;
+}
+
