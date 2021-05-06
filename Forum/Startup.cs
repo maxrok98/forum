@@ -63,8 +63,13 @@ namespace Forum
 
             services.AddSingleton(tokenValidationParameters);
 
+#if DEBUG
             services.AddDbContext<Models.ForumAppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+#else
+            services.AddDbContext<Models.ForumAppDbContext>(options =>
+                options.UseSqlServer(Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb").ToString());
+#endif
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<Models.ForumAppDbContext>();
