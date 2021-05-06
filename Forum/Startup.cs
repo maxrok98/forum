@@ -21,17 +21,20 @@ using System.Text;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Hosting;
+using kedzior.io.ConnectionStringConverter;
 
 namespace Forum
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            _env = env;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment _env { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -63,13 +66,16 @@ namespace Forum
 
             services.AddSingleton(tokenValidationParameters);
 
-#if DEBUG
-            services.AddDbContext<Models.ForumAppDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-#else
-            services.AddDbContext<Models.ForumAppDbContext>(options =>
-                options.UseMySql(Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb").ToString());
-#endif
+            if (_env.IsProduction())
+            {
+                services.AddDbContext<Models.ForumAppDbContext>(options =>
+                    options.UseMySQL(AzureMySQL.ToMySQLStandard(Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb"))));
+            }
+            else
+            {
+                services.AddDbContext<Models.ForumAppDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            }
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<Models.ForumAppDbContext>();
@@ -133,8 +139,9 @@ namespace Forum
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ForumAppDbContext dbContext)
         {
+            dbContext.Database.Migrate();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
