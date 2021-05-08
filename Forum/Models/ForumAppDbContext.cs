@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Forum.Models
 {
@@ -19,13 +20,16 @@ namespace Forum.Models
         public DbSet<Vote> Votes { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        //IConfiguration Configuration { get; set; }
         public ForumAppDbContext(DbContextOptions<ForumAppDbContext> options)
                     : base(options)
         {
             Database.EnsureCreated();
+            //Configuration = configuration;
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
+            //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -68,17 +68,16 @@ namespace Forum
 
             if (_env.IsProduction())
             {
-                services.AddDbContext<Models.ForumAppDbContext>(options =>
-                    options.UseMySQL(AzureMySQL.ToMySQLStandard(Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb"))));
+                services.AddDbContext<MySqlForumAppDbContext>();
             }
             else
             {
-                services.AddDbContext<Models.ForumAppDbContext>(options =>
+                services.AddDbContext<ForumAppDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             }
 
             services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<Models.ForumAppDbContext>();
+                .AddEntityFrameworkStores<ForumAppDbContext>();
 
             services.AddScoped<IThreadRepository, ThreadRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
@@ -141,7 +140,7 @@ namespace Forum
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ForumAppDbContext dbContext)
         {
-            dbContext.Database.Migrate();
+            //dbContext.Database.Migrate();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
