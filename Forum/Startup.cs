@@ -68,16 +68,16 @@ namespace Forum
 
             //if (_env.IsProduction())
             //{
-                services.AddDbContext<MySqlForumAppDbContext>();
-                services.AddIdentity<User, IdentityRole>()
-                    .AddEntityFrameworkStores<MySqlForumAppDbContext>();
+            //    services.AddDbContext<MySqlForumAppDbContext>();
+            //    services.AddIdentity<User, IdentityRole>()
+            //        .AddEntityFrameworkStores<MySqlForumAppDbContext>();
             //}
             //else
             //{
-            //    services.AddDbContext<ForumAppDbContext>(options =>
-            //        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            //    services.AddIdentity<User, IdentityRole>()
-            //        .AddEntityFrameworkStores<ForumAppDbContext>();
+                services.AddDbContext<ForumAppDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection2")));
+                services.AddIdentity<User, IdentityRole>()
+                    .AddEntityFrameworkStores<ForumAppDbContext>();
             //}
 
 
