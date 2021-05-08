@@ -69,15 +69,17 @@ namespace Forum
             if (_env.IsProduction())
             {
                 services.AddDbContext<MySqlForumAppDbContext>();
+                services.AddIdentity<User, IdentityRole>()
+                    .AddEntityFrameworkStores<MySqlForumAppDbContext>();
             }
             else
             {
                 services.AddDbContext<ForumAppDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                services.AddIdentity<User, IdentityRole>()
+                    .AddEntityFrameworkStores<ForumAppDbContext>();
             }
 
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<ForumAppDbContext>();
 
             services.AddScoped<IThreadRepository, ThreadRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
@@ -138,7 +140,7 @@ namespace Forum
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ForumAppDbContext dbContext)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             //dbContext.Database.Migrate();
             if (env.IsDevelopment())
