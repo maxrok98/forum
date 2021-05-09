@@ -66,19 +66,20 @@ namespace Forum
 
             services.AddSingleton(tokenValidationParameters);
 
-            //if (_env.IsProduction())
-            //{
-            //    services.AddDbContext<MySqlForumAppDbContext>();
-            //    services.AddIdentity<User, IdentityRole>()
-            //        .AddEntityFrameworkStores<MySqlForumAppDbContext>();
-            //}
-            //else
-            //{
+            if (_env.IsProduction())
+            {
                 services.AddDbContext<ForumAppDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection2")));
+                    options.UseSqlServer(Environment.GetEnvironmentVariable("defaultConnection")));
                 services.AddIdentity<User, IdentityRole>()
                     .AddEntityFrameworkStores<ForumAppDbContext>();
-            //}
+            }
+            else
+            {
+                services.AddDbContext<ForumAppDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                services.AddIdentity<User, IdentityRole>()
+                    .AddEntityFrameworkStores<ForumAppDbContext>();
+            }
 
 
             services.AddScoped<IThreadRepository, ThreadRepository>();
