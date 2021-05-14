@@ -95,11 +95,18 @@ namespace Forum
             services.AddScoped<IComentService, ComentService>();
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IImageHostService, ImageHostService>();
             services.AddSingleton<IUriService>(provider => {
                 var accessor = provider.GetRequiredService<IHttpContextAccessor>();
                 var request = accessor.HttpContext.Request;
                 var absoluteUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent(), "/");
                 return new UriService(absoluteUri);
+            });
+
+            services.AddHttpClient("image_store", c =>
+            {
+                c.BaseAddress = new Uri("https://api.imgbb.com/1/upload?key=" +
+                    Environment.GetEnvironmentVariable("IMGBB_API_KEY"));
             });
 
             services.AddAutoMapper(typeof(Startup));

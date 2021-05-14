@@ -1,12 +1,12 @@
 ﻿<!-- Blog Post -->
 <div class="card mb-4">
-    @if(post.Image.Length == 0)
+    @if(post.ImageLink == null || post.ImageLink == String.Empty)
     {
         <img class="card-img-top" src="/img/post_placeholder.gif" width="750" />
     }
     else
     {
-        <img class="card-img-top" src="data:image/jpeg;base64,@Convert.ToBase64String(post.Image)" width="750" />
+        <img class="card-img-top" src="@post.ImageLink" width="750" />
     }
     <div class="card-body">
         <h2 class="card-title">@post.Name</h2>

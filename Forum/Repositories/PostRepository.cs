@@ -42,11 +42,11 @@ namespace Forum.Repositories
 
         public override async Task<IEnumerable<Post>> GetAllAsync()
         {
-            return await _context.Posts.Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).ToListAsync();
+            return await _context.Posts.Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).ToListAsync();
         }
         public async Task<IEnumerable<Post>> GetFilteredAndPagedFromThreadAsync(string postName, string threadId, PaginationFilter paginationFilter, string orderByQueryString)
         {
-            IQueryable<Post> query = _context.Posts.Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image);
+            IQueryable<Post> query = _context.Posts.Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User);
             if (!string.IsNullOrEmpty(postName))
                 query = query.Where(p => p.Name.Contains(postName));
             if (!string.IsNullOrEmpty(threadId))
@@ -72,7 +72,7 @@ namespace Forum.Repositories
         {
             return await (from p in _context.Posts
                           where p.Id == id
-                          select p).Include(p => p.Thread).Include(p => p.User).Include(p => p.Image).Include(p => p.Coments).ThenInclude(x => x.User).ThenInclude(x => x.Image).FirstOrDefaultAsync();
+                          select p).Include(p => p.Thread).Include(p => p.User).Include(p => p.Coments).ThenInclude(x => x.User).FirstOrDefaultAsync();
         }
         public async Task<Post> UserOwnsPostAsync(string PostId, string UserId)
         {

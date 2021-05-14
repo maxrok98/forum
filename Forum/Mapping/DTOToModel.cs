@@ -14,8 +14,8 @@ namespace Forum.Mapping
     {
         public DTOToModel()
         {
-            CreateMap<ThreadRequest, Thread>().ForMember(dest => dest.Image, opts => opts.MapFrom(src => new ThreadImage { Id = Guid.NewGuid().ToString(), Image = src.Image }));
-            CreateMap<PostRequest, Post>().ForMember(dest => dest.Image, opts => opts.MapFrom(src => new PostImage {  Id = Guid.NewGuid().ToString(), Image = src.Image }));
+            CreateMap<ThreadRequest, Thread>().ForMember(dest => dest.ImageLink, opts => opts.MapFrom(src => Convert.ToBase64String(src.Image)));
+            CreateMap<PostRequest, Post>().ForMember(dest => dest.ImageLink, opts => opts.MapFrom(src => Convert.ToBase64String(src.Image)));
             CreateMap<ComentRequest, Coment>();
             CreateMap<PaginationQuery, PaginationFilter>();
         }

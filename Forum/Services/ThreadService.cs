@@ -13,11 +13,13 @@ namespace Forum.Services
         private readonly IThreadRepository _threadRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISubscriptionRepository _subscriptionRepository;
-        public ThreadService(IThreadRepository threadRepository, ISubscriptionRepository subscriptionRepository, IUnitOfWork unitOfWork)
+        private readonly IImageHostService _imageHostService;
+        public ThreadService(IThreadRepository threadRepository, ISubscriptionRepository subscriptionRepository, IUnitOfWork unitOfWork, IImageHostService imageHostService)
         {
             _threadRepository = threadRepository;
             _unitOfWork = unitOfWork;
             _subscriptionRepository = subscriptionRepository;
+            _imageHostService = imageHostService;
         }
         public async Task<ThreadResponse> RemoveAsync(string id)
         {
@@ -51,6 +53,13 @@ namespace Forum.Services
 
         public async Task<ThreadResponse> AddAsync(Thread thread)
         {
+            if(thread.ImageLink != null || thread.ImageLink != String.Empty)
+            {
+                var res = await _imageHostService.SaveImageAsync(thread.ImageLink);
+                if (res == null || !res.success)
+                    return new ThreadResponse("Could not store image");
+                thread.ImageLink = res.data.display_url;
+            }
             thread.Id = Guid.NewGuid().ToString();
             try
             {
@@ -74,7 +83,6 @@ namespace Forum.Services
 
             existingThread.Name = thread.Name ?? existingThread.Name;
             existingThread.Description = thread.Description ?? existingThread.Description;
-            existingThread.ImageId = thread.ImageId ?? existingThread.ImageId;
 
             try
             {

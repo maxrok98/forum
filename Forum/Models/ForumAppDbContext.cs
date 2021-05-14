@@ -20,29 +20,20 @@ namespace Forum.Models
         public DbSet<Vote> Votes { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
-        //IConfiguration Configuration { get; set; }
         public ForumAppDbContext(DbContextOptions<ForumAppDbContext> options)
                     : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureDeleted(); // later switch to Database.Migrate(); - applies migration to db
+            //Database.EnsureCreated();
+            Database.Migrate();
             //Configuration = configuration;
         }
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            //modelBuilder.Entity<User>().HasKey(k => k.Id);
-
-            modelBuilder.Entity<UserImage>().Property(i => i.Image).HasMaxLength(10000000);
-            modelBuilder.Entity<UserImage>().HasOne(p => p.User).WithOne(t => t.Image).HasForeignKey<User>(t => t.ImageId).OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<PostImage>().Property(i => i.Image).HasMaxLength(10000000);
-            modelBuilder.Entity<PostImage>().HasOne(p => p.Post).WithOne(t => t.Image).HasForeignKey<Post>(p => p.ImageId).OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<ThreadImage>().Property(i => i.Image).HasMaxLength(10000000);
-            modelBuilder.Entity<ThreadImage>().HasOne(p => p.Thread).WithOne(t => t.Image).HasForeignKey<Thread>(p => p.ImageId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Coment>().HasOne(p => p.User).WithMany(t => t.Coments).HasForeignKey(t => t.UserId).OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<Coment>().HasOne(p => p.Post).WithMany(t => t.Coments).HasForeignKey(t => t.PostId).OnDelete(DeleteBehavior.Cascade);
@@ -103,6 +94,7 @@ namespace Forum.Models
                     UserName = "admin",
                     Email = "admin@example.com",
                     NormalizedUserName = "ADMIN",
+                    NormalizedEmail = "ADMIN@EXAMPLE.COM",
                     PasswordHash = hasher.HashPassword(null, "admin")
                 },
                 new User
@@ -111,6 +103,7 @@ namespace Forum.Models
                     UserName = "new",
                     Email = "new@example.com",
                     NormalizedUserName = "NEW",
+                    NormalizedEmail = "NEW@EXAMPLE.COM",
                     PasswordHash = hasher.HashPassword(null, "123456mM-")
                 }
             );
@@ -128,18 +121,6 @@ namespace Forum.Models
                      UserId = UserId // for admin role
                  }
             );
-
-             //modelBuilder.Entity<IdentityDbContext<User>>().HasData
-             //(
-             //    new User
-             //    {
-             //        Id = Guid.NewGuid().ToString(),
-             //        Email = "new@example.com",
-             //        UserName = "new",
-             //        PasswordHash = "AQAAAAEAACcQAAAAEKBesXjO3tMAR4tplSoeJOukEK/Uh77xqcJRuvssD7lFhrInhbDRfanwbepAq4S8yw=="
-             //    }
-             //) ;
-
 
             modelBuilder.Entity<Thread>().HasData
             (

@@ -10,7 +10,7 @@ namespace Forum.Contracts.Responses
         public string UserName { get; set; }
         public string Email { get; set; }
 
-        public byte[] Image { get; set; }
+        public string ImageLink { get; set; }
 
         public int myPostsAmount { get; set; }
         public int SubscriptionAmount { get; set; }

@@ -18,9 +18,8 @@ namespace Forum.Models
         public string Name { get; set; }
         public string Content { get; set; }
 
-        public string ImageId { get; set; }
-        public virtual PostImage Image { get; set; }
-        //image
+        public string ImageLink { get; set; }
+
         public DateTime Date { get; set; }
         public int Rating { get; set; }
 

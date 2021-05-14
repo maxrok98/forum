@@ -27,7 +27,7 @@ namespace Forum.Services
 
         public async Task<UsersResponse> GetAllAsync(string userName, PaginationFilter paginationFilter)
         {
-            IQueryable<User> query = _userManager.Users.OrderBy(x => x.UserName).Include(x => x.Image).Include(x => x.Posts).Include(x => x.Subscriptions).ThenInclude(x => x.Thread).Include(x => x.Votes).ThenInclude(x => x.Post);
+            IQueryable<User> query = _userManager.Users.OrderBy(x => x.UserName).Include(x => x.Posts).Include(x => x.Subscriptions).ThenInclude(x => x.Thread).Include(x => x.Votes).ThenInclude(x => x.Post);
             if (!string.IsNullOrEmpty(userName))
                 query = query.Where(u => u.UserName.Contains(userName));
             if (paginationFilter != null)
@@ -40,7 +40,7 @@ namespace Forum.Services
 
         public async Task<User> GetAsync(string id)
         {
-            return await _userManager.Users.Where(x => x.Id == id).Include(x => x.Posts).ThenInclude(x => x.Coments).Include(x => x.Posts).ThenInclude(x => x.Votes).Include(x => x.Subscriptions).ThenInclude(x => x.Thread).Include(x => x.Image).Include(x => x.Votes).ThenInclude(x => x.Post).FirstAsync();
+            return await _userManager.Users.Where(x => x.Id == id).Include(x => x.Posts).ThenInclude(x => x.Coments).Include(x => x.Posts).ThenInclude(x => x.Votes).Include(x => x.Subscriptions).ThenInclude(x => x.Thread).Include(x => x.Votes).ThenInclude(x => x.Post).FirstAsync();
         }
 
         public async Task<bool> IsUserAdmin(string id)

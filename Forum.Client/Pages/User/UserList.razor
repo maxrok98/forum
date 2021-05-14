@@ -26,9 +26,9 @@
                     {
                         <tr>
                             <td>
-                                @if (user.Image.Length != 0)
+                                @if(user.ImageLink == null || user.ImageLink == String.Empty)
                                 {
-                                <img class="rounded_small" src="data:image/jpeg;base64,@Convert.ToBase64String(user.Image)" alt="">
+                                <img class="rounded_small" src="@user.ImageLink" alt="">
                                 }
                                 else
                                 {

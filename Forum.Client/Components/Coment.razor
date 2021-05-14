@@ -2,7 +2,7 @@
 <div class="media mb-4">
     @if (coment.UserImage.Length != 0)
     {
-    <img class="d-flex mr-3 rounded_small" src="data:image/jpeg;base64,@Convert.ToBase64String(coment.UserImage)" alt="">
+    <img class="d-flex mr-3 rounded_small" src="@coment.UserImage)" alt="">
     }
     else
     {

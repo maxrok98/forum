@@ -6,6 +6,9 @@ using Forum.Models;
 using Forum.Services.Communication;
 using Forum.Repositories;
 using Forum.Contracts;
+using System.Net.Http;
+using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace Forum.Services
 {
@@ -14,11 +17,13 @@ namespace Forum.Services
         private readonly IPostRepository _postRepository;
         private readonly IVoteRepository _voteRepository;
         private readonly IUnitOfWork _unitOfWork;
-        public PostService(IPostRepository postRepository, IVoteRepository voteRepository, IUnitOfWork unitOfWork)
+        private readonly IImageHostService _imageHostService;
+        public PostService(IPostRepository postRepository, IVoteRepository voteRepository, IUnitOfWork unitOfWork, IImageHostService imageHostService)
         {
             _postRepository = postRepository;
             _unitOfWork = unitOfWork;
             _voteRepository = voteRepository;
+            _imageHostService = imageHostService;
         }
 
         public async Task<PostsResponse> GetAllAsync(string postName = null, string threadId = null, PaginationFilter paginationFilter = null, string orderByQueryString = null)
@@ -73,7 +78,6 @@ namespace Forum.Services
 
             existingPost.Name = post.Name ?? existingPost.Name;
             existingPost.Content = post.Content ?? existingPost.Content;
-            existingPost.ImageId = post.ImageId ?? existingPost.ImageId;
 
             try
             {
@@ -91,6 +95,16 @@ namespace Forum.Services
 
         public async Task<PostResponse> AddAsync(Post post)
         {
+            if(post.ImageLink != null || post.ImageLink != String.Empty)
+            {
+                var res = await _imageHostService.SaveImageAsync(post.ImageLink);
+                if(res == null || !res.success)
+                {
+                    return new PostResponse("An error accurred when saving image");
+                }
+                post.ImageLink = res.data.display_url;
+            }
+
             post.Id = Guid.NewGuid().ToString();
             try
             {

@@ -11,8 +11,8 @@ namespace Forum.Contracts.Responses
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public string ImageId { get; set; }
-        public byte[] Image { get; set; }
+        public string ImageLink { get; set; }
+
         public int NumberOfSubscription { get; set; }
         public int NumberOfPost { get; set; }
     }

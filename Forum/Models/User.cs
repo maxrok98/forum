@@ -13,8 +13,8 @@ namespace Forum.Models
         public int Year { get; set; }
         public string PublicKey { get; set; }
 
-        public string ImageId { get; set; }
-        public virtual UserImage Image { get; set; }
+        public string ImageLink { get; set; }
+
         public virtual ICollection<Chat> MyChats { get; set; }
         public virtual ICollection<Chat> OtherChats { get; set; }
         public virtual ICollection<Message> Messages { get; set; }

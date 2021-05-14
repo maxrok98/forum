@@ -23,8 +23,9 @@ namespace Forum.Services
         private readonly TokenValidationParameters _tokenValidationParameters;
         private readonly IUnitOfWork _unitOfWork;
         private readonly Models.ForumAppDbContext _context;
+        private readonly IImageHostService _imageHostService;
 
-        public IdentityService(UserManager<User> userManager, JwtSettings jwtSettings, TokenValidationParameters tokenValidationParameters, Models.ForumAppDbContext context, IUnitOfWork unitOfWork, RoleManager<IdentityRole> roleManager)
+        public IdentityService(UserManager<User> userManager, JwtSettings jwtSettings, TokenValidationParameters tokenValidationParameters, Models.ForumAppDbContext context, IUnitOfWork unitOfWork, RoleManager<IdentityRole> roleManager, IImageHostService imageHostService)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings;
@@ -32,6 +33,7 @@ namespace Forum.Services
             _unitOfWork = unitOfWork;
             _roleManager = roleManager;
             _context = context;
+            _imageHostService = imageHostService;
         }
 
         public async Task<AuthentificationResult> RegisterAsync(string email, string password, byte[] image, string UserName)
@@ -46,6 +48,20 @@ namespace Forum.Services
                 };
             }
 
+            string imageLink = String.Empty;
+            if(image != null)
+            {
+                var res = await _imageHostService.SaveImageAsync(Convert.ToBase64String(image));
+                if(res == null || !res.success)
+                {
+                    return new AuthentificationResult
+                    {
+                        Errors = new[] { "Could not save image" }
+                    };
+                }
+                imageLink = res.data.display_url;
+            }
+
             var newUserId = Guid.NewGuid();
             var newImageId = Guid.NewGuid();
             var newUser = new User
@@ -53,7 +69,7 @@ namespace Forum.Services
                 Id = newUserId.ToString(),
                 Email = email,
                 UserName = UserName,
-                Image = new UserImage { Id = newImageId.ToString(), Image = image}
+                ImageLink = imageLink
             };
 
 

@@ -17,7 +17,7 @@ else
 {
     <div class="profile d-flex mb-5 mt-5 p-2 shadow rounded">
         <div class="">
-            <img class="rounded_medium" src="@imageDataUri" alt="Avatar">
+            <img class="rounded_medium" src="@imageUri" alt="Avatar">
         </div>
         <div class="profile_data ml-5">
             <p>Email: @user.Email</p>
@@ -163,7 +163,7 @@ else
 
 @code {
     UserResponse user { get; set; }
-    string imageDataUri;
+    string imageUri { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -198,7 +198,7 @@ else
         if (responce.IsSuccessStatusCode)
         {
             user = await responce.Content.ReadFromJsonAsync<UserResponse>();
-            imageDataUri = $"data:{format};base64,{Convert.ToBase64String(user.Image)}";
+            imageUri = user.ImageLink;
 
         }
     }

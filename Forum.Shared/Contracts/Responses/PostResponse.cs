@@ -19,10 +19,8 @@ namespace Forum.Contracts.Responses
         public string Name { get; set; }
         public string Content { get; set; }
 
-        public string ImageId { get; set; }
-        public byte[] Image { get; set; }
-        //public PostImage Image { get; set; }
-        //image
+        public string ImageLink { get; set; }
+
         public DateTime Date { get; set; }
         public int Rating { get; set; }
         public virtual ICollection<ComentResponse> Coments { get; set; }

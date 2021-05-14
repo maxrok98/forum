@@ -36,13 +36,13 @@ else
                 <hr>
 
                 <!-- Preview Image -->
-                @if(post.Image.Length == 0)
+                @if(post.ImageLink == null || post.ImageLink == String.Empty)
                 {
                     <img class="img-fluid rounded" src="/img/post_placeholder.gif" width="920" />
                 }
                 else
                 {
-                    <img class="img-fluid rounded" src="data:image/jpeg;base64,@Convert.ToBase64String(post.Image)" width="920" />
+                    <img class="img-fluid rounded" src="@post.ImageLink" width="920" />
                 }
 
                 <hr>

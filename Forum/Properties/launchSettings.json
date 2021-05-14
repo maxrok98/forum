@@ -12,7 +12,8 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "IMGBB_API_KEY": "b26911a60283304007cb13f436f4ef60",
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "nativeDebugging": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}"
