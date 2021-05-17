@@ -78,7 +78,7 @@ namespace ForumTesting
             };
 
             //Act
-            PostResponse pr = await _sut.AddAsync(post);
+            PostResponse pr = await _sut.AddAsync(post, Forum.Contracts.PostType.Event);
 
             //Assert
             Assert.True(pr.Success);
@@ -100,7 +100,7 @@ namespace ForumTesting
             _postRepoMock.Setup(x => x.AddAsync(post)).Throws(new Exception());
 
             //Act
-            PostResponse pr = await _sut.AddAsync(post);
+            PostResponse pr = await _sut.AddAsync(post, Forum.Contracts.PostType.Event);
 
             //Assert
             Assert.False(pr.Success);
@@ -121,7 +121,7 @@ namespace ForumTesting
             };
 
             //Act
-            PostResponse pr = await _sut.AddAsync(post);
+            PostResponse pr = await _sut.AddAsync(post, Forum.Contracts.PostType.Event);
 
             //Assert
             Assert.Same(post, pr.Resource);
