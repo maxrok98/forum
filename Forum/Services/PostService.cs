@@ -9,6 +9,7 @@ using Forum.Contracts;
 using System.Net.Http;
 using System.Text.Json;
 using Newtonsoft.Json;
+using Forum.Contracts.Requests;
 
 namespace Forum.Services
 {
@@ -26,10 +27,10 @@ namespace Forum.Services
             _imageHostService = imageHostService;
         }
 
-        public async Task<PostsResponse> GetAllAsync(string postName = null, string threadId = null, PaginationFilter paginationFilter = null, string orderByQueryString = null)
+        public async Task<PostsResponse> GetAllAsync(string postName = null, string threadId = null, PaginationFilter paginationFilter = null, string orderByQueryString = null, string type = null, string daysAtTown = null)
         {
-            var posts = await _postRepository.GetFilteredAndPagedFromThreadAsync(postName, threadId, paginationFilter, orderByQueryString);
-            var amount = await _postRepository.GetCountOfFilteredPostsInThreadAsync(postName, threadId);
+            var posts = await _postRepository.GetFilteredAndPagedFromThreadAsync(postName, threadId, paginationFilter, orderByQueryString, type, daysAtTown);
+            var amount = await _postRepository.GetCountOfFilteredPostsInThreadAsync(postName, threadId, type, daysAtTown);
             return new PostsResponse(posts, amount);
         }
 
@@ -93,7 +94,7 @@ namespace Forum.Services
             
         }
 
-        public async Task<PostResponse> AddAsync(Post post)
+        public async Task<PostResponse> AddEventAsync(Event post)
         {
             if(post.ImageLink != null || post.ImageLink != String.Empty)
             {
@@ -109,6 +110,35 @@ namespace Forum.Services
             try
             {
                 await _postRepository.AddAsync(post);
+                await _unitOfWork.CompleteAsync();
+
+                return new PostResponse(post);
+            }
+            catch(Exception ex)
+            {
+                return new PostResponse($"An error occurred when saving the post: {ex.Message}");
+            }
+        }
+
+        public async Task<PostResponse> AddAsync(Post post, PostType postType)
+        {
+            if(post.ImageLink != null || post.ImageLink != String.Empty)
+            {
+                var res = await _imageHostService.SaveImageAsync(post.ImageLink);
+                if(res == null || !res.success)
+                {
+                    return new PostResponse("An error accurred when saving image");
+                }
+                post.ImageLink = res.data.display_url;
+            }
+
+            post.Id = Guid.NewGuid().ToString();
+            try
+            {
+                if(postType == PostType.Event)
+                    await _postRepository.AddAsync((Event)post);
+                else
+                    await _postRepository.AddAsync((Place)post);
                 await _unitOfWork.CompleteAsync();
 
                 return new PostResponse(post);

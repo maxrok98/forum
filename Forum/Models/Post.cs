@@ -6,7 +6,7 @@ using Forum.Models;
 
 namespace Forum.Models
 {
-    public class Post
+    public abstract class Post
     {
         public string Id { get; set; }
         public string ThreadId { get; set; }

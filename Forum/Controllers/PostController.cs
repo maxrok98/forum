@@ -38,10 +38,10 @@ namespace Forum.Controllers
         // GET: api/Post
         [HttpGet("get", Name = "GetPosts")]
         [AllowAnonymous]
-        public async Task<IActionResult> Get([FromQuery]string postName, [FromQuery]string threadId, [FromQuery]PaginationQuery paginationQuery, string orderBy)
+        public async Task<IActionResult> Get([FromQuery]string postName, [FromQuery]string threadId, [FromQuery]PaginationQuery paginationQuery, string orderBy, string type, string daysAtTown)
         {
             var pagination = _mapper.Map<PaginationFilter>(paginationQuery);
-            var postsResponce = await _postService.GetAllAsync(postName, threadId, pagination, orderBy);
+            var postsResponce = await _postService.GetAllAsync(postName, threadId, pagination, orderBy, type, daysAtTown);
             var dto = _mapper.Map<IEnumerable<Post>, IEnumerable<PostResponse>>(postsResponce.Resource);
 
             if(pagination == null || pagination.PageNumber < 1 || pagination.PageSize < 1)
@@ -74,9 +74,15 @@ namespace Forum.Controllers
         [HttpPost("post", Name = "PostPost")]
         public async Task<IActionResult> Post([FromBody] PostRequest post)
         {
-            var pt = _mapper.Map<PostRequest, Post>(post);
+            Post pt;
+            post.PostType = PostType.Event;
+            post.DateOfEvent = DateTime.Now.AddDays(1);
+            if(post.PostType == PostType.Event)
+                pt = _mapper.Map<PostRequest, Event>(post);
+            else
+                pt = _mapper.Map<PostRequest, Place>(post);
             pt.UserId = HttpContext.GetUserId();
-            var result = await _postService.AddAsync(pt);
+            var result = await _postService.AddAsync(pt, post.PostType);
 
             if (!result.Success)
             {

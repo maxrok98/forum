@@ -9,8 +9,8 @@ namespace Forum.Repositories
     public interface IPostRepository : IRepository<Post>
     {
         Task<Post> UserOwnsPostAsync(string PostId, string UserId);
-        Task<IEnumerable<Post>> GetFilteredAndPagedFromThreadAsync(string postName, string threadId, PaginationFilter paginationFilter, string orderByQueryString);
-        Task<int> GetCountOfFilteredPostsInThreadAsync(string postName, string threadId);
+        Task<IEnumerable<Post>> GetFilteredAndPagedFromThreadAsync(string postName, string threadId, PaginationFilter paginationFilter, string orderByQueryString, string type, string daysAtTown);
+        Task<int> GetCountOfFilteredPostsInThreadAsync(string postName, string threadId, string type, string daysAtTown);
         Task<int> GetCountOfAllPostsAsync();
     }
 }

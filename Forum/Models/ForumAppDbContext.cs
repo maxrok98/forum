@@ -23,9 +23,9 @@ namespace Forum.Models
         public ForumAppDbContext(DbContextOptions<ForumAppDbContext> options)
                     : base(options)
         {
-            //Database.EnsureDeleted(); // later switch to Database.Migrate(); - applies migration to db
-            //Database.EnsureCreated();
-            Database.Migrate();
+            Database.EnsureDeleted(); // later switch to Database.Migrate(); - applies migration to db
+            Database.EnsureCreated();
+            //Database.Migrate();
             //Configuration = configuration;
         }
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -140,21 +140,46 @@ namespace Forum.Models
 
             var postId1 = Guid.NewGuid().ToString();
             var postId2 = Guid.NewGuid().ToString();
-            modelBuilder.Entity<Post>().HasData
+            modelBuilder.Entity<Place>().HasData
             (
-                new Post
+                new Place
                 {
                     Id = postId1,
+                    UserId = UserId,
                     Name = "Little bit about OS",
                     Content = "Here we are going to talk about OS",
                     ThreadId = threadId1
                 },
-                new Post
+                new Place
                 {
                     Id = postId2,
+                    UserId = admUserId,
                     Name = "Little bit about ARM architecture",
                     Content = "ARM is beter then x86",
                     ThreadId = threadId2
+                }
+            );
+            postId1 = Guid.NewGuid().ToString();
+            postId2 = Guid.NewGuid().ToString();
+            modelBuilder.Entity<Event>().HasData
+            (
+                new Event
+                {
+                    Id = postId1,
+                    UserId = UserId,
+                    Name = "Event 1",
+                    Content = "First event",
+                    ThreadId = threadId1,
+                    DateOfEvent = DateTime.Now.AddDays(1)
+                },
+                new Event
+                {
+                    Id = postId2,
+                    UserId = admUserId,
+                    Name = "Event 2",
+                    Content = "Secont event",
+                    ThreadId = threadId2,
+                    DateOfEvent = DateTime.Now.AddDays(1)
                 }
             );
 

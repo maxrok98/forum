@@ -15,11 +15,28 @@
 
             <!-- Blog Entries Column -->
             <div class="col-md-8">
+                <ul class="nav nav-pills nav-fill mb-3" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button @onclick="@(() => OnTabChange(""))" class="nav-link active" role="tab" data-bs-toggle="pill" type="button" aria-controls="all" aria-selected="true">All</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button @onclick="@(() => OnTabChange("event"))" class="nav-link" role="tab" data-bs-toggle="pill" type="button" aria-controls="event" aria-selected="false">Events</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button @onclick="@(() => OnTabChange("place"))" class="nav-link" role="tab" data-bs-toggle="pill" type="button" aria-controls="place" aria-selected="false">Places</button>
+                    </li>
+                </ul>
+                <div class="@(DaysCollapsed ? "collapse" : "")">
+                    <label class="form-label" for="customRange2">Days at town: <b>@DaysAtTown</b></label>
+                    <div class="range">
+                        <input type="range" class="form-range" value="@DaysAtTown" min="0" max="7" id="customRange2" @onchange="@(async () => await OnDaysChange())"  @oninput="@((args) => OnDaysInput(args))"/>
+                    </div>
+                </div>
                 @foreach (var post in posts.Results)
                 {
 
-                    <!-- Blog Post --> 
-                    <PostShort post="post"/>
+                    <!-- Blog Post -->
+                    <PostShort post="post" />
                 }
             </div>
 
@@ -52,6 +69,10 @@
     public string PageSize { get; set; } = "2";
     public string SearchTerm = string.Empty;
     public string OrderBy { get; set; }
+    public string Type { get; set; } = string.Empty;
+    public string DaysAtTown { get; set; } = "2";
+
+    bool DaysCollapsed { get; set; } = true;
 
     PageResponse<PostResponse> posts;
 
@@ -62,7 +83,7 @@
 
     protected async Task loadPosts()
     {
-        posts = await PostService.loadPosts(Page, PageSize, ThreadId, SearchTerm, OrderBy);
+        posts = await PostService.loadPosts(Page, PageSize, ThreadId, SearchTerm, OrderBy, Type, DaysAtTown);
     }
 
     protected async Task SearchClickHandler(string searchTerm)
@@ -81,5 +102,27 @@
         Page = page.ToString();
         await loadPosts();
     }
+
+    protected async Task OnTabChange(string type)
+    {
+        if(Type != type)
+        {
+            if (type == "event") DaysCollapsed = false;
+            else DaysCollapsed = true;
+            Type = type;
+            await PagerPageChanged(1);
+        }
+    }
+
+    protected void OnDaysInput(ChangeEventArgs e)
+    {
+        DaysAtTown = e.Value.ToString();
+    }
+
+    protected async Task OnDaysChange()
+    {
+        await PagerPageChanged(1);
+    }
+
 
 }

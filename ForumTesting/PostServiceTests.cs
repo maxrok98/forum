@@ -32,7 +32,7 @@ namespace ForumTesting
             var id = Guid.NewGuid().ToString();
             var name = "Post for test";
             var content = "Content for testing";
-            var post = new Post
+            var post = new Place
             {
                 Id = id,
                 Name = name,
@@ -70,7 +70,7 @@ namespace ForumTesting
             var id = Guid.NewGuid().ToString();
             var name = "Post for test";
             var content = "Content for testing";
-            var post = new Post
+            var post = new Place
             {
                 Id = id,
                 Name = name,
@@ -91,7 +91,7 @@ namespace ForumTesting
             var id = Guid.NewGuid().ToString();
             var name = "Post for test";
             var content = "Content for testing";
-            var post = new Post
+            var post = new Place
             {
                 Id = id,
                 Name = name,
@@ -113,7 +113,7 @@ namespace ForumTesting
             var id = Guid.NewGuid().ToString();
             var name = "Post for test";
             var content = "Content for testing";
-            var post = new Post
+            var post = new Place
             {
                 Id = id,
                 Name = name,
@@ -134,7 +134,7 @@ namespace ForumTesting
             var id = Guid.NewGuid().ToString();
             var name = "Post for test";
             var content = "Content for testing";
-            var post = new Post
+            var post = new Place
             {
                 Id = id,
                 Name = name,
@@ -142,7 +142,7 @@ namespace ForumTesting
             };
             name = "Name to update";
             content = "Content to update";
-            var postU = new Post
+            var postU = new Place
             {
                 Name = name,
                 Content = content
@@ -163,7 +163,7 @@ namespace ForumTesting
             var id = Guid.NewGuid().ToString();
             var name = "Post for test";
             var content = "Content for testing";
-            var post = new Post
+            var post = new Place
             {
                 Id = id,
                 Name = name,
@@ -171,7 +171,7 @@ namespace ForumTesting
             };
             name = "Name to update";
             content = "Content to update";
-            var postU = new Post
+            var postU = new Place
             {
                 Name = name,
                 Content = content
@@ -192,7 +192,7 @@ namespace ForumTesting
             var id = Guid.NewGuid().ToString();
             var name = "Post for test";
             var content = "Content for testing";
-            var post = new Post
+            var post = new Place
             {
                 Id = id,
                 Name = name,
@@ -200,7 +200,7 @@ namespace ForumTesting
             };
             name = "Name to update";
             content = "Content to update";
-            var postU = new Post
+            var postU = new Place
             {
                 Name = name,
                 Content = content
@@ -222,7 +222,7 @@ namespace ForumTesting
             var id = Guid.NewGuid().ToString();
             var name = "Post for test";
             var content = "Content for testing";
-            var post = new Post
+            var post = new Place
             {
                 Id = id,
                 Name = name,
@@ -274,7 +274,7 @@ namespace ForumTesting
             var id = Guid.NewGuid().ToString();
             var name = "Post for test";
             var content = "Content for testing";
-            var post = new Post
+            var post = new Place
             {
                 Id = id,
                 Name = name,
@@ -318,7 +318,7 @@ namespace ForumTesting
                 UserId = userId,
                 PostId = postId
             };
-            _postRepoMock.Setup(x => x.GetAsync(postId)).ReturnsAsync(new Post());
+            _postRepoMock.Setup(x => x.GetAsync(postId)).ReturnsAsync(new Place());
             _voteRepoMock.Setup(x => x.FindInstance(postId, userId)).ReturnsAsync(vote);
 
             //Act
@@ -341,7 +341,7 @@ namespace ForumTesting
                 UserId = userId,
                 PostId = postId
             };
-            _postRepoMock.Setup(x => x.GetAsync(postId)).ReturnsAsync(new Post());
+            _postRepoMock.Setup(x => x.GetAsync(postId)).ReturnsAsync(new Place());
             _voteRepoMock.Setup(x => x.FindInstance(postId, userId)).ReturnsAsync(() => null);
 
             //Act
@@ -381,7 +381,7 @@ namespace ForumTesting
                 UserId = userId,
                 PostId = postId
             };
-            _postRepoMock.Setup(x => x.GetAsync(postId)).ReturnsAsync(new Post());
+            _postRepoMock.Setup(x => x.GetAsync(postId)).ReturnsAsync(new Place());
             _voteRepoMock.Setup(x => x.FindInstance(postId, userId)).ReturnsAsync(() => null);
 
             //Act
@@ -404,7 +404,7 @@ namespace ForumTesting
                 UserId = userId,
                 PostId = postId
             };
-            _postRepoMock.Setup(x => x.GetAsync(postId)).ReturnsAsync(new Post());
+            _postRepoMock.Setup(x => x.GetAsync(postId)).ReturnsAsync(new Place());
             _voteRepoMock.Setup(x => x.FindInstance(postId, userId)).ReturnsAsync(vote);
 
             //Act

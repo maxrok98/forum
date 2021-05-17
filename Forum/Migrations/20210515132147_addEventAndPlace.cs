@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Forum.Migrations
 {
-    public partial class InitMigration : Migration
+    public partial class addEventAndPlace : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -230,7 +230,9 @@ namespace Forum.Migrations
                     Content = table.Column<string>(maxLength: 100000, nullable: false),
                     ImageLink = table.Column<string>(nullable: true),
                     Date = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
-                    Rating = table.Column<int>(nullable: false)
+                    Rating = table.Column<int>(nullable: false),
+                    Discriminator = table.Column<string>(nullable: false),
+                    DateOfEvent = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -364,8 +366,8 @@ namespace Forum.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "89668daa-132c-49c7-93a5-b1b1a8d56b74", "c7439023-8b80-4694-ab1f-f73e40e5b511", "Admin", "ADMIN" },
-                    { "b5c39c0b-6ad1-4afe-a71f-69c49b9c21e2", "57df32e4-fd9f-4df5-a0c1-c90f5f85f053", "User", "USER" }
+                    { "e8c6906e-c1c0-43fa-aa89-034ec2e6961b", "74f577af-0bf8-4d9b-b54d-79db80cec2a0", "Admin", "ADMIN" },
+                    { "8642a250-3c71-4e43-9b9d-090f836c6c08", "bc866c43-2980-4991-95af-e26ec6b2e05f", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
@@ -373,8 +375,8 @@ namespace Forum.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "ImageLink", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PublicKey", "SecurityStamp", "TwoFactorEnabled", "UserName", "Year" },
                 values: new object[,]
                 {
-                    { "c5a470f0-beeb-4d99-8c82-5982195ad5ac", 0, "fbaadb27-9280-4966-ba2a-975797284a11", "admin@example.com", false, null, false, null, "ADMIN@EXAMPLE.COM", "ADMIN", "AQAAAAEAACcQAAAAEHC11mIEyLkXjpA1fz7f50ndGZQ6dAgl+vd/6r8A+10oyPdx2G7pnIFpWfDPyQ3H1g==", null, false, null, "071f7014-1d47-40f1-88bc-47437a2b33e7", false, "admin", 0 },
-                    { "9b9f10d9-220d-4805-90b2-4d5e79da2da0", 0, "8b886c62-6d71-4257-aafd-83cad67ec203", "new@example.com", false, null, false, null, "NEW@EXAMPLE.COM", "NEW", "AQAAAAEAACcQAAAAEDi7umAQDD2XJh0Ipv50oY4qtLlaoSmdIzNKhuyrFjTJKjC+icVSkEv8CeMoP2vqZQ==", null, false, null, "2a3aaf24-df40-4e50-b43d-ad572c27e670", false, "new", 0 }
+                    { "5736d00c-ee3f-4ea8-b965-d5a21642d06a", 0, "a616fab4-1f23-44de-b672-3d3d5094ad97", "admin@example.com", false, null, false, null, "ADMIN@EXAMPLE.COM", "ADMIN", "AQAAAAEAACcQAAAAEOloD83Yh1eXL0RLRBe4CN7GafunnM07yJZYKtRkDNc8aL3FL8QINnWFsuJux6dInw==", null, false, null, "15b1cde1-84a8-4e41-b7d2-d84ac13f8577", false, "admin", 0 },
+                    { "dde8b42a-591c-46e1-9de9-49be6442583e", 0, "b4757807-761d-423b-bf5d-cb67ae3c26f3", "new@example.com", false, null, false, null, "NEW@EXAMPLE.COM", "NEW", "AQAAAAEAACcQAAAAEE80ZeBy3h0m+/Q1QYesTaTemFLnN0yi0VYYZd0L86nQ1vBkQ9nHUezJ0fZUt67umg==", null, false, null, "c52134f0-ba04-4756-82ab-ac5c85628582", false, "new", 0 }
                 });
 
             migrationBuilder.InsertData(
@@ -382,8 +384,8 @@ namespace Forum.Migrations
                 columns: new[] { "Id", "Description", "ImageLink", "Name" },
                 values: new object[,]
                 {
-                    { "84bf2fbf-1966-46e0-a996-e490e2d42122", "Thread about computer science", null, "CS" },
-                    { "1b8dbad2-0e9c-4f09-ab19-5fb7c5e76ff4", "Thread about electrical engeneering", null, "Electrical engeneering" }
+                    { "a126c861-36b8-4823-8d4f-65dd12e02b23", "Thread about computer science", null, "CS" },
+                    { "a897c53c-54a2-43c5-a914-326d1ef2d2bc", "Thread about electrical engeneering", null, "Electrical engeneering" }
                 });
 
             migrationBuilder.InsertData(
@@ -391,28 +393,39 @@ namespace Forum.Migrations
                 columns: new[] { "UserId", "RoleId" },
                 values: new object[,]
                 {
-                    { "c5a470f0-beeb-4d99-8c82-5982195ad5ac", "89668daa-132c-49c7-93a5-b1b1a8d56b74" },
-                    { "9b9f10d9-220d-4805-90b2-4d5e79da2da0", "b5c39c0b-6ad1-4afe-a71f-69c49b9c21e2" }
+                    { "5736d00c-ee3f-4ea8-b965-d5a21642d06a", "e8c6906e-c1c0-43fa-aa89-034ec2e6961b" },
+                    { "dde8b42a-591c-46e1-9de9-49be6442583e", "8642a250-3c71-4e43-9b9d-090f836c6c08" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Posts",
-                columns: new[] { "Id", "Content", "ImageLink", "Name", "Rating", "ThreadId", "UserId" },
-                values: new object[,]
-                {
-                    { "d0922614-5069-4f07-99da-d42ba9596576", "Here we are going to talk about OS", null, "Little bit about OS", 0, "84bf2fbf-1966-46e0-a996-e490e2d42122", null },
-                    { "6d26e78b-93bc-47a5-a41b-7bc0cf021777", "ARM is beter then x86", null, "Little bit about ARM architecture", 0, "1b8dbad2-0e9c-4f09-ab19-5fb7c5e76ff4", null }
-                });
+                columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Name", "Rating", "ThreadId", "UserId", "DateOfEvent" },
+                values: new object[] { "8fa4c18f-1c26-4738-879b-31ce028392ed", "Secont event", "Event", null, "Event 2", 0, "a897c53c-54a2-43c5-a914-326d1ef2d2bc", "5736d00c-ee3f-4ea8-b965-d5a21642d06a", new DateTime(2021, 5, 16, 16, 21, 46, 604, DateTimeKind.Local).AddTicks(5507) });
+
+            migrationBuilder.InsertData(
+                table: "Posts",
+                columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Name", "Rating", "ThreadId", "UserId" },
+                values: new object[] { "0f8b5f51-856f-467d-ac1d-29647ad68658", "ARM is beter then x86", "Place", null, "Little bit about ARM architecture", 0, "a897c53c-54a2-43c5-a914-326d1ef2d2bc", "5736d00c-ee3f-4ea8-b965-d5a21642d06a" });
+
+            migrationBuilder.InsertData(
+                table: "Posts",
+                columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Name", "Rating", "ThreadId", "UserId", "DateOfEvent" },
+                values: new object[] { "49dd1460-4b04-4249-a32d-282fcf54ff29", "First event", "Event", null, "Event 1", 0, "a126c861-36b8-4823-8d4f-65dd12e02b23", "dde8b42a-591c-46e1-9de9-49be6442583e", new DateTime(2021, 5, 16, 16, 21, 46, 600, DateTimeKind.Local).AddTicks(9931) });
+
+            migrationBuilder.InsertData(
+                table: "Posts",
+                columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Name", "Rating", "ThreadId", "UserId" },
+                values: new object[] { "3494f2c5-4966-44c9-bcaa-4360daf44c96", "Here we are going to talk about OS", "Place", null, "Little bit about OS", 0, "a126c861-36b8-4823-8d4f-65dd12e02b23", "dde8b42a-591c-46e1-9de9-49be6442583e" });
 
             migrationBuilder.InsertData(
                 table: "Coments",
                 columns: new[] { "Id", "ParentComentId", "PostId", "Text", "UserId" },
-                values: new object[] { "da870dd8-4e87-4473-92af-0e15ae55fcfe", null, "d0922614-5069-4f07-99da-d42ba9596576", "Realy cool article", null });
+                values: new object[] { "c58de694-692c-4ba3-a746-3114af9f6196", null, "8fa4c18f-1c26-4738-879b-31ce028392ed", "ARM the best!!", null });
 
             migrationBuilder.InsertData(
                 table: "Coments",
                 columns: new[] { "Id", "ParentComentId", "PostId", "Text", "UserId" },
-                values: new object[] { "f3f70e57-8fed-4a6f-aac7-01cae4c6b0dd", null, "6d26e78b-93bc-47a5-a41b-7bc0cf021777", "ARM the best!!", null });
+                values: new object[] { "c1c09a1b-9c36-4e6b-a24d-4b7934fab507", null, "49dd1460-4b04-4249-a32d-282fcf54ff29", "Realy cool article", null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

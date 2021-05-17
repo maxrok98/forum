@@ -23,9 +23,12 @@ namespace Forum.Repositories
             return await _context.Posts.CountAsync();
         }
 
-        public async Task<int> GetCountOfFilteredPostsInThreadAsync(string postName, string threadId)
+        public async Task<int> GetCountOfFilteredPostsInThreadAsync(string postName, string threadId, string type, string daysAtTown)
         {
             IQueryable<Post> query = _context.Posts;
+            if (type == "event") 
+                query = _context.Posts.OfType<Event>().Where(p => p.DateOfEvent >= DateTime.Now && p.DateOfEvent < DateTime.Now.AddDays(Convert.ToInt32(daysAtTown)));
+            if (type == "place") query = _context.Posts.OfType<Place>();
             if (!string.IsNullOrEmpty(postName))
                 query = query.Where(p => p.Name.Contains(postName));
             if (!string.IsNullOrEmpty(threadId))
@@ -44,9 +47,13 @@ namespace Forum.Repositories
         {
             return await _context.Posts.Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User).ToListAsync();
         }
-        public async Task<IEnumerable<Post>> GetFilteredAndPagedFromThreadAsync(string postName, string threadId, PaginationFilter paginationFilter, string orderByQueryString)
+        public async Task<IEnumerable<Post>> GetFilteredAndPagedFromThreadAsync(string postName, string threadId, PaginationFilter paginationFilter, string orderByQueryString, string type, string daysAtTown)
         {
-            IQueryable<Post> query = _context.Posts.Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User);
+            IQueryable<Post> query = _context.Posts;
+            if (type == "event") 
+                query = _context.Posts.OfType<Event>().Where(p => p.DateOfEvent >= DateTime.Now && p.DateOfEvent < DateTime.Now.AddDays(Convert.ToInt32(daysAtTown)));
+            if (type == "place") query = _context.Posts.OfType<Place>();
+            query = query.Include(p => p.Coments).ThenInclude(p => p.SubComents).Include(p => p.Thread).Include(p => p.User);
             if (!string.IsNullOrEmpty(postName))
                 query = query.Where(p => p.Name.Contains(postName));
             if (!string.IsNullOrEmpty(threadId))

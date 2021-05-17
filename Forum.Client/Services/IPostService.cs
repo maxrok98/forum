@@ -8,6 +8,6 @@ namespace Forum.Client.Services
 {
     interface IPostService
     {
-        Task<PageResponse<PostResponse>> loadPosts(string Page, string PageSize, string ThreadId, string SearchTerm, string OrderBy);
+        Task<PageResponse<PostResponse>> loadPosts(string Page, string PageSize, string ThreadId, string SearchTerm, string OrderBy, string Type, string DaysAtTown);
     }
 }

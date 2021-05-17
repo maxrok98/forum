@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +24,11 @@ namespace Forum.Contracts.Responses
         public string ImageLink { get; set; }
 
         public DateTime Date { get; set; }
+        public DateTime DateOfEvent { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PostType PostType { get; set; }
+
         public int Rating { get; set; }
         public virtual ICollection<ComentResponse> Coments { get; set; }
     }

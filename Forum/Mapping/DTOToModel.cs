@@ -16,6 +16,9 @@ namespace Forum.Mapping
         {
             CreateMap<ThreadRequest, Thread>().ForMember(dest => dest.ImageLink, opts => opts.MapFrom(src => Convert.ToBase64String(src.Image)));
             CreateMap<PostRequest, Post>().ForMember(dest => dest.ImageLink, opts => opts.MapFrom(src => Convert.ToBase64String(src.Image)));
+            CreateMap<PostRequest, Event>().ForMember(dest => dest.ImageLink, opts => opts.MapFrom(src => Convert.ToBase64String(src.Image)))
+                                            .ForMember(dest => dest.DateOfEvent, opts => opts.MapFrom(src => src.DateOfEvent));
+            CreateMap<PostRequest, Place>().ForMember(dest => dest.ImageLink, opts => opts.MapFrom(src => Convert.ToBase64String(src.Image)));
             CreateMap<ComentRequest, Coment>();
             CreateMap<PaginationQuery, PaginationFilter>();
         }

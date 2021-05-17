@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -17,5 +19,10 @@ namespace Forum.Contracts.Requests
         public string Content { get; set; }
     
         public byte[] Image { get; set; }
+
+        public DateTime DateOfEvent { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PostType PostType { get; set; }
     }
 }

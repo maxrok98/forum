@@ -20,12 +20,18 @@
     </div>
     <div class="form-group">
         <InputSelect id="thread" class="form-control" @bind-Value="newPost.ThreadId">
-            @foreach(var thread in threads)
+            @foreach (var thread in threads)
             {
                 <option value="@thread.Id">@thread.Name</option>
             }
         </InputSelect>
-        <ValidationMessage For="@(() => newPost.ThreadId)"/>
+        <ValidationMessage For="@(() => newPost.ThreadId)" />
+    </div>
+    <div class="input-group date" data-provide="datepicker">
+        <input type="text" class="form-control">
+        <div class="input-group-addon">
+            <span class="glyphicon glyphicon-th"></span>
+        </div>
     </div>
 
     <InputFile OnChange="HandleSelection" />

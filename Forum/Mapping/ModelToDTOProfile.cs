@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Forum.Models;
 using Forum.Contracts.Responses;
+using Forum.Contracts;
 
 namespace Forum.Mapping
 {
@@ -15,7 +16,10 @@ namespace Forum.Mapping
             CreateMap<Thread, ThreadResponse>().ForMember(dest => dest.NumberOfSubscription, opt => opt.MapFrom(src => src.Subscriptions.Count()))
                                                .ForMember(dest => dest.NumberOfPost, opt => opt.MapFrom(src => src.Posts.Count()));
             CreateMap<Post, PostResponse>().ForMember(dest => dest.ThreadName, opt => opt.MapFrom(src => src.Thread.Name))
-                                         .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
+                                         .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                                         .ForMember(dest => dest.PostType, opt => opt.MapFrom(src =>
+                                             src.GetType() == typeof(Event) ? PostType.Event : PostType.Place
+                                         ));
 
             CreateMap<Coment, ComentResponse>().ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
                                                 .ForMember(dest => dest.UserImage, opt => opt.MapFrom(src => src.User.ImageLink));
