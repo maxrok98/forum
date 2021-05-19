@@ -4,9 +4,62 @@
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
 
-<h3>CreatePost</h3>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 align-self-center">
+            <div class="m-3 m-lg-5">
 
-<EditForm Model="@newPost" OnValidSubmit="CreateNewPost">
+                <div class="text-center mt-4">
+                    <h1 class="h3">Create post</h1>
+                </div>
+
+                <EditForm Model="@newPost" OnValidSubmit="CreateNewPost">
+                    <DataAnnotationsValidator />
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <InputText id="name" class="form-control" placeholder="Name" @bind-Value="newPost.Name" />
+                        <ValidationMessage For="@(() => newPost.Name)" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Content</label>
+                        <InputTextArea id="content" class="form-control" placeholder="Content" @bind-Value="newPost.Content" />
+                        <ValidationMessage For="@(() => newPost.Content)" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Thread</label>
+                        <InputSelect id="thread" class="form-control" @bind-Value="newPost.ThreadId">
+                            @foreach (var thread in threads)
+                            {
+                                <option value="@thread.Id">@thread.Name</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => newPost.ThreadId)" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Post type</label>
+                        <InputSelect class="form-control" @bind-Value="newPost.PostType">
+                            <option value="@PostType.Place" selected>Place</option>
+                            <option value="@PostType.Event">Event</option>
+                        </InputSelect>
+                    </div>
+                    <div class="mb-3 @(newPost.PostType == PostType.Event ? "" : "collapse")">
+                        <label class="form-label">Post type</label>
+                        <InputDateTime id="createdDate" class="form-control col-sm-8" @bind-Value="newPost.DateOfEvent"></InputDateTime>
+                        <ValidationMessage class="offset-sm-3 col-sm-8" For="(()=>newPost.DateOfEvent)"></ValidationMessage>
+                    </div>
+                    <div class="mb-3">
+                        <InputFile class="form-control" OnChange="HandleSelection" />
+                    </div>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-block btn-info">Create</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<EditForm Model="@newPost" OnValidSubmit="CreateNewPost">
     <DataAnnotationsValidator />
 
     <h1 class="h3 mb-3 text-center">Create new post</h1>
@@ -27,11 +80,18 @@
         </InputSelect>
         <ValidationMessage For="@(() => newPost.ThreadId)" />
     </div>
-    <div class="input-group date" data-provide="datepicker">
-        <input type="text" class="form-control">
-        <div class="input-group-addon">
-            <span class="glyphicon glyphicon-th"></span>
-        </div>
+    <div class="form-group">
+        <InputSelect class="form-control" @bind-Value="newPost.PostType">
+            <option value="@PostType.Place" selected>Place</option>
+            <option value="@PostType.Event">Event</option>
+        </InputSelect>
+    </div>
+    <div class="@(newPost.PostType == PostType.Event ? "" : "collapse")">
+    <div class="form-group">
+        <label for="createdDate" class="col-sm-3">Date of event:</label>
+        <InputDateTime id="createdDate" class="form-control col-sm-8" @bind-Value="newPost.DateOfEvent"></InputDateTime>
+        <ValidationMessage class="offset-sm-3 col-sm-8" For="(()=>newPost.DateOfEvent)"></ValidationMessage>
+    </div>
     </div>
 
     <InputFile OnChange="HandleSelection" />
@@ -44,7 +104,7 @@
     <div class="form-group">
         <button type="submit" class="btn btn-lg btn-primary btn-block">Create</button>
     </div>
-</EditForm>
+</EditForm>*@
 
 
 @code {

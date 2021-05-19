@@ -19,7 +19,8 @@ namespace Forum.Mapping
                                          .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
                                          .ForMember(dest => dest.PostType, opt => opt.MapFrom(src =>
                                              src.GetType() == typeof(Event) ? PostType.Event : PostType.Place
-                                         ));
+                                         ))
+                                         .ForMember(dest => dest.DateOfEvent, opt => opt.MapFrom(src => src.GetType() == typeof(Event) ? ((Event)src).DateOfEvent : DateTime.MinValue));
 
             CreateMap<Coment, ComentResponse>().ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
                                                 .ForMember(dest => dest.UserImage, opt => opt.MapFrom(src => src.User.ImageLink));

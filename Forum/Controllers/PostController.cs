@@ -75,8 +75,6 @@ namespace Forum.Controllers
         public async Task<IActionResult> Post([FromBody] PostRequest post)
         {
             Post pt;
-            post.PostType = PostType.Event;
-            post.DateOfEvent = DateTime.Now.AddDays(1);
             if(post.PostType == PostType.Event)
                 pt = _mapper.Map<PostRequest, Event>(post);
             else

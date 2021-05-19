@@ -1,5 +1,11 @@
 ﻿<!-- Blog Post -->
 <div class="card mb-4">
+    @if(post.PostType == PostType.Event)
+    {
+        <div class="card-header">
+            Date of event: @post.DateOfEvent
+        </div>
+    }
     @if(post.ImageLink == null || post.ImageLink == String.Empty)
     {
         <img class="card-img-top" src="/img/post_placeholder.gif" width="750" />

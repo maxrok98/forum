@@ -122,7 +122,7 @@ namespace Forum.Services
 
         public async Task<PostResponse> AddAsync(Post post, PostType postType)
         {
-            if(post.ImageLink != null || post.ImageLink != String.Empty)
+            if(post.ImageLink != null && post.ImageLink != String.Empty)
             {
                 var res = await _imageHostService.SaveImageAsync(post.ImageLink);
                 if(res == null || !res.success)

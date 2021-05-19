@@ -3,9 +3,55 @@
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
 @inject IAuthService AuthService
 
-<h3>RegisterUser</h3>
 
-<div class="form-signin">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 align-self-center">
+            <div class="m-3 m-lg-5">
+
+                <div class="text-center mt-4">
+                    <h1 class="h3">Please sign up</h1>
+                </div>
+
+            <EditForm Model="@user" OnValidSubmit="RegUser">
+                <DataAnnotationsValidator />
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <InputText id="username" class="form-control" placeholder="Username" @bind-Value="user.UserName" />
+                        <ValidationMessage For="@(() => user.UserName)" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <InputText id="email" class="form-control" placeholder="Email" @bind-Value="user.Email" />
+                        <ValidationMessage For="@(() => user.Email)" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <InputText id="Password" class="form-control" type="password" placeholder="Password" @bind-Value="user.Password" />
+                        <ValidationMessage For="@(() => user.Password)" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Confirm password</label>
+                        <InputText id="ConfirmPassword" class="form-control" type="password" placeholder="Confirm Password" @bind-Value="user.ConfirmPassword" />
+                        <ValidationMessage For="@(() => user.ConfirmPassword)" />
+                    </div>
+                    <div class="mb-3">
+                        <InputFile class="form-control" OnChange="HandleSelection" />
+                    </div>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-block btn-success">Sign up</button>
+                    </div>
+
+                    <div class="text-center text-muted mt-2">
+                        Already have an account? <a href="user/Login">Sign in</a>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="form-signin">
     <div class="text-center">
         <img src="img/blazorbrand.png" height="150" />
     </div>
@@ -46,7 +92,7 @@
         <p>@er</p>
     }
 
-</div>
+</div>*@
 
 
 @code {

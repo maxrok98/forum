@@ -20,7 +20,8 @@ namespace Forum.Contracts.Requests
     
         public byte[] Image { get; set; }
 
-        public DateTime DateOfEvent { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? DateOfEvent { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
         public PostType PostType { get; set; }

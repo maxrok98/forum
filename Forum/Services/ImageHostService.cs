@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Forum.Services
@@ -20,12 +21,14 @@ namespace Forum.Services
         {
             var httpClient = _clientFactory.CreateClient("image_store");
 
-            var content = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("image", base64string)
-            });
+            //var jsonString = JsonConvert.SerializeObject(new KeyValuePair<string, string>("image", base64string));
+            var content = new StringContent(base64string, Encoding.UTF8, "application/x-www-form-urlencoded");
 
-            var result = await httpClient.PostAsync("", content);
+            var form = new MultipartFormDataContent();
+            form.Add(content, "image");
+
+
+            var result = await httpClient.PostAsync("", form);
             if (!result.IsSuccessStatusCode)
             {
                 return null;

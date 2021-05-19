@@ -23,9 +23,9 @@ namespace Forum.Models
         public ForumAppDbContext(DbContextOptions<ForumAppDbContext> options)
                     : base(options)
         {
-            Database.EnsureDeleted(); // later switch to Database.Migrate(); - applies migration to db
-            Database.EnsureCreated();
-            //Database.Migrate();
+            //Database.EnsureDeleted(); // later switch to Database.Migrate(); - applies migration to db
+            //Database.EnsureCreated();
+            Database.Migrate();
             //Configuration = configuration;
         }
         protected override void OnConfiguring(DbContextOptionsBuilder options)
