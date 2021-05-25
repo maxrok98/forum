@@ -3,6 +3,10 @@
 @inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
+@inject IJSRuntime jsRuntime
+@using System.Drawing
+@using BlazorLeaflet.Models
+@using BlazorLeaflet.Models.Events
 
 <div class="container-fluid">
     <div class="row">
@@ -50,6 +54,10 @@
                     <div class="mb-3">
                         <InputFile class="form-control" OnChange="HandleSelection" />
                     </div>
+                    <!-- You must wrap the map component in a container setting its actual size. -->
+                    <div id="mapContainer" style="width: 100%; height: 500px;">
+                        <LeafletMap Map="_map" />
+                    </div>
                     <div class="text-center mt-4">
                         <button type="submit" class="btn btn-block btn-info">Create</button>
                     </div>
@@ -58,53 +66,6 @@
         </div>
     </div>
 </div>
-
-@*<EditForm Model="@newPost" OnValidSubmit="CreateNewPost">
-    <DataAnnotationsValidator />
-
-    <h1 class="h3 mb-3 text-center">Create new post</h1>
-    <div class="form-group">
-        <InputText id="name" class="form-control" placeholder="Name" @bind-Value="newPost.Name" />
-        <ValidationMessage For="@(() => newPost.Name)" />
-    </div>
-    <div class="form-group">
-        <InputTextArea id="content" class="form-control" placeholder="Content" @bind-Value="newPost.Content" />
-        <ValidationMessage For="@(() => newPost.Content)" />
-    </div>
-    <div class="form-group">
-        <InputSelect id="thread" class="form-control" @bind-Value="newPost.ThreadId">
-            @foreach (var thread in threads)
-            {
-                <option value="@thread.Id">@thread.Name</option>
-            }
-        </InputSelect>
-        <ValidationMessage For="@(() => newPost.ThreadId)" />
-    </div>
-    <div class="form-group">
-        <InputSelect class="form-control" @bind-Value="newPost.PostType">
-            <option value="@PostType.Place" selected>Place</option>
-            <option value="@PostType.Event">Event</option>
-        </InputSelect>
-    </div>
-    <div class="@(newPost.PostType == PostType.Event ? "" : "collapse")">
-    <div class="form-group">
-        <label for="createdDate" class="col-sm-3">Date of event:</label>
-        <InputDateTime id="createdDate" class="form-control col-sm-8" @bind-Value="newPost.DateOfEvent"></InputDateTime>
-        <ValidationMessage class="offset-sm-3 col-sm-8" For="(()=>newPost.DateOfEvent)"></ValidationMessage>
-    </div>
-    </div>
-
-    <InputFile OnChange="HandleSelection" />
-    <p>@status</p>
-    @if (!string.IsNullOrEmpty(imageDataUri))
-    {
-        <img src="@imageDataUri" />
-    }
-
-    <div class="form-group">
-        <button type="submit" class="btn btn-lg btn-primary btn-block">Create</button>
-    </div>
-</EditForm>*@
 
 
 @code {
@@ -116,9 +77,38 @@
     List<ThreadResponse> threads = new List<ThreadResponse>();
     string selectedThreadId;
 
+    private Map _map;
+    private LatLng _markerLatLng = new LatLng(48.286507f, 25.937176f);
 
     protected override async Task OnInitializedAsync()
     {
+        var marker = new Marker(_markerLatLng)
+        {
+            Draggable = true,
+            Title = "Marker 1",
+            Tooltip = new Tooltip { Content = "Click and drag to move me" }
+        };
+
+        _map = new Map(jsRuntime)
+        {
+            Center = _markerLatLng,
+            Zoom = 16.0f,
+            FullscreenControl = true
+        };
+
+        _map.OnInitialized += () =>
+        {
+            _map.AddLayer(new TileLayer
+            {
+                UrlTemplate = "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                Attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+            });
+            _map.AddLayer(marker);
+        };
+
+        marker.OnMove += OnDrag;
+        marker.OnMoveEnd += OnDragEnd;
+
         var responce = await Http.GetAsync(ApiRoutes.Threads.GetAll);
         if (responce.IsSuccessStatusCode)
         {
@@ -130,9 +120,24 @@
         }
     }
 
+    private void OnDrag(Marker marker, DragEvent evt)
+    {
+        _markerLatLng = evt.LatLng;
+        StateHasChanged();
+    }
+
+    private async void OnDragEnd(Marker marker, Event e)
+    {
+        marker.Position = _markerLatLng;
+        Console.WriteLine("I am now at {0:0.00}° lat, {1:0.00}° lng", _markerLatLng.Lat, _markerLatLng.Lng);
+        await LeafletInterops.UpdatePopupContent(jsRuntime, _map.Id, marker);
+    }
+
     async Task CreateNewPost()
     {
         newPost.Image = base64image;
+        newPost.Latitude = _markerLatLng.Lat;
+        newPost.Longitude = _markerLatLng.Lng;
 
         var responce = await Http.PostAsJsonAsync(ApiRoutes.Posts.Create, newPost);
 
@@ -141,7 +146,7 @@
             Toaster.Success("You succesfuly created post!");
             UriHelper.NavigateTo("/userpage");
         }
-        else if(responce.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        else if (responce.StatusCode == System.Net.HttpStatusCode.Unauthorized)
         {
             Toaster.Warning("You have to login to create a post");
         }

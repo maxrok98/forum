@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Forum.Migrations
 {
-    public partial class addEventAndPlace : Migration
+    public partial class InitMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -231,6 +231,8 @@ namespace Forum.Migrations
                     ImageLink = table.Column<string>(nullable: true),
                     Date = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     Rating = table.Column<int>(nullable: false),
+                    Latitude = table.Column<float>(nullable: false),
+                    Longitude = table.Column<float>(nullable: false),
                     Discriminator = table.Column<string>(nullable: false),
                     DateOfEvent = table.Column<DateTime>(nullable: true)
                 },
@@ -366,8 +368,8 @@ namespace Forum.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "e8c6906e-c1c0-43fa-aa89-034ec2e6961b", "74f577af-0bf8-4d9b-b54d-79db80cec2a0", "Admin", "ADMIN" },
-                    { "8642a250-3c71-4e43-9b9d-090f836c6c08", "bc866c43-2980-4991-95af-e26ec6b2e05f", "User", "USER" }
+                    { "e8c6906e-c1c0-43fa-aa89-034ec2e6961b", "d6f3cbd2-252d-493f-b059-ae0443392348", "Admin", "ADMIN" },
+                    { "8642a250-3c71-4e43-9b9d-090f836c6c08", "31b8f996-552d-4cc3-aff1-25b88c06fb1d", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
@@ -375,8 +377,8 @@ namespace Forum.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "ImageLink", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PublicKey", "SecurityStamp", "TwoFactorEnabled", "UserName", "Year" },
                 values: new object[,]
                 {
-                    { "5736d00c-ee3f-4ea8-b965-d5a21642d06a", 0, "a616fab4-1f23-44de-b672-3d3d5094ad97", "admin@example.com", false, null, false, null, "ADMIN@EXAMPLE.COM", "ADMIN", "AQAAAAEAACcQAAAAEOloD83Yh1eXL0RLRBe4CN7GafunnM07yJZYKtRkDNc8aL3FL8QINnWFsuJux6dInw==", null, false, null, "15b1cde1-84a8-4e41-b7d2-d84ac13f8577", false, "admin", 0 },
-                    { "dde8b42a-591c-46e1-9de9-49be6442583e", 0, "b4757807-761d-423b-bf5d-cb67ae3c26f3", "new@example.com", false, null, false, null, "NEW@EXAMPLE.COM", "NEW", "AQAAAAEAACcQAAAAEE80ZeBy3h0m+/Q1QYesTaTemFLnN0yi0VYYZd0L86nQ1vBkQ9nHUezJ0fZUt67umg==", null, false, null, "c52134f0-ba04-4756-82ab-ac5c85628582", false, "new", 0 }
+                    { "5736d00c-ee3f-4ea8-b965-d5a21642d06a", 0, "0cc4bf20-3ceb-4276-b778-0c8dafd7f1d8", "admin@example.com", false, null, false, null, "ADMIN@EXAMPLE.COM", "ADMIN", "AQAAAAEAACcQAAAAEEgXhiAjfw8yv3ZKVwnudnFmNOvplG+3mfZgHv7thhc5kLJSMHa0fr3zgxkELXW8Ug==", null, false, null, "795b91fa-33ee-4824-8039-f44c817e4b00", false, "admin", 0 },
+                    { "dde8b42a-591c-46e1-9de9-49be6442583e", 0, "4b15b23f-833c-4d39-8c23-dc0c73190dd2", "new@example.com", false, null, false, null, "NEW@EXAMPLE.COM", "NEW", "AQAAAAEAACcQAAAAEEsMb7brNLsdXFRKv6gUqpR/kiwG9fDfcqRkN2CeijDVBSLcMF9qAkR2a+w6txRQrA==", null, false, null, "5f975186-fb98-484d-b984-c52a134e0cd9", false, "new", 0 }
                 });
 
             migrationBuilder.InsertData(
@@ -399,33 +401,33 @@ namespace Forum.Migrations
 
             migrationBuilder.InsertData(
                 table: "Posts",
-                columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Name", "Rating", "ThreadId", "UserId", "DateOfEvent" },
-                values: new object[] { "8fa4c18f-1c26-4738-879b-31ce028392ed", "Secont event", "Event", null, "Event 2", 0, "a897c53c-54a2-43c5-a914-326d1ef2d2bc", "5736d00c-ee3f-4ea8-b965-d5a21642d06a", new DateTime(2021, 5, 16, 16, 21, 46, 604, DateTimeKind.Local).AddTicks(5507) });
+                columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Latitude", "Longitude", "Name", "Rating", "ThreadId", "UserId", "DateOfEvent" },
+                values: new object[] { "8fa4c18f-1c26-4738-879b-31ce028392ed", "Secont event", "Event", null, 48.2865f, 25.937166f, "Event 2", 0, "a897c53c-54a2-43c5-a914-326d1ef2d2bc", "5736d00c-ee3f-4ea8-b965-d5a21642d06a", new DateTime(2021, 5, 25, 14, 17, 35, 521, DateTimeKind.Local).AddTicks(1471) });
 
             migrationBuilder.InsertData(
                 table: "Posts",
-                columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Name", "Rating", "ThreadId", "UserId" },
-                values: new object[] { "0f8b5f51-856f-467d-ac1d-29647ad68658", "ARM is beter then x86", "Place", null, "Little bit about ARM architecture", 0, "a897c53c-54a2-43c5-a914-326d1ef2d2bc", "5736d00c-ee3f-4ea8-b965-d5a21642d06a" });
+                columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Latitude", "Longitude", "Name", "Rating", "ThreadId", "UserId" },
+                values: new object[] { "0f8b5f51-856f-467d-ac1d-29647ad68658", "ARM is beter then x86", "Place", null, 48.286507f, 25.93717f, "Little bit about ARM architecture", 0, "a897c53c-54a2-43c5-a914-326d1ef2d2bc", "5736d00c-ee3f-4ea8-b965-d5a21642d06a" });
 
             migrationBuilder.InsertData(
                 table: "Posts",
-                columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Name", "Rating", "ThreadId", "UserId", "DateOfEvent" },
-                values: new object[] { "49dd1460-4b04-4249-a32d-282fcf54ff29", "First event", "Event", null, "Event 1", 0, "a126c861-36b8-4823-8d4f-65dd12e02b23", "dde8b42a-591c-46e1-9de9-49be6442583e", new DateTime(2021, 5, 16, 16, 21, 46, 600, DateTimeKind.Local).AddTicks(9931) });
+                columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Latitude", "Longitude", "Name", "Rating", "ThreadId", "UserId", "DateOfEvent" },
+                values: new object[] { "49dd1460-4b04-4249-a32d-282fcf54ff29", "First event", "Event", null, 48.28651f, 25.937176f, "Event 1", 0, "a126c861-36b8-4823-8d4f-65dd12e02b23", "dde8b42a-591c-46e1-9de9-49be6442583e", new DateTime(2021, 5, 25, 14, 17, 35, 518, DateTimeKind.Local).AddTicks(2291) });
 
             migrationBuilder.InsertData(
                 table: "Posts",
-                columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Name", "Rating", "ThreadId", "UserId" },
-                values: new object[] { "3494f2c5-4966-44c9-bcaa-4360daf44c96", "Here we are going to talk about OS", "Place", null, "Little bit about OS", 0, "a126c861-36b8-4823-8d4f-65dd12e02b23", "dde8b42a-591c-46e1-9de9-49be6442583e" });
+                columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Latitude", "Longitude", "Name", "Rating", "ThreadId", "UserId" },
+                values: new object[] { "3494f2c5-4966-44c9-bcaa-4360daf44c96", "Here we are going to talk about OS", "Place", null, 48.286507f, 25.937176f, "Little bit about OS", 0, "a126c861-36b8-4823-8d4f-65dd12e02b23", "dde8b42a-591c-46e1-9de9-49be6442583e" });
 
             migrationBuilder.InsertData(
                 table: "Coments",
                 columns: new[] { "Id", "ParentComentId", "PostId", "Text", "UserId" },
-                values: new object[] { "c58de694-692c-4ba3-a746-3114af9f6196", null, "8fa4c18f-1c26-4738-879b-31ce028392ed", "ARM the best!!", null });
+                values: new object[] { "c58de694-692c-4ba3-a746-3114af9f6196", null, "0f8b5f51-856f-467d-ac1d-29647ad68658", "ARM the best!!", null });
 
             migrationBuilder.InsertData(
                 table: "Coments",
                 columns: new[] { "Id", "ParentComentId", "PostId", "Text", "UserId" },
-                values: new object[] { "c1c09a1b-9c36-4e6b-a24d-4b7934fab507", null, "49dd1460-4b04-4249-a32d-282fcf54ff29", "Realy cool article", null });
+                values: new object[] { "c1c09a1b-9c36-4e6b-a24d-4b7934fab507", null, "3494f2c5-4966-44c9-bcaa-4360daf44c96", "Realy cool article", null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

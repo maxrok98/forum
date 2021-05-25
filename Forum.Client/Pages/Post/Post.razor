@@ -1,8 +1,10 @@
 ﻿@page "/post/{Id}"
+@using BlazorLeaflet.Models
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
+@inject IJSRuntime jsRuntime
 
 <h3>Post</h3>
 @if (post == null)
@@ -33,8 +35,9 @@ else
                 <!-- Date/Time -->
                 <p>Posted on @post.Date</p>
 
-                <hr>
 
+                <div class="@(type == ImageType.Map ? "collapse" : "")">
+                <hr>
                 <!-- Preview Image -->
                 @if(post.ImageLink == null || post.ImageLink == String.Empty)
                 {
@@ -44,8 +47,23 @@ else
                 {
                     <img class="img-fluid rounded" src="@post.ImageLink" width="920" />
                 }
-
                 <hr>
+                </div>
+                <div class="@(type == ImageType.Photo ? "collapse" : "")">
+                <hr>
+                    <div id="mapContainer" style="max-width: 920px; height: 500px;">
+                        <LeafletMap Map="_map" />
+                    </div>
+                <hr>
+                </div>
+                <ul class="nav nav-pills nav-fill mb-3" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button @onclick="@(() => type = ImageType.Photo)" class="nav-link" role="tab" data-bs-toggle="pill" type="button" aria-controls="all" aria-selected="true">Photo</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button @onclick="@(() => type = ImageType.Map)" class="nav-link active" role="tab" data-bs-toggle="pill" type="button" aria-controls="event" aria-selected="false">Map</button>
+                    </li>
+                </ul>
 
                 <!-- Post Content -->
                 <p class="lead">@post.Content</p>
@@ -93,12 +111,47 @@ else
     [Parameter]
     public string Id { get; set; }
 
+    enum ImageType
+    {
+        Photo,
+        Map
+    };
+
+    ImageType type = ImageType.Map;
+
     PostResponse post;
     ComentRequest coment = new ComentRequest();
+
+    public Map _map;
+    private LatLng _markerLatLng;
 
     protected async override Task OnInitializedAsync()
     {
         await loadPost();
+
+        _markerLatLng = new LatLng(post.Latitude, post.Longitude);
+
+        var marker = new Marker(_markerLatLng)
+        {
+            Title = "Marker 1",
+        };
+
+        _map = new Map(jsRuntime)
+        {
+            Center = _markerLatLng,
+            Zoom = 16.0f,
+            FullscreenControl = true
+        };
+
+        _map.OnInitialized += () =>
+        {
+            _map.AddLayer(new TileLayer
+            {
+                UrlTemplate = "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                Attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+            });
+            _map.AddLayer(marker);
+        };
     }
 
     async Task loadPost()

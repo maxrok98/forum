@@ -25,5 +25,7 @@ namespace Forum.Contracts.Requests
 
         [JsonConverter(typeof(StringEnumConverter))]
         public PostType PostType { get; set; }
+        public float Latitude { get; set; }
+        public float Longitude { get; set; }
     }
 }

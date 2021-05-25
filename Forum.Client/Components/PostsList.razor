@@ -32,11 +32,9 @@
                         <input type="range" class="form-range" value="@DaysAtTown" min="0" max="7" id="customRange2" @onchange="@(async () => await OnDaysChange())"  @oninput="@((args) => OnDaysInput(args))"/>
                     </div>
                 </div>
-                @foreach (var post in posts.Results)
+                @foreach(var post in posts.Results)
                 {
-
-                    <!-- Blog Post -->
-                    <PostShort post="post" />
+                    <PostShort post="@post"/>
                 }
             </div>
 
@@ -76,6 +74,8 @@
 
     PageResponse<PostResponse> posts;
 
+    List<RenderFragment<PostShort>> ShortPosts;
+
     protected override async Task OnInitializedAsync()
     {
         await loadPosts();
@@ -101,6 +101,7 @@
     {
         Page = page.ToString();
         await loadPosts();
+        this.StateHasChanged();
     }
 
     protected async Task OnTabChange(string type)

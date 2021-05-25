@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Forum.Migrations
 {
     [DbContext(typeof(ForumAppDbContext))]
-    [Migration("20210515132147_addEventAndPlace")]
-    partial class addEventAndPlace
+    [Migration("20210524111753_InitMigration")]
+    partial class InitMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -88,14 +88,14 @@ namespace Forum.Migrations
                         {
                             Id = "c1c09a1b-9c36-4e6b-a24d-4b7934fab507",
                             Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PostId = "49dd1460-4b04-4249-a32d-282fcf54ff29",
+                            PostId = "3494f2c5-4966-44c9-bcaa-4360daf44c96",
                             Text = "Realy cool article"
                         },
                         new
                         {
                             Id = "c58de694-692c-4ba3-a746-3114af9f6196",
                             Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PostId = "8fa4c18f-1c26-4738-879b-31ce028392ed",
+                            PostId = "0f8b5f51-856f-467d-ac1d-29647ad68658",
                             Text = "ARM the best!!"
                         });
                 });
@@ -146,6 +146,12 @@ namespace Forum.Migrations
 
                     b.Property<string>("ImageLink")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Latitude")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Longitude")
+                        .HasColumnType("real");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -337,15 +343,15 @@ namespace Forum.Migrations
                         {
                             Id = "5736d00c-ee3f-4ea8-b965-d5a21642d06a",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a616fab4-1f23-44de-b672-3d3d5094ad97",
+                            ConcurrencyStamp = "0cc4bf20-3ceb-4276-b778-0c8dafd7f1d8",
                             Email = "admin@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOloD83Yh1eXL0RLRBe4CN7GafunnM07yJZYKtRkDNc8aL3FL8QINnWFsuJux6dInw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEgXhiAjfw8yv3ZKVwnudnFmNOvplG+3mfZgHv7thhc5kLJSMHa0fr3zgxkELXW8Ug==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "15b1cde1-84a8-4e41-b7d2-d84ac13f8577",
+                            SecurityStamp = "795b91fa-33ee-4824-8039-f44c817e4b00",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             Year = 0
@@ -354,15 +360,15 @@ namespace Forum.Migrations
                         {
                             Id = "dde8b42a-591c-46e1-9de9-49be6442583e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b4757807-761d-423b-bf5d-cb67ae3c26f3",
+                            ConcurrencyStamp = "4b15b23f-833c-4d39-8c23-dc0c73190dd2",
                             Email = "new@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "NEW@EXAMPLE.COM",
                             NormalizedUserName = "NEW",
-                            PasswordHash = "AQAAAAEAACcQAAAAEE80ZeBy3h0m+/Q1QYesTaTemFLnN0yi0VYYZd0L86nQ1vBkQ9nHUezJ0fZUt67umg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEsMb7brNLsdXFRKv6gUqpR/kiwG9fDfcqRkN2CeijDVBSLcMF9qAkR2a+w6txRQrA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c52134f0-ba04-4756-82ab-ac5c85628582",
+                            SecurityStamp = "5f975186-fb98-484d-b984-c52a134e0cd9",
                             TwoFactorEnabled = false,
                             UserName = "new",
                             Year = 0
@@ -419,14 +425,14 @@ namespace Forum.Migrations
                         new
                         {
                             Id = "e8c6906e-c1c0-43fa-aa89-034ec2e6961b",
-                            ConcurrencyStamp = "74f577af-0bf8-4d9b-b54d-79db80cec2a0",
+                            ConcurrencyStamp = "d6f3cbd2-252d-493f-b059-ae0443392348",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "8642a250-3c71-4e43-9b9d-090f836c6c08",
-                            ConcurrencyStamp = "bc866c43-2980-4991-95af-e26ec6b2e05f",
+                            ConcurrencyStamp = "31b8f996-552d-4cc3-aff1-25b88c06fb1d",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -563,22 +569,26 @@ namespace Forum.Migrations
                             Id = "49dd1460-4b04-4249-a32d-282fcf54ff29",
                             Content = "First event",
                             Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Latitude = 48.28651f,
+                            Longitude = 25.937176f,
                             Name = "Event 1",
                             Rating = 0,
                             ThreadId = "a126c861-36b8-4823-8d4f-65dd12e02b23",
                             UserId = "dde8b42a-591c-46e1-9de9-49be6442583e",
-                            DateOfEvent = new DateTime(2021, 5, 16, 16, 21, 46, 600, DateTimeKind.Local).AddTicks(9931)
+                            DateOfEvent = new DateTime(2021, 5, 25, 14, 17, 35, 518, DateTimeKind.Local).AddTicks(2291)
                         },
                         new
                         {
                             Id = "8fa4c18f-1c26-4738-879b-31ce028392ed",
                             Content = "Secont event",
                             Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Latitude = 48.2865f,
+                            Longitude = 25.937166f,
                             Name = "Event 2",
                             Rating = 0,
                             ThreadId = "a897c53c-54a2-43c5-a914-326d1ef2d2bc",
                             UserId = "5736d00c-ee3f-4ea8-b965-d5a21642d06a",
-                            DateOfEvent = new DateTime(2021, 5, 16, 16, 21, 46, 604, DateTimeKind.Local).AddTicks(5507)
+                            DateOfEvent = new DateTime(2021, 5, 25, 14, 17, 35, 521, DateTimeKind.Local).AddTicks(1471)
                         });
                 });
 
@@ -594,6 +604,8 @@ namespace Forum.Migrations
                             Id = "3494f2c5-4966-44c9-bcaa-4360daf44c96",
                             Content = "Here we are going to talk about OS",
                             Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Latitude = 48.286507f,
+                            Longitude = 25.937176f,
                             Name = "Little bit about OS",
                             Rating = 0,
                             ThreadId = "a126c861-36b8-4823-8d4f-65dd12e02b23",
@@ -604,6 +616,8 @@ namespace Forum.Migrations
                             Id = "0f8b5f51-856f-467d-ac1d-29647ad68658",
                             Content = "ARM is beter then x86",
                             Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Latitude = 48.286507f,
+                            Longitude = 25.93717f,
                             Name = "Little bit about ARM architecture",
                             Rating = 0,
                             ThreadId = "a897c53c-54a2-43c5-a914-326d1ef2d2bc",

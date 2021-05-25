@@ -23,6 +23,9 @@ namespace Forum.Models
         public DateTime Date { get; set; }
         public int Rating { get; set; }
 
+        public float Latitude { get; set; }
+        public float Longitude { get; set; }
+
         public virtual ICollection<Coment> Coments { get; set; }
         public virtual ICollection<Vote> Votes { get; set; }
     }
