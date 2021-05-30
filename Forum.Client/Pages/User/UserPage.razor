@@ -17,7 +17,14 @@ else
 {
     <div class="profile d-flex mb-5 mt-5 p-2 shadow rounded">
         <div class="">
-            <img class="rounded_medium" src="@imageUri" alt="Avatar">
+            @if(imageUri == null || imageUri == String.Empty)
+            {
+                <img class="rounded_medium" src="/img/user_placeholder.png" alt="Avatar">
+            }
+            else
+            {
+                <img class="rounded_medium" src="@imageUri" alt="Avatar">
+            }
         </div>
         <div class="profile_data ml-5">
             <p>Email: @user.Email</p>

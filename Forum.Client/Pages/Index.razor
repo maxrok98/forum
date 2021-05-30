@@ -4,8 +4,8 @@
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<AuthorizeView>
-    <Authorized>
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
 @if (user == null)
 {
     <Loader/>
@@ -26,8 +26,6 @@ else
     </div>
     }
 }
-    </Authorized>
-</AuthorizeView>
 
 
 

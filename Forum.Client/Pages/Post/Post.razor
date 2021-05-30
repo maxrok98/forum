@@ -6,7 +6,6 @@
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
 @inject IJSRuntime jsRuntime
 
-<h3>Post</h3>
 @if (post == null)
 {
     <Loader/>
@@ -58,10 +57,10 @@ else
                 </div>
                 <ul class="nav nav-pills nav-fill mb-3" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button @onclick="@(() => type = ImageType.Photo)" class="nav-link" role="tab" data-bs-toggle="pill" type="button" aria-controls="all" aria-selected="true">Photo</button>
+                        <a @onclick="@(() => type = ImageType.Photo)" class="nav-link" role="tab" data-toggle="pill" type="button" aria-controls="all" >Photo</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button @onclick="@(() => type = ImageType.Map)" class="nav-link active" role="tab" data-bs-toggle="pill" type="button" aria-controls="event" aria-selected="false">Map</button>
+                        <a @onclick="@(() => type = ImageType.Map)" class="nav-link active" role="tab" data-toggle="pill" type="button" aria-controls="event">Map</a>
                     </li>
                 </ul>
 
@@ -72,7 +71,7 @@ else
                 <hr>
 
                 <div class="d-flex justify-content-between align-items-center px-1">
-                <div ><span class="oi oi-comment-square">: @post.Coments.Count()</span></div>
+                <div ><i class="mdi mdi-forum"> : @post.Coments.Count()</i></div>
                 <div ><button class="btn btn-primary" @onclick="Vote">Vote</button> Votes: @post.Rating</div>
                 </div>
 

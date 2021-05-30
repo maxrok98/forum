@@ -212,7 +212,9 @@ namespace Forum.Services
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("id", user.Id)
+                new Claim("id", user.Id),
+                new Claim("user_name", user.UserName),
+                new Claim("image_link", user.ImageLink ?? "")
             };
 
             var userClaims = await _userManager.GetClaimsAsync(user);

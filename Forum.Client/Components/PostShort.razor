@@ -19,7 +19,8 @@
         <h2 class="card-title">@post.Name</h2>
         <p class="card-text">@post.Content</p>
         <a href="post/@post.Id" class="btn btn-primary">Read More &rarr;</a>
-        <div style="float: right"><span class="oi oi-comment-square">: @post.Coments.Count()</span></div>
+        <div style="float: right"><i class="mdi mdi-forum"> : @post.Coments.Count()</i>
+</div>
     </div>
     <div class="card-footer text-muted">
         Posted on @post.Date by

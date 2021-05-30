@@ -48,11 +48,14 @@
                     </div>
                     <div class="mb-3 @(newPost.PostType == PostType.Event ? "" : "collapse")">
                         <label class="form-label">Post type</label>
-                        <InputDateTime id="createdDate" class="form-control col-sm-8" @bind-Value="newPost.DateOfEvent"></InputDateTime>
+                        <InputDateTime id="createdDate" class="form-control" @bind-Value="newPost.DateOfEvent"></InputDateTime>
                         <ValidationMessage class="offset-sm-3 col-sm-8" For="(()=>newPost.DateOfEvent)"></ValidationMessage>
                     </div>
                     <div class="mb-3">
-                        <InputFile class="form-control" OnChange="HandleSelection" />
+                        <div class="custom-file">
+                            <InputFile id="customFile" class="custom-file-input" OnChange="HandleSelection" />
+                            <label class="custom-file-label" for="customFile">Choose image</label>
+                        </div>
                     </div>
                     <div class="@(showWarning ? "" : "collapse")">
                         <p class="text-danger">Could not load loacation from image. Please set loacation on map!</p>
