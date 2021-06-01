@@ -4,7 +4,7 @@
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
 @inject IJSRuntime jsRuntime
-@using System.Drawing
+@implements IAsyncDisposable
 @using BlazorLeaflet.Models
 @using BlazorLeaflet.Models.Events
 
@@ -26,8 +26,9 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Content</label>
-                        <InputTextArea id="content" class="form-control" placeholder="Content" @bind-Value="newPost.Content" />
-                        <ValidationMessage For="@(() => newPost.Content)" />
+                        @*<InputTextArea id="content" class="form-control" placeholder="Content" @bind-Value="newPost.Content" />
+                        <ValidationMessage For="@(() => newPost.Content)" />*@
+                        <textarea id="summernote"></textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Thread</label>
@@ -105,6 +106,12 @@
         }
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+            await jsRuntime.InvokeVoidAsync("createNote");
+    }
+
     private void InitMap(double? lat, double? lng)
     {
 
@@ -162,6 +169,7 @@
         newPost.Image = base64image;
         newPost.Latitude = _markerLatLng.Lat;
         newPost.Longitude = _markerLatLng.Lng;
+        newPost.Content = await jsRuntime.InvokeAsync<string>("getCode");
 
         var responce = await Http.PostAsJsonAsync(ApiRoutes.Posts.Create, newPost);
 
@@ -213,5 +221,9 @@
 
             //status = $"Finished loading {ms.Length} bytes from {imageFile.Name}";
         }
+    }
+    public async ValueTask DisposeAsync()
+    {
+        await jsRuntime.InvokeVoidAsync("destroyNote");
     }
 }
