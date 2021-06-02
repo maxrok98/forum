@@ -1,0 +1,223 @@
+﻿@page "/profile"
+
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject Sotsera.Blazor.Toaster.IToaster Toaster
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
+
+@if (user == null)
+{
+    <Loader />
+}
+else
+{
+
+    <div class="container bootstrap snippet">
+        <div class="row">
+            <div class="col-sm-10"><h1>@user.UserName</h1></div>
+            <div class="col-sm-2">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <!--left col-->
+
+
+                <div class="text-center">
+                    @if (imageUri == null || imageUri == String.Empty)
+                    {
+                        <img class="rounded_medium" src="/img/user_placeholder.png" alt="Avatar">
+                    }
+                    else
+                    {
+                        <img class="rounded_medium" src="@imageUri" alt="Avatar">
+                    }
+                    <h6>Upload a different photo...</h6>
+                    <input type="file" class="text-center center-block file-upload">
+                </div>
+                <hr>
+                <br>
+
+                <div class="card">
+                    <div class="card-header"><b>Email</b></div>
+                    <div class="card-body">@user.Email</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><b>Activity</b></div>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Posts 
+                                <span class="badge badge-primary badge-pill">@user.myPosts.Count()</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Subscriptions
+                                <span class="badge badge-primary badge-pill">@user.Subscription.Count()</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Votes
+                                <span class="badge badge-primary badge-pill">@user.Votes.Count()</span>
+                            </li>
+                        </ul>
+                </div>
+
+            </div><!--/col-3-->
+            <div class="col-sm-9">
+            <div class="card">
+                <div class="card-body">
+                <TabControl>
+                    <TabPage Text="Posts">
+                        <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Coments</th>
+                                    <th scope="col">Votes</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var post in user.myPosts)
+                                {
+                                    <tr>
+                                        <th><a href="post/@post.Id" class="nav-link">@post.Name</a></th>
+                                        <th>@post.ComentsAmount</th>
+                                        <th>@post.VotesAmount</th>
+                                        <th><button class="btn btn-danger" @onclick="@(async () => await DeletePostAsync(post.Id))">Delete</button></th>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        </div>
+                    </TabPage>
+                    <TabPage Text="Subscriptions">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var thread in user.Subscription)
+                                    {
+                                        <tr>
+                                            <th><a href="thread/@thread.Id/list/1" class="nav-link">@thread.Name</a></th>
+                                            <th><button class="btn btn-danger" @onclick="@(async () => await DeleteSubscriptionAsync(thread.Id))">Unsibscribe</button></th>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </TabPage>
+                    <TabPage Text="Votes">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var post in user.Votes)
+                                    {
+                                        <tr>
+                                            <th><a href="post/@post.Id" class="nav-link">@post.Name</a></th>
+                                            <th><button class="btn btn-danger" @onclick="@(async () => await DownvotePostAsync(post.Id))">Downvote</button></th>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </TabPage>
+                </TabControl>
+
+                </div>
+            </div>
+
+            </div><!--/col-9-->
+        </div><!--/row-->
+    </div>
+}
+
+@code {
+    UserResponse user { get; set; }
+    string imageUri { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            var _authMessage = $"{user.Identity.Name} is authenticated.";
+            var _claims = user.Claims;
+            var id = user.FindFirst(c => c.Type == "id")?.Value;
+
+            await LoadUserInfo(id);
+        }
+        else
+        {
+            //_authMessage = "The user is NOT authenticated.";
+        }
+    }
+
+
+    protected async Task LoadUserInfo(string id)
+    {
+        //JwtSecurityTokenHandler jwt = new JwtSecurityTokenHandler();
+        //var token = await Storage.GetItemAsStringAsync("JWT-Token");
+        //var tokenDecoded = jwt.ReadJwtToken(token) as JwtSecurityToken;
+
+        //var id2 = tokenDecoded.Claims.Where(x => x.Type == "id").FirstOrDefault().Value;
+
+        var responce = await Http.GetAsync(ApiRoutes.User.Get.Replace("{id}", id));
+
+        var format = "image/jpeg";
+        if (responce.IsSuccessStatusCode)
+        {
+            user = await responce.Content.ReadFromJsonAsync<UserResponse>();
+            imageUri = user.ImageLink;
+
+        }
+    }
+
+    protected async Task DeletePostAsync(string postId)
+    {
+        var responce = await Http.DeleteAsync(ApiRoutes.Posts.Delete.Replace("{id}", postId));
+        if (responce.IsSuccessStatusCode)
+        {
+            user.myPosts.RemoveAll(x => x.Id == postId);
+            Toaster.Error("Post is deleted!");
+        }
+    }
+
+    protected async Task DeleteSubscriptionAsync(string threadId)
+    {
+        var responce = await Http.DeleteAsync(ApiRoutes.Threads.Unsubscribe.Replace("{id}", threadId));
+        if (responce.IsSuccessStatusCode)
+        {
+            user.Subscription.RemoveAll(x => x.Id == threadId);
+            Toaster.Error("Thread is deleted!");
+        }
+
+    }
+
+    protected async Task DownvotePostAsync(string postId)
+    {
+        var responce = await Http.DeleteAsync(ApiRoutes.Posts.Unvote.Replace("{id}", postId));
+        if (responce.IsSuccessStatusCode)
+        {
+            user.Votes.RemoveAll(x => x.Id == postId);
+            Toaster.Error("Unvoted post");
+        }
+    }
+
+}

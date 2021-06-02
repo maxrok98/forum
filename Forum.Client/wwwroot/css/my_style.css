@@ -3,6 +3,10 @@
     height: 200px;
 }
 
+#user-nav-tab{
+    border: 0px !important;
+}
+
 
 /*ThreadPage*/
 .thread-table_row_text_heading {

@@ -23,5 +23,7 @@ namespace Forum.Models
         public virtual ICollection<Vote> Votes { get; set; }
         public virtual ICollection<Subscription> Subscriptions { get; set; }
 
+        public virtual ICollection<RefreshToken> RefreshToken { get; set; }
+
     }
 }

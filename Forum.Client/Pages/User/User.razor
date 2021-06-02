@@ -1,0 +1,176 @@
+﻿@page "/user/{UserId}"
+
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject Sotsera.Blazor.Toaster.IToaster Toaster
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
+
+@if (user == null)
+{
+    <Loader />
+}
+else
+{
+
+    <div class="container bootstrap snippet">
+        <div class="row">
+            <div class="col-sm-10"><h1>@user.UserName</h1></div>
+            <div class="col-sm-2">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <!--left col-->
+
+
+                <div class="text-center">
+                    @if (imageUri == null || imageUri == String.Empty)
+                    {
+                        <img class="rounded_medium" src="/img/user_placeholder.png" alt="Avatar">
+                    }
+                    else
+                    {
+                        <img class="rounded_medium" src="@imageUri" alt="Avatar">
+                    }
+                </div>
+                <hr>
+                <br>
+
+                <div class="card">
+                    <div class="card-header"><b>Email</b></div>
+                    <div class="card-body">@user.Email</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><b>Activity</b></div>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Posts
+                            <span class="badge badge-primary badge-pill">@user.myPosts.Count()</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Subscriptions
+                            <span class="badge badge-primary badge-pill">@user.Subscription.Count()</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Votes
+                            <span class="badge badge-primary badge-pill">@user.Votes.Count()</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div><!--/col-3-->
+            <div class="col-sm-9">
+                <div class="card">
+                    <div class="card-body">
+                        <TabControl>
+                            <TabPage Text="Posts">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Coments</th>
+                                                <th scope="col">Votes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var post in user.myPosts)
+                                            {
+                                                <tr>
+                                                    <th><a href="post/@post.Id" class="nav-link">@post.Name</a></th>
+                                                    <th>@post.ComentsAmount</th>
+                                                    <th>@post.VotesAmount</th>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </TabPage>
+                            <TabPage Text="Subscriptions">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Posts</th>
+                                                <th scope="col">Subscriptions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var thread in user.Subscription)
+                                            {
+                                                <tr>
+                                                    <th><a href="thread/@thread.Id/list/1" class="nav-link">@thread.Name</a></th>
+                                                    <th>@thread.NumberOfPost</th>
+                                                    <th>@thread.NumberOfSubscription</th>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </TabPage>
+                            <TabPage Text="Votes">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Coments</th>
+                                                <th scope="col">Votes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var post in user.Votes)
+                                            {
+                                                <tr>
+                                                    <th><a href="post/@post.Id" class="nav-link">@post.Name</a></th>
+                                                    <th>@post.ComentsAmount</th>
+                                                    <th>@post.VotesAmount</th>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </TabPage>
+                        </TabControl>
+
+                    </div>
+                </div>
+
+            </div><!--/col-9-->
+        </div><!--/row-->
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string UserId { get; set; }
+    UserResponse user { get; set; }
+    string imageUri { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUserInfo(UserId);
+    }
+
+
+    protected async Task LoadUserInfo(string id)
+    {
+        var responce = await Http.GetAsync(ApiRoutes.User.Get.Replace("{id}", id));
+
+        var format = "image/jpeg";
+        if (responce.IsSuccessStatusCode)
+        {
+            user = await responce.Content.ReadFromJsonAsync<UserResponse>();
+            imageUri = user.ImageLink;
+
+        }
+    }
+
+
+}

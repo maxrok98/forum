@@ -64,6 +64,8 @@ namespace Forum.Contracts
         {
             public const string Get = Base + "/user/get/{id}";
 
+            public const string Delete = Base + "/user/delete/{id}";
+
             public const string GetAll = Base + "/user/get";
         }
 

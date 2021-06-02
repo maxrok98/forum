@@ -1,5 +1,6 @@
 ﻿@page "/userlist"
 @inject IUserService UserService
+@inject Sotsera.Blazor.Toaster.IToaster Toaster
 
 <div class="container">
     @if(users == null)
@@ -10,41 +11,51 @@
     {
     <div class="row">
         <div class="col-md-8">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">Image</th>
-                            <th scope="col">Username</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Posts</th>
-                            <th scope="col">Subscriptions</th>
-                            <th scope="col">Votes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach(var user in users.Results)
-                        {
-                            <tr>
-                                <td>
-                                    @if(user.ImageLink == null || user.ImageLink == String.Empty)
-                                    {
-                                    <img class="rounded_small" src="/img/post_placeholder.gif" alt="">
-                                    }
-                                    else
-                                    {
-                                    <img class="rounded_small" src="@user.ImageLink" alt="">
-                                    }
-                                </td>
-                                <td>@user.UserName</td>
-                                <td>@user.Email</td>
-                                <td>@user.myPostsAmount</td>
-                                <td>@user.SubscriptionAmount</td>
-                                <td>@user.VotesAmount</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Image</th>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Posts</th>
+                                    <th scope="col">Sub</th>
+                                    <th scope="col">Votes</th>
+                                    <AuthorizeView Roles="Admin">
+                                    <th scope="col">Action</th>
+                                    </AuthorizeView>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach(var user in users.Results)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if(user.ImageLink == null || user.ImageLink == String.Empty)
+                                            {
+                                            <img class="rounded_small" src="/img/post_placeholder.gif" alt="">
+                                            }
+                                            else
+                                            {
+                                            <img class="rounded_small" src="@user.ImageLink" alt="">
+                                            }
+                                        </td>
+                                        <td><a href="user/@user.Id" class="nav-link">@user.UserName</a></td>
+                                        <td>@user.Email</td>
+                                        <td>@user.myPostsAmount</td>
+                                        <td>@user.SubscriptionAmount</td>
+                                        <td>@user.VotesAmount</td>
+                                        <AuthorizeView Roles="Admin">
+                                        <td><button class="btn btn-danger" @onclick="(async () => await OnDeleteUser(user.Id))">Delete</button></td>
+                                        </AuthorizeView>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -85,6 +96,20 @@
     protected async Task loadUsers()
     {
         users = await UserService.GetAll(Page, PageSize, SearchTerm);
+    }
+    protected async Task OnDeleteUser(string id)
+    {
+        var result = await UserService.DeleteAsync(id);
+        if (result)
+        {
+            Toaster.Info("Account seccessfully deleted!");
+            await loadUsers();
+        }
+        else
+        {
+            Toaster.Warning("Could not delete account!");
+        }
+
     }
 
     protected async Task SearchClickHandler(string searchTerm)

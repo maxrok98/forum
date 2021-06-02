@@ -9,5 +9,6 @@ namespace Forum.Client.Services
     interface IUserService
     {
         Task<PageResponse<UserShortResponse>> GetAll(string page, string pageSize, string searchTerm);
+        Task<bool> DeleteAsync(string id);
     }
 }
