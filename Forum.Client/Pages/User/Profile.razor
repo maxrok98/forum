@@ -27,7 +27,7 @@ else
                 <!--left col-->
 
 
-                <div class="text-center">
+                <div>
                     @if (imageUri == null || imageUri == String.Empty)
                     {
                         <img class="rounded_medium" src="/img/user_placeholder.png" alt="Avatar">
@@ -37,7 +37,10 @@ else
                         <img class="rounded_medium" src="@imageUri" alt="Avatar">
                     }
                     <h6>Upload a different photo...</h6>
-                    <input type="file" class="text-center center-block file-upload">
+                    <div class="custom-file">
+                        <InputFile id="customFile" class="custom-file-input" accept="image/*"/>
+                        <label class="custom-file-label" for="customFile">Choose image</label>
+                    </div>
                 </div>
                 <hr>
                 <br>

@@ -368,8 +368,8 @@ namespace Forum.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "e8c6906e-c1c0-43fa-aa89-034ec2e6961b", "ebfa9b0c-15c2-4cbd-812f-7079c62cdce5", "Admin", "ADMIN" },
-                    { "8642a250-3c71-4e43-9b9d-090f836c6c08", "afef790c-d3cf-4d80-a313-029116ed38f3", "User", "USER" }
+                    { "e8c6906e-c1c0-43fa-aa89-034ec2e6961b", "4a7b697c-fa45-44cc-a7d8-4e0b5dfbba6f", "Admin", "ADMIN" },
+                    { "8642a250-3c71-4e43-9b9d-090f836c6c08", "08dd4970-b97a-4078-9c47-281f397bd314", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
@@ -377,8 +377,8 @@ namespace Forum.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "ImageLink", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PublicKey", "SecurityStamp", "TwoFactorEnabled", "UserName", "Year" },
                 values: new object[,]
                 {
-                    { "5736d00c-ee3f-4ea8-b965-d5a21642d06a", 0, "b661d150-6933-40b8-8e7a-ae4ad9e5e879", "admin@example.com", false, null, false, null, "ADMIN@EXAMPLE.COM", "ADMIN", "AQAAAAEAACcQAAAAEFCym2DTCdRX1ucFMWLtNp/37XuRF0QsDIGl7IoPC4K/Lue1DrurkMWMC7VxO0Zcfg==", null, false, null, "430fbea7-beec-43c3-9212-14c49e5def5f", false, "admin", 0 },
-                    { "dde8b42a-591c-46e1-9de9-49be6442583e", 0, "8c8b340e-1fb3-45e7-aa19-acc226959d63", "new@example.com", false, null, false, null, "NEW@EXAMPLE.COM", "NEW", "AQAAAAEAACcQAAAAEJR49WRGPFxsCNuAoU97Bry4yrm+tvASWHnZY/RWSDQXGN2fndblAyh2dwxDNZd/ow==", null, false, null, "9b3c7abf-4c16-4704-a338-e0bb6066dc29", false, "new", 0 }
+                    { "5736d00c-ee3f-4ea8-b965-d5a21642d06a", 0, "b6ce274c-62ff-4cf3-b623-8d41acd9df00", "admin@example.com", false, null, false, null, "ADMIN@EXAMPLE.COM", "ADMIN", "AQAAAAEAACcQAAAAEElyOoYfnV0f3RBQe1GDt8bsMKlfvznlyFN4n8ZZ3sii2kWEDTqjBlnfXQuPlv0ejg==", null, false, null, "7220f690-5f47-440c-939b-2bc7f5707d82", false, "admin", 0 },
+                    { "dde8b42a-591c-46e1-9de9-49be6442583e", 0, "935507a5-3dce-4a7c-814f-9cc1a336e203", "new@example.com", false, null, false, null, "NEW@EXAMPLE.COM", "NEW", "AQAAAAEAACcQAAAAELk/R1KRt+nHfDX+QZjlZFflb96R/W46tCFXrp7GD9iWHzSdTPINnUXCG9psxO4vAw==", null, false, null, "bfc7ce01-5ca5-44bd-88dd-cfc4debb2e16", false, "new", 0 }
                 });
 
             migrationBuilder.InsertData(
@@ -402,7 +402,7 @@ namespace Forum.Migrations
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Latitude", "Longitude", "Name", "Rating", "ThreadId", "UserId", "DateOfEvent" },
-                values: new object[] { "8fa4c18f-1c26-4738-879b-31ce028392ed", "Secont event", "Event", null, 48.2865f, 25.937166f, "Event 2", 0, "a897c53c-54a2-43c5-a914-326d1ef2d2bc", "5736d00c-ee3f-4ea8-b965-d5a21642d06a", new DateTime(2021, 6, 3, 12, 33, 39, 132, DateTimeKind.Local).AddTicks(484) });
+                values: new object[] { "8fa4c18f-1c26-4738-879b-31ce028392ed", "Secont event", "Event", null, 48.2865f, 25.937166f, "Event 2", 0, "a897c53c-54a2-43c5-a914-326d1ef2d2bc", "5736d00c-ee3f-4ea8-b965-d5a21642d06a", new DateTime(2021, 6, 3, 16, 51, 55, 258, DateTimeKind.Local).AddTicks(8064) });
 
             migrationBuilder.InsertData(
                 table: "Posts",
@@ -412,7 +412,7 @@ namespace Forum.Migrations
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Latitude", "Longitude", "Name", "Rating", "ThreadId", "UserId", "DateOfEvent" },
-                values: new object[] { "49dd1460-4b04-4249-a32d-282fcf54ff29", "First event", "Event", null, 48.28651f, 25.937176f, "Event 1", 0, "a126c861-36b8-4823-8d4f-65dd12e02b23", "dde8b42a-591c-46e1-9de9-49be6442583e", new DateTime(2021, 6, 3, 12, 33, 39, 129, DateTimeKind.Local).AddTicks(2325) });
+                values: new object[] { "49dd1460-4b04-4249-a32d-282fcf54ff29", "First event", "Event", null, 48.28651f, 25.937176f, "Event 1", 0, "a126c861-36b8-4823-8d4f-65dd12e02b23", "dde8b42a-591c-46e1-9de9-49be6442583e", new DateTime(2021, 6, 3, 16, 51, 55, 253, DateTimeKind.Local).AddTicks(9458) });
 
             migrationBuilder.InsertData(
                 table: "Posts",
@@ -422,12 +422,12 @@ namespace Forum.Migrations
             migrationBuilder.InsertData(
                 table: "Coments",
                 columns: new[] { "Id", "ParentComentId", "PostId", "Text", "UserId" },
-                values: new object[] { "c58de694-692c-4ba3-a746-3114af9f6196", null, "0f8b5f51-856f-467d-ac1d-29647ad68658", "ARM the best!!", null });
+                values: new object[] { "c58de694-692c-4ba3-a746-3114af9f6196", null, "0f8b5f51-856f-467d-ac1d-29647ad68658", "ARM the best!!", "5736d00c-ee3f-4ea8-b965-d5a21642d06a" });
 
             migrationBuilder.InsertData(
                 table: "Coments",
                 columns: new[] { "Id", "ParentComentId", "PostId", "Text", "UserId" },
-                values: new object[] { "c1c09a1b-9c36-4e6b-a24d-4b7934fab507", null, "3494f2c5-4966-44c9-bcaa-4360daf44c96", "Realy cool article", null });
+                values: new object[] { "c1c09a1b-9c36-4e6b-a24d-4b7934fab507", null, "3494f2c5-4966-44c9-bcaa-4360daf44c96", "Realy cool article", "dde8b42a-591c-46e1-9de9-49be6442583e" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

@@ -202,12 +202,14 @@ namespace Forum.Models
                 {
                     Id = comentId1,
                     PostId = postId1,
+                    UserId = UserId,
                     Text = "Realy cool article"
                 },
                 new Coment
                 {
                     Id = comentId2,
                     PostId = postId2,
+                    UserId = admUserId,
                     Text = "ARM the best!!"
                 }
             );

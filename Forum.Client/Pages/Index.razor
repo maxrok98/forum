@@ -15,7 +15,19 @@ else
 
     @if (user.Subscription.Count == 0)
     {
-        <h1>You need to subscribe to some thread to see you personal subscribtion list</h1>
+        <div class="col-md-12 grid-margin">
+            <div class="card bg-gradient-primary border-0">
+                <div class="card-body py-3 px-4 d-flex align-items-center justify-content-between flex-wrap">
+                    <p class="mb-0 text-white font-weight-medium">
+                        You don't have any subscription.
+                    </p>
+                    <div class="d-flex">
+                        <a href="threadpage" class="btn btn-outline-light mr-2 bg-gradient-danger border-0">Go to thread list</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     }
     else
     {

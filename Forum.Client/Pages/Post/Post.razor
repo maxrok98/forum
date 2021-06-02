@@ -20,8 +20,13 @@ else
             <!-- Post Content Column -->
             <div class="col-lg-10">
 
+                <div class="d-flex justify-content-between align-items-center px-1">
                 <!-- Title -->
                 <h1 class="mt-4">@post.Name</h1>
+                <AuthorizeView Roles="Admin">
+                    <button class="btn btn-danger" @onclick="(async () => await OnDeletePost() )">Delete</button>
+                </AuthorizeView>
+                </div>
 
                 <!-- Author -->
                 <p class="lead">
@@ -34,9 +39,15 @@ else
                 <!-- Date/Time -->
                 <p>Posted on @post.Date</p>
 
+                <hr>
+
+                @if(post.PostType == PostType.Event)
+                {
+                <p>Date of event: @post.DateOfEvent</p>
+                <hr>
+                }
 
                 <div class="@(type == ImageType.Map ? "collapse" : "")">
-                <hr>
                 <!-- Preview Image -->
                 @if(post.ImageLink == null || post.ImageLink == String.Empty)
                 {
@@ -46,15 +57,13 @@ else
                 {
                     <img class="img-fluid rounded" src="@post.ImageLink" width="920" />
                 }
-                <hr>
                 </div>
                 <div class="@(type == ImageType.Photo ? "collapse" : "")">
-                <hr>
                     <div id="mapContainer" style="max-width: 920px; height: 500px;">
                         <LeafletMap Map="_map" />
                     </div>
-                <hr>
                 </div>
+                <hr>
                 <ul class="nav nav-pills nav-fill mb-3" role="tablist">
                     <li class="nav-item" role="presentation">
                         <a @onclick="@(() => type = ImageType.Photo)" class="nav-link" role="tab" data-toggle="pill" type="button" aria-controls="all" >Photo</a>
@@ -65,7 +74,7 @@ else
                 </ul>
 
                 <!-- Post Content -->
-                <p class="lead">@post.Content</p>
+                @((MarkupString)@post.Content)
 
 
                 <hr>
@@ -207,6 +216,22 @@ else
         {
             Toaster.Error(await responce.Content.ReadAsStringAsync());
         }
+    }
+
+    private async Task OnDeletePost()
+    {
+        var responce = await Http.DeleteAsync(ApiRoutes.Posts.Delete.Replace("{id}", Id));
+
+        if (responce.IsSuccessStatusCode)
+        {
+            Toaster.Warning("You succesfuly deleted post");
+            UriHelper.NavigateTo("posts");
+        }
+        else
+        {
+            Toaster.Error("Could not delete post");
+        }
+
     }
 
 }
