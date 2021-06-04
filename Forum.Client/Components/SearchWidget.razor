@@ -2,7 +2,7 @@
     <h5 class="card-header">Search</h5>
     <div class="card-body">
         <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search for..." @bind="this.SearchTerm" @onkeyup="SearchBoxKeyPress">
+            <input type="text" class="form-control" placeholder="Search for..." @bind-value="this.SearchTerm" @onkeyup="SearchBoxKeyPress">
             <div class="input-group-btn">
                 <button name="PatientSearchButton" class="btn btn-default" @onclick="SearchClick">
                     <i class="mdi mdi-magnify" title="search" aria-hidden="true"></i>
@@ -20,7 +20,13 @@
 @code {
     [Parameter]
     public EventCallback<string> OnSearchClick { get; set; }
+    [Parameter]
     public string SearchTerm { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await SearchClick();
+    }
 
     protected async Task SearchBoxKeyPress(KeyboardEventArgs ev)
     {

@@ -39,7 +39,7 @@
             <div class="col-md-4">
 
                 <!-- Search Widget -->
-                <SearchWidget OnSearchClick="SearchClickHandler" />
+                <SearchWidget SearchTerm="@SearchTerm" OnSearchClick="SearchClickHandler" />
 
                 <OrderingWidget OnChangeOrdering="ChangeOrdering" />
 
@@ -61,9 +61,11 @@
 @code {
     [Parameter]
     public string ThreadId { get; set; }
+    [Parameter]
+    public string SearchTerm { get; set; }
+
     public string Page { get; set; } = "1";
     public string PageSize { get; set; } = "2";
-    public string SearchTerm = string.Empty;
     public string OrderBy { get; set; }
     public string Type { get; set; } = string.Empty;
     public string DaysAtTown { get; set; } = "2";
