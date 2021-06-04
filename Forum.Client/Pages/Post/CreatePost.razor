@@ -208,19 +208,22 @@
                 base64image = ms.ToArray();
 
                 ms.Seek(0, SeekOrigin.Begin);
-                using (ExifReader reader = new ExifReader(ms))
+                double? lat = null, lng = null;
+                try
                 {
-                    reader.GetTagValue(ExifTags.GPSLatitude, out double[] latitude);
-                    reader.GetTagValue(ExifTags.GPSLongitude, out double[] longitude);
-                    double? lat = null, lng = null;
-                    if(latitude != null && longitude != null)
+                    using (ExifReader reader = new ExifReader(ms))
                     {
-                        lat = latitude[0] + latitude[1] / 60f + latitude[2] / 3600f;
-                        lng = longitude[0] + longitude[1] / 60f + longitude[2] / 3600f;
+                        reader.GetTagValue(ExifTags.GPSLatitude, out double[] latitude);
+                        reader.GetTagValue(ExifTags.GPSLongitude, out double[] longitude);
+                        if(latitude != null && longitude != null)
+                        {
+                            lat = latitude[0] + latitude[1] / 60f + latitude[2] / 3600f;
+                            lng = longitude[0] + longitude[1] / 60f + longitude[2] / 3600f;
 
+                        }
                     }
-                    InitMap(lat, lng);
-                }
+                }catch(Exception ex) { }
+                InitMap(lat, lng);
             }
             imageDataUri = $"data:{format};base64,{Convert.ToBase64String(base64image)}";
 
