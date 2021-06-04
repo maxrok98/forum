@@ -23,7 +23,7 @@ namespace Forum.Mapping
                                          .ForMember(dest => dest.DateOfEvent, opt => opt.MapFrom(src => src.GetType() == typeof(Event) ? ((Event)src).DateOfEvent : DateTime.MinValue));
 
             CreateMap<Coment, ComentResponse>().ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
-                                                .ForMember(dest => dest.UserImage, opt => opt.MapFrom(src => src.User.ImageLink));
+                                                .ForMember(dest => dest.ImageLink, opt => opt.MapFrom(src => src.User.ImageLink));
             CreateMap<Post, PostForUserResponse>().ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                                                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                                                 .ForMember(dest => dest.ComentsAmount, opt => opt.MapFrom(src => src.Coments.Count()))

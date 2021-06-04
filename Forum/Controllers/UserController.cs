@@ -63,8 +63,18 @@ namespace Forum.Controllers
             return Ok(dto);
         }
 
-        [HttpPut("ChangePassword/{id}", Name = "ChangePassword")]
-        public async Task<IActionResult> ChangePassword(string id, ChangePasswordRequest password)
+        [HttpGet("get-short/{id}", Name = "GetShortUser")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetShort(string id)
+        {
+            var user = await _userService.GetAsync(id);
+            var dto = _mapper.Map<User, UserShortResponse>(user);
+
+            return Ok(dto);
+        }
+
+        [HttpPut("Update-Password/{id}", Name = "UpdatePassword")]
+        public async Task<IActionResult> UpdatePassword(string id, UpdatePasswordRequest password)
         {
             var userId = HttpContext.GetUserId();
             if(id != userId)
@@ -78,7 +88,46 @@ namespace Forum.Controllers
                 return BadRequest(result.Message);
             }
 
-            return Ok();
+            return Ok("Password succesfuly changed!");
+        }
+
+        [HttpPut("Update-Image/{id}", Name = "UpdateImage")]
+        public async Task<IActionResult> UpdateImage(string id, UpdateImageRequest image)
+        {
+            var userId = HttpContext.GetUserId();
+            if(id != userId)
+            {
+                return BadRequest("This account is not your!");
+            }
+
+            var result = await _userService.UpdateImageAsync(userId, image.Image);
+
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok(result.Resource.ImageLink);
+        }
+
+        [HttpPut("Update-Account/{id}", Name = "UpdateAccount")]
+        public async Task<IActionResult> UpdateAccount(string id, UpdateAccountRequest info)
+        {
+            var userId = HttpContext.GetUserId();
+            if(id != userId)
+            {
+                return BadRequest("This account is not your!");
+            }
+
+            var result = await _userService.UpdateAccountAsync(userId, info.Email, info.UserName);
+
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            var dto = _mapper.Map<User, UserShortResponse>(result.Resource);
+
+            return Ok(dto);
         }
 
         [HttpDelete("delete/{id}", Name = "DeleteUser")]

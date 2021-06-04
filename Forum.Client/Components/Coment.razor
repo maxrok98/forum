@@ -1,12 +1,12 @@
 ﻿
 <div class="media mb-4">
-    @if (coment.UserImage.Length != 0)
+    @if (string.IsNullOrEmpty(coment.ImageLink) || coment.ImageLink == null)
     {
-    <img class="d-flex mr-3 rounded_small" src="@coment.UserImage)" alt="">
+    <img class="d-flex mr-3 rounded_small" src="/img/user_placeholder.png" alt="">
     }
     else
     {
-    <img class="d-flex mr-3 rounded_small" src="/img/user_placeholder.png" alt="">
+    <img class="d-flex mr-3 rounded_small" src="@coment.ImageLink)" alt="">
     }
     <div class="media-body">
         <h5 class="mt-0"><a href="user/@coment.UserId">@coment.UserName</a></h5>

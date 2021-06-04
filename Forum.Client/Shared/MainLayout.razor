@@ -2,6 +2,7 @@
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Blazored.LocalStorage.ILocalStorageService Storage 
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject HttpClient Http
 
 
 
@@ -34,15 +35,15 @@
                     <AuthorizeView>
                         <Authorized>
                             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-                                @if (!string.IsNullOrEmpty(@context.User.FindFirst("image_link").Value))
+                                @if (!string.IsNullOrEmpty(user.ImageLink))
                                 {
-                                <img src="@context.User.FindFirst("image_link").Value" alt="profile" />
+                                <img class="rounded_small" src="@user.ImageLink" alt="profile" />
                                 }
                                 else
                                 {
-                                <img src="/img/user_placeholder.png" alt="profile"/>
+                                <img class="rounded_small" src="/img/user_placeholder.png" alt="profile"/>
                                 }
-                                <span class="nav-profile-name">@context.User.FindFirst("user_name").Value</span>
+                                <span class="nav-profile-name">@user.UserName</span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
                                 <a class="dropdown-item" href="profile">
@@ -88,40 +89,30 @@
     bool activeSidebar { get; set; } = false;
     bool sidebarIconOnly { get; set; } = false;
 
-    System.Security.Claims.ClaimsPrincipal user;
+    //System.Security.Claims.ClaimsPrincipal user;
+
+    UserShortResponse user { get; set; } = new UserShortResponse();
 
     protected override async Task OnInitializedAsync()
     {
         var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        user = state.User;
+
+        if (state.User.Identity.IsAuthenticated)
+        {
+            var id = state.User.FindFirst(c => c.Type == "id")?.Value;
+            await LoadUserInfo(id);
+
+        }
+    }
+
+    protected async Task LoadUserInfo(string id)
+    {
+
+        var responce = await Http.GetAsync(ApiRoutes.User.GetShort.Replace("{id}", id));
+        if (responce.IsSuccessStatusCode)
+        {
+            user = await responce.Content.ReadFromJsonAsync<UserShortResponse>();
+        }
     }
 }
 
-
-@*<div class="sidebar">
-    <NavMenu />
-</div>
-
-<div class="main">
-    <div class="top-row px-4">
-        <AuthorizeView>
-            <Authorized>
-                Hello, @context.User.Identity.Name!
-                <a href="user/LogOut">Log out</a>
-            </Authorized>
-            <NotAuthorized>
-                <a href="user/Registration">Register</a>
-                <a href="user/Login">Log in</a>
-            </NotAuthorized>
-        </AuthorizeView>
-        <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
-    </div>
-
-    <div class="content px-4">
-        @Body
-    </div>
-</div>
-
-@code{      
-
-}*@
