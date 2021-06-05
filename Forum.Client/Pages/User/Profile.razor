@@ -75,6 +75,10 @@ else
                 <div class="card">
                     <div class="card-body">
                         <TabControl>
+                            <TabPage Text="Calendar">
+                                <hr />
+                                <FullCalendar settings="@calendarSettings" />
+                            </TabPage>
                             <TabPage Text="Profile">
                                 <hr />
                                 <h2>Change name</h2>
@@ -218,11 +222,14 @@ else
     UserResponse user { get; set; }
     string imageUri { get; set; }
 
+    public CalendarSettings calendarSettings { get; set; }
+
     UpdatePasswordRequest updatePassword { get; set; } = new UpdatePasswordRequest();
     UpdateAccountRequest updateAccount { get; set; } = new UpdateAccountRequest();
 
     protected override async Task OnInitializedAsync()
     {
+
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         if (user.Identity.IsAuthenticated)
@@ -237,6 +244,50 @@ else
         {
             //_authMessage = "The user is NOT authenticated.";
         }
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        calendarSettings = new CalendarSettings()
+        {
+            plugins = new[] { CalendarPluginTypes.DayGrid, CalendarPluginTypes.Interaction, CalendarPluginTypes.Bootstrap},
+            defaultView = "dayGridOneMonths",
+            timeZone = "UTC",
+            header = new CalendarHeader()
+            {
+                left = "prev,next today ",
+                center = "title",
+                right = "dayGridOneMonths,dayGridOneWeek,dayListOneDay"
+            },
+            views = new Dictionary<string, CalendarViewDefinition>()
+            {
+                { "dayGridOneWeek", CalendarViewDefinition.DayGridWeeks(1,"Week") },
+                { "dayGridOneMonths", CalendarViewDefinition.DayGridMonths(1,"Months") }
+
+            },
+            events = GetRandomEvents(50).ToArray()
+        };
+
+    }
+    public static List<CalendarDateItem> GetRandomEvents(int count, int maxHours = 480, int maxEventDuration = 10, bool allday = false, string label = "Event")
+    {
+        var r = new Random();
+        var eventList = new List<CalendarDateItem>();
+        for (int i = 0; i < count; i++)
+        {
+            var randomStart = DateTime.Now.Subtract(new TimeSpan(r.Next(-maxHours, maxHours), r.Next(-60, 60), r.Next(-60, 60)));
+            var randomEnd = randomStart.Add(new TimeSpan(r.Next(0, maxEventDuration), r.Next(15, 60), r.Next(0, 60)));
+            eventList.Add(new CalendarDateItem()
+            {
+                start = randomStart,
+                end = randomEnd,
+                title = $"Some {label} {r.Next(123, 12345)}",
+                //backgroundColor = $"rgb({r.Next(256)},{r.Next(256)},{r.Next(256)})",
+                allDay = allday,
+                url = "post/49dd1460-4b04-4249-a32d-282fcf54ff29"
+            });
+        }
+
+        return eventList;
     }
 
     private async Task OnUpdatePassword()

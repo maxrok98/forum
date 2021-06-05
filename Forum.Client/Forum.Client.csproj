@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BlazorFullCalendar\BlazorFullCalendar.csproj" />
     <ProjectReference Include="..\Forum.Shared\Forum.Shared.csproj" />
   </ItemGroup>
 

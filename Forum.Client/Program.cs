@@ -11,6 +11,8 @@ using Blazored.LocalStorage;
 using Sotsera.Blazor.Toaster.Core.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using Forum.Client.Services;
+using System.Reflection;
+using System.Linq;
 
 namespace Forum.Client
 {
@@ -18,6 +20,10 @@ namespace Forum.Client
     {
         public static async Task Main(string[] args)
         {
+            foreach(var s in Assembly.GetExecutingAssembly().GetTypes().Select(x => x.Namespace).ToArray())
+            {
+                Console.WriteLine(s);
+            }
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
