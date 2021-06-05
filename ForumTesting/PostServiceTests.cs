@@ -17,12 +17,13 @@ namespace ForumTesting
         private readonly PostService _sut;
         private readonly Mock<IPostRepository> _postRepoMock = new Mock<IPostRepository>();
         private readonly Mock<IVoteRepository> _voteRepoMock = new Mock<IVoteRepository>();
+        private readonly Mock<ICalendarRepository> _calendarRepoMock = new Mock<ICalendarRepository>();
         private readonly Mock<IUnitOfWork> _unitRepoMock = new Mock<IUnitOfWork>();
         private readonly Mock<IImageHostService> _imageHostService = new Mock<IImageHostService>();
 
         public PostServiceTests()
         {
-            _sut = new PostService(_postRepoMock.Object, _voteRepoMock.Object, _unitRepoMock.Object, _imageHostService.Object);
+            _sut = new PostService(_postRepoMock.Object, _voteRepoMock.Object, _calendarRepoMock.Object, _unitRepoMock.Object, _imageHostService.Object);
         }
 
         [Fact]

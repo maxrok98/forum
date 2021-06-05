@@ -43,7 +43,10 @@ else
 
                 @if(post.PostType == PostType.Event)
                 {
+                <div class="d-flex justify-content-between align-items-center px-1">
                 <p>Date of event: @post.DateOfEvent</p>
+                <button class="btn btn-primary" @onclick="(async () => await OnAddToCalendar())"><i class="mdi mdi-calendar"></i>Add to calendar</button>
+                </div>
                 <hr>
                 }
 
@@ -232,6 +235,23 @@ else
             Toaster.Error("Could not delete post");
         }
 
+    }
+    private async Task OnAddToCalendar()
+    {
+        var responce = await Http.PostAsync(ApiRoutes.Posts.CalendarAdd.Replace("{id}", Id), null);
+
+        if (responce.IsSuccessStatusCode)
+        {
+            Toaster.Success("You succesfuly added event to your calendar");
+        }
+        else if(responce.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            Toaster.Warning("You have to login to add to calendar");
+        }
+        else if(responce.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            Toaster.Error(await responce.Content.ReadAsStringAsync());
+        }
     }
 
 }

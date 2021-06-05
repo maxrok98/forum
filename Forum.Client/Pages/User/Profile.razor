@@ -245,7 +245,7 @@ else
             //_authMessage = "The user is NOT authenticated.";
         }
     }
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected void InitCalendar()
     {
         calendarSettings = new CalendarSettings()
         {
@@ -264,8 +264,24 @@ else
                 { "dayGridOneMonths", CalendarViewDefinition.DayGridMonths(1,"Months") }
 
             },
-            events = GetRandomEvents(50).ToArray()
+            events = GetUsersEvents().ToArray()
         };
+
+    }
+    public List<CalendarDateItem> GetUsersEvents()
+    {
+        var eventList = new List<CalendarDateItem>();
+        foreach(var ev in user.Calendar)
+        {
+            eventList.Add(new CalendarDateItem()
+            {
+                start = ev.DateOfEvent,
+                end = ev.DateOfEvent.AddMinutes(1),
+                title = ev.Name,
+                url = "post/" + ev.Id
+            });
+        }
+        return eventList;
 
     }
     public static List<CalendarDateItem> GetRandomEvents(int count, int maxHours = 480, int maxEventDuration = 10, bool allday = false, string label = "Event")
@@ -334,6 +350,7 @@ else
         {
             user = await responce.Content.ReadFromJsonAsync<UserResponse>();
         }
+        InitCalendar();
     }
 
     protected async Task DeletePostAsync(string postId)

@@ -305,6 +305,31 @@ namespace Forum.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Calendar",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    UserId = table.Column<string>(nullable: true),
+                    EventId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Calendar", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Calendar_Posts_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Posts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Calendar_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Coments",
                 columns: table => new
                 {
@@ -368,8 +393,8 @@ namespace Forum.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "e8c6906e-c1c0-43fa-aa89-034ec2e6961b", "4a7b697c-fa45-44cc-a7d8-4e0b5dfbba6f", "Admin", "ADMIN" },
-                    { "8642a250-3c71-4e43-9b9d-090f836c6c08", "08dd4970-b97a-4078-9c47-281f397bd314", "User", "USER" }
+                    { "e8c6906e-c1c0-43fa-aa89-034ec2e6961b", "aac5bd67-32b3-44e0-b592-d8d9ce7c9cb1", "Admin", "ADMIN" },
+                    { "8642a250-3c71-4e43-9b9d-090f836c6c08", "1b203c79-2048-4cad-8c23-addf4d696bc8", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
@@ -377,8 +402,8 @@ namespace Forum.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "ImageLink", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PublicKey", "SecurityStamp", "TwoFactorEnabled", "UserName", "Year" },
                 values: new object[,]
                 {
-                    { "5736d00c-ee3f-4ea8-b965-d5a21642d06a", 0, "b6ce274c-62ff-4cf3-b623-8d41acd9df00", "admin@example.com", false, null, false, null, "ADMIN@EXAMPLE.COM", "ADMIN", "AQAAAAEAACcQAAAAEElyOoYfnV0f3RBQe1GDt8bsMKlfvznlyFN4n8ZZ3sii2kWEDTqjBlnfXQuPlv0ejg==", null, false, null, "7220f690-5f47-440c-939b-2bc7f5707d82", false, "admin", 0 },
-                    { "dde8b42a-591c-46e1-9de9-49be6442583e", 0, "935507a5-3dce-4a7c-814f-9cc1a336e203", "new@example.com", false, null, false, null, "NEW@EXAMPLE.COM", "NEW", "AQAAAAEAACcQAAAAELk/R1KRt+nHfDX+QZjlZFflb96R/W46tCFXrp7GD9iWHzSdTPINnUXCG9psxO4vAw==", null, false, null, "bfc7ce01-5ca5-44bd-88dd-cfc4debb2e16", false, "new", 0 }
+                    { "5736d00c-ee3f-4ea8-b965-d5a21642d06a", 0, "268469f0-1bf4-4009-bfe2-6ea6846826b6", "admin@example.com", false, null, false, null, "ADMIN@EXAMPLE.COM", "ADMIN", "AQAAAAEAACcQAAAAEIJuRzidy+PxQ08b0jCv6RJ5EVi8QiBaniu1kP9hf1xfE9S9Rf9qbZEZH/1qZgPcZg==", null, false, null, "6360fd2a-72f1-4570-8359-ba96e986a415", false, "admin", 0 },
+                    { "dde8b42a-591c-46e1-9de9-49be6442583e", 0, "9581560b-ce21-4d80-81da-3c08d65f7f46", "new@example.com", false, null, false, null, "NEW@EXAMPLE.COM", "NEW", "AQAAAAEAACcQAAAAEGA39QxDNg9ENvhXiDQGOA6YF1wQqv91mRQ/ul747pslxCWjdPDFFNlFIATes4X9LA==", null, false, null, "2a02c713-12e6-4f67-ae11-3bd8da240b28", false, "new", 0 }
                 });
 
             migrationBuilder.InsertData(
@@ -402,7 +427,7 @@ namespace Forum.Migrations
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Latitude", "Longitude", "Name", "Rating", "ThreadId", "UserId", "DateOfEvent" },
-                values: new object[] { "8fa4c18f-1c26-4738-879b-31ce028392ed", "Secont event", "Event", null, 48.2865f, 25.937166f, "Event 2", 0, "a897c53c-54a2-43c5-a914-326d1ef2d2bc", "5736d00c-ee3f-4ea8-b965-d5a21642d06a", new DateTime(2021, 6, 3, 16, 51, 55, 258, DateTimeKind.Local).AddTicks(8064) });
+                values: new object[] { "8fa4c18f-1c26-4738-879b-31ce028392ed", "Secont event", "Event", null, 48.2865f, 25.937166f, "Event 2", 0, "a897c53c-54a2-43c5-a914-326d1ef2d2bc", "5736d00c-ee3f-4ea8-b965-d5a21642d06a", new DateTime(2021, 6, 6, 23, 51, 44, 579, DateTimeKind.Local).AddTicks(4993) });
 
             migrationBuilder.InsertData(
                 table: "Posts",
@@ -412,7 +437,7 @@ namespace Forum.Migrations
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Latitude", "Longitude", "Name", "Rating", "ThreadId", "UserId", "DateOfEvent" },
-                values: new object[] { "49dd1460-4b04-4249-a32d-282fcf54ff29", "First event", "Event", null, 48.28651f, 25.937176f, "Event 1", 0, "a126c861-36b8-4823-8d4f-65dd12e02b23", "dde8b42a-591c-46e1-9de9-49be6442583e", new DateTime(2021, 6, 3, 16, 51, 55, 253, DateTimeKind.Local).AddTicks(9458) });
+                values: new object[] { "49dd1460-4b04-4249-a32d-282fcf54ff29", "First event", "Event", null, 48.28651f, 25.937176f, "Event 1", 0, "a126c861-36b8-4823-8d4f-65dd12e02b23", "dde8b42a-591c-46e1-9de9-49be6442583e", new DateTime(2021, 6, 6, 23, 51, 44, 573, DateTimeKind.Local).AddTicks(9704) });
 
             migrationBuilder.InsertData(
                 table: "Posts",
@@ -467,6 +492,16 @@ namespace Forum.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Calendar_EventId",
+                table: "Calendar",
+                column: "EventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Calendar_UserId",
+                table: "Calendar",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Chats_AddedId",
@@ -555,6 +590,9 @@ namespace Forum.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Calendar");
 
             migrationBuilder.DropTable(
                 name: "Coments");

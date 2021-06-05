@@ -87,6 +87,7 @@ namespace Forum
             services.AddScoped<IComentRepository, ComentRepository>();
             services.AddScoped<IVoteRepository, VoteRepository>();
             services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+            services.AddScoped<ICalendarRepository, CalendarRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

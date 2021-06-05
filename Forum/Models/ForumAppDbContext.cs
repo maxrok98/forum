@@ -19,6 +19,7 @@ namespace Forum.Models
         public DbSet<Thread> Threads { get; set; }
         public DbSet<Vote> Votes { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<Calendar> Calendar { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public ForumAppDbContext(DbContextOptions<ForumAppDbContext> options)
                     : base(options)

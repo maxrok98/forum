@@ -29,6 +29,10 @@ namespace Forum.Contracts
             public const string Vote = Base + "/post/vote/{id}";
 
             public const string Unvote = Base + "/post/unvote/{id}";
+
+            public const string CalendarAdd = Base + "/post/calendar-add/{id}";
+            
+            public const string CalendarRemove = Base + "/post/calendar-remove/{id}";
         }
         public static class Coments
         {
