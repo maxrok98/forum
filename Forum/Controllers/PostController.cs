@@ -165,5 +165,35 @@ namespace Forum.Controllers
 
             return Ok();
         }
+
+        [HttpPost("calendar-add/{id}", Name = "AddEventToCalendar")]
+        public async Task<IActionResult> CalendarAdd(string id)
+        {
+            var UserId = HttpContext.GetUserId();
+
+            var result = await _postService.AddToCalendar(id, UserId);
+
+            if(!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete("calendar-remove/{id}", Name = "RemoveEventFromCalendar")]
+        public async Task<IActionResult> CalendarRemove(string id)
+        {
+            var UserId = HttpContext.GetUserId();
+
+            var result = await _postService.RemoveFromCalendar(id, UserId);
+
+            if(!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok();
+        }
     }
 }

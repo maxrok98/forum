@@ -10,6 +10,7 @@ namespace Forum.Contracts.Responses
         public string Id { get; set; }
         public string Name { get; set; }
 
+        public DateTime DateOfEvent { get; set; }
         public int VotesAmount { get; set; }
         public int ComentsAmount { get; set; }
     }

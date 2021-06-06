@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace Forum.Client.Services
 {
-    interface IAuthService
+    public interface IAuthService
     {
         Task<AuthResponse> Login(UserLoginRequest loginModel);
         Task Logout();
         Task<AuthResponse> Register(UserRegistrationRequest registerModel);
+        Task<string> RefreshToken();
     }
 }

@@ -22,6 +22,13 @@ namespace Forum.Client.Services
         {
             return await _httpClient.GetFromJsonAsync<PageResponse<UserShortResponse>>(ApiRoutes.User.GetAll + "/?PageNumber=" + page + "&PageSize=" + pageSize + "&userName=" + searchTerm);
         }
+        public async Task<bool> DeleteAsync(string id)
+        {
+            var result = await _httpClient.DeleteAsync(ApiRoutes.User.Delete.Replace("{id}", id));
+            if (result.IsSuccessStatusCode)
+                return true;
+            return false;
+        }
 
     }
 }

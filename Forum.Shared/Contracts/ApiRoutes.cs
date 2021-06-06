@@ -29,6 +29,10 @@ namespace Forum.Contracts
             public const string Vote = Base + "/post/vote/{id}";
 
             public const string Unvote = Base + "/post/unvote/{id}";
+
+            public const string CalendarAdd = Base + "/post/calendar-add/{id}";
+            
+            public const string CalendarRemove = Base + "/post/calendar-remove/{id}";
         }
         public static class Coments
         {
@@ -64,7 +68,18 @@ namespace Forum.Contracts
         {
             public const string Get = Base + "/user/get/{id}";
 
+            public const string GetShort = Base + "/user/get-short/{id}";
+
+            public const string Delete = Base + "/user/delete/{id}";
+
             public const string GetAll = Base + "/user/get";
+
+            public const string UpdatePassword = Base + "/user/update-password/{id}";
+
+            public const string UpdateImage = Base + "/user/update-image/{id}";
+
+            public const string UpdateAccount = Base + "/user/update-account/{id}";
+
         }
 
         public static class Tags

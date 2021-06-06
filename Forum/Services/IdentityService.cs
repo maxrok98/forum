@@ -212,7 +212,9 @@ namespace Forum.Services
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("id", user.Id)
+                new Claim("id", user.Id),
+                new Claim("user_name", user.UserName),
+                new Claim("image_link", user.ImageLink ?? "")
             };
 
             var userClaims = await _userManager.GetClaimsAsync(user);
@@ -254,6 +256,9 @@ namespace Forum.Services
                 ExpiryDate = DateTime.UtcNow.AddMonths(6)
             };
 
+            var delToken = await _context.RefreshTokens.Where(x => x.UserId == user.Id).FirstOrDefaultAsync();
+            if(delToken != null)
+                _context.RefreshTokens.Remove(delToken);
             await _context.RefreshTokens.AddAsync(refreshToken);
             await _context.SaveChangesAsync();
 

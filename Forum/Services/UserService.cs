@@ -14,9 +14,11 @@ namespace Forum.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly IUnitOfWork _unitOfWork;
-        public UserService(UserManager<User> userManager, IUnitOfWork unitOfWork)
+        private readonly IImageHostService _imageHostService;
+        public UserService(UserManager<User> userManager, IImageHostService imageHostService, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
+            _imageHostService = imageHostService;
             _unitOfWork = unitOfWork;
         }
 
@@ -40,7 +42,7 @@ namespace Forum.Services
 
         public async Task<User> GetAsync(string id)
         {
-            return await _userManager.Users.Where(x => x.Id == id).Include(x => x.Posts).ThenInclude(x => x.Coments).Include(x => x.Posts).ThenInclude(x => x.Votes).Include(x => x.Subscriptions).ThenInclude(x => x.Thread).Include(x => x.Votes).ThenInclude(x => x.Post).FirstAsync();
+            return await _userManager.Users.Where(x => x.Id == id).Include(x => x.Posts).ThenInclude(x => x.Coments).Include(x => x.Posts).ThenInclude(x => x.Votes).Include(x => x.Subscriptions).ThenInclude(x => x.Thread).Include(x => x.Votes).ThenInclude(x => x.Post).Include(x => x.Calendar).ThenInclude(x => x.Event).FirstAsync();
         }
 
         public async Task<bool> IsUserAdmin(string id)
@@ -75,6 +77,63 @@ namespace Forum.Services
             }
         }
 
+        public async Task<UserResponse> UpdateAccountAsync(string id, string email, string userName)
+        {
+            var existingUser = await _userManager.FindByIdAsync(id);
+
+            if (existingUser == null)
+                return new UserResponse("User not found.");
+
+            existingUser.Email = email;
+            existingUser.UserName = userName;
+
+            try
+            {
+                await _userManager.UpdateAsync(existingUser);
+                await _unitOfWork.CompleteAsync();
+
+                return new UserResponse(existingUser);
+            }
+            catch(Exception ex)
+            {
+                return new UserResponse($"An error occurred when updating account: {ex.Message}");
+            }
+        }
+
+        public async Task<UserResponse> UpdateImageAsync(string id, byte[] image)
+        {
+            var existingUser = await _userManager.FindByIdAsync(id);
+
+            if (existingUser == null)
+                return new UserResponse("User not found.");
+
+
+            string imageLink = String.Empty;
+            if(image != null)
+            {
+                var res = await _imageHostService.SaveImageAsync(Convert.ToBase64String(image));
+                if(res == null || !res.success)
+                {
+                    return new UserResponse("Could not save image");
+                }
+                imageLink = res.data.display_url;
+            }
+            existingUser.ImageLink = imageLink;
+            try
+            {
+                await _userManager.UpdateAsync(existingUser);
+                await _unitOfWork.CompleteAsync();
+
+                return new UserResponse(existingUser);
+            }
+            catch(Exception ex)
+            {
+                return new UserResponse($"An error occurred when updating image: {ex.Message}");
+            }
+
+
+        }
+
         public async Task<UserResponse> UpdatePasswordAsync(string id, string currentPassword, string newPassword)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -93,5 +152,6 @@ namespace Forum.Services
                 return new UserResponse($"An error occurred when changing password: {ex.Message}");
             }
         }
+
     }
 }

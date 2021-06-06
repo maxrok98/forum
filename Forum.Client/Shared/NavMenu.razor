@@ -1,4 +1,4 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@*<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">Forum.Client</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
@@ -65,4 +65,76 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+}*@
+
+
+
+<nav class="sidebar sidebar-offcanvas @(activeSidebar ? "active" : "")" id="sidebar">
+    <ul class="nav">
+        <AuthorizeView>
+        <li class="nav-item">
+            <NavLink class="nav-link" href="subscribtions">
+                <i class="mdi mdi-home menu-icon"></i>
+                <span class="menu-title">Home</span>
+            </NavLink>
+        </li>
+        </AuthorizeView>
+        <AuthorizeView>
+        <li class="nav-item">
+            <NavLink class="nav-link" href="profile">
+                <i class="mdi mdi-account-circle menu-icon"></i>
+                <span class="menu-title">My page</span>
+            </NavLink>
+        </li>
+        </AuthorizeView>
+        <li class="nav-item">
+            <NavLink class="nav-link" href="threadpage">
+                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+                <span class="menu-title">Threads</span> 
+            </NavLink>
+        </li>
+        <AuthorizeView>
+        <li class="nav-item">
+            <NavLink class="nav-link" href="createpost">
+                <i class="mdi mdi-file-document-box menu-icon"></i>
+                <span class="menu-title">Create post</span> 
+            </NavLink>
+        </li>
+        </AuthorizeView>
+        <li class="nav-item">
+            <NavLink class="nav-link" href="posts">
+                <i class="mdi mdi-library-books menu-icon"></i>
+                <span class="menu-title">Posts</span> 
+            </NavLink>
+        </li>
+        <li class="nav-item">
+            <NavLink class="nav-link" href="userlist">
+                <i class="mdi mdi-account-multiple menu-icon"></i>
+                <span class="menu-title">User List</span> 
+            </NavLink>
+        </li>
+        <AuthorizeView>
+            <Authorized>
+                <li class="nav-item" >
+                    <NavLink class="nav-link" href="user/logout">
+                        <i class="mdi mdi-logout menu-icon"></i>
+                        <span class="menu-title">Logout</span> 
+                    </NavLink>
+                </li>
+            </Authorized>
+            <NotAuthorized>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="user/login">
+                        <i class="mdi mdi-login menu-icon"></i>
+                        <span class="menu-title">User login</span> 
+                    </NavLink>
+                </li>
+            </NotAuthorized>
+        </AuthorizeView>
+    </ul>
+</nav>
+
+@code{
+    [Parameter]
+    public bool activeSidebar { get; set; }
 }

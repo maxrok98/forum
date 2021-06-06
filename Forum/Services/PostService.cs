@@ -17,13 +17,15 @@ namespace Forum.Services
     {
         private readonly IPostRepository _postRepository;
         private readonly IVoteRepository _voteRepository;
+        private readonly ICalendarRepository _calendarRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IImageHostService _imageHostService;
-        public PostService(IPostRepository postRepository, IVoteRepository voteRepository, IUnitOfWork unitOfWork, IImageHostService imageHostService)
+        public PostService(IPostRepository postRepository, IVoteRepository voteRepository, ICalendarRepository calendarRepository, IUnitOfWork unitOfWork, IImageHostService imageHostService)
         {
             _postRepository = postRepository;
             _unitOfWork = unitOfWork;
             _voteRepository = voteRepository;
+            _calendarRepository = calendarRepository;
             _imageHostService = imageHostService;
         }
 
@@ -212,6 +214,59 @@ namespace Forum.Services
                 return new VoteResponse($"An error occurred when deleting the vote: {ex.Message}");
             }
 
+        }
+
+        public async Task<CalendarResponse> AddToCalendar(string PostId, string UserId)
+        {
+            var post = await _postRepository.GetAsync(PostId);
+
+            if (post == null)
+                return new CalendarResponse("Event not found.");
+
+            if (post.GetType() != typeof(Event))
+                return new CalendarResponse("This post is not event.");
+
+            var calendar = await _calendarRepository.FindInstance(PostId, UserId);
+            if (calendar != null)
+                return new CalendarResponse("You already added to calendar.");
+
+            var Calendar = new Calendar { EventId = PostId, UserId = UserId };
+            Calendar.Id = Guid.NewGuid().ToString();
+            try
+            {
+                await _calendarRepository.AddAsync(Calendar);
+                await _unitOfWork.CompleteAsync();
+
+                return new CalendarResponse(Calendar);
+            }
+            catch(Exception ex)
+            {
+                return new CalendarResponse($"An error occurred when saving the event to calendar: {ex.Message}");
+            }
+        }
+
+        public async Task<CalendarResponse> RemoveFromCalendar(string PostId, string UserId)
+        {
+            var post = await _postRepository.GetAsync(PostId);
+
+            if (post == null)
+                return new CalendarResponse("Event not found.");
+
+            var calendar = await _calendarRepository.FindInstance(PostId, UserId);
+            if (calendar == null)
+                return new CalendarResponse("This event is not in your calendar.");
+
+            try
+            {
+                _calendarRepository.Remove(calendar);
+                await _unitOfWork.CompleteAsync();
+
+                return new CalendarResponse(calendar);
+            }
+            catch(Exception ex)
+            {
+                return new CalendarResponse($"An error occurred when removing event from calendar: {ex.Message}");
+            }
         }
     }
 }

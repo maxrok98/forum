@@ -15,13 +15,16 @@
             <div class="text-secondary">@thread.Description</div>
         </div>
         <div class="d-flex thread-table_row_icons">
-            <i> <span class="oi oi-list-rich"></span> :@thread.NumberOfPost </i>
-            <i> <span class="oi oi-people"></span> :@thread.NumberOfSubscription </i>
+            <i class="mdi mdi-library-books"> : @thread.NumberOfPost</i>
+                
+            <i class="mdi mdi-account-multiple"> : @thread.NumberOfSubscription</i>
         </div>
         <AuthorizeView Roles="Admin">       
             <button class="btn btn-danger" @onclick="@(async () => await DeleteThreadAsync(thread.Id))">Delete</button>
         </AuthorizeView>
+        <AuthorizeView>
             <button class="btn btn-warning" @onclick="@(async () => await SubscribeToThreadAsync(thread.Id))">Subscribe</button>
+        </AuthorizeView>
     </div>
 
 </div>

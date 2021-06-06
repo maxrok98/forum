@@ -3,108 +3,86 @@
 @inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
+@inject IJSRuntime jsRuntime
+@implements IAsyncDisposable
+@using BlazorLeaflet.Models
+@using BlazorLeaflet.Models.Events
+
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-12 align-self-center">
             <div class="m-3 m-lg-5">
 
-                <div class="text-center mt-4">
-                    <h1 class="h3">Create post</h1>
-                </div>
-
-                <EditForm Model="@newPost" OnValidSubmit="CreateNewPost">
-                    <DataAnnotationsValidator />
-                    <div class="mb-3">
-                        <label class="form-label">Title</label>
-                        <InputText id="name" class="form-control" placeholder="Name" @bind-Value="newPost.Name" />
-                        <ValidationMessage For="@(() => newPost.Name)" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Content</label>
-                        <InputTextArea id="content" class="form-control" placeholder="Content" @bind-Value="newPost.Content" />
-                        <ValidationMessage For="@(() => newPost.Content)" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Thread</label>
-                        <InputSelect id="thread" class="form-control" @bind-Value="newPost.ThreadId">
-                            @foreach (var thread in threads)
-                            {
-                                <option value="@thread.Id">@thread.Name</option>
-                            }
-                        </InputSelect>
-                        <ValidationMessage For="@(() => newPost.ThreadId)" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Post type</label>
-                        <InputSelect class="form-control" @bind-Value="newPost.PostType">
-                            <option value="@PostType.Place" selected>Place</option>
-                            <option value="@PostType.Event">Event</option>
-                        </InputSelect>
-                    </div>
-                    <div class="mb-3 @(newPost.PostType == PostType.Event ? "" : "collapse")">
-                        <label class="form-label">Post type</label>
-                        <InputDateTime id="createdDate" class="form-control col-sm-8" @bind-Value="newPost.DateOfEvent"></InputDateTime>
-                        <ValidationMessage class="offset-sm-3 col-sm-8" For="(()=>newPost.DateOfEvent)"></ValidationMessage>
-                    </div>
-                    <div class="mb-3">
-                        <InputFile class="form-control" OnChange="HandleSelection" />
-                    </div>
+                <div class="card">
+                    <div class="card-body">
                     <div class="text-center mt-4">
-                        <button type="submit" class="btn btn-block btn-info">Create</button>
+                        <h1 class="h3">Create post</h1>
                     </div>
-                </EditForm>
+
+                    <EditForm Model="@newPost" OnValidSubmit="CreateNewPost">
+                        <DataAnnotationsValidator />
+                        <div class="mb-3">
+                            <label class="form-label">Title</label>
+                            <InputText id="name" class="form-control" placeholder="Name" @bind-Value="newPost.Name" />
+                            <ValidationMessage For="@(() => newPost.Name)" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Content</label>
+                            @*<InputTextArea id="content" class="form-control" placeholder="Content" @bind-Value="newPost.Content" />
+                            <ValidationMessage For="@(() => newPost.Content)" />*@
+                            <textarea id="summernote"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Thread</label>
+                            <InputSelect id="thread" class="form-control" @bind-Value="newPost.ThreadId">
+                                @foreach (var thread in threads)
+                                {
+                                    <option value="@thread.Id">@thread.Name</option>
+                                }
+                            </InputSelect>
+                            <ValidationMessage For="@(() => newPost.ThreadId)" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Post type</label>
+                            <InputSelect class="form-control" @bind-Value="newPost.PostType">
+                                <option value="@PostType.Place" selected>Place</option>
+                                <option value="@PostType.Event">Event</option>
+                            </InputSelect>
+                        </div>
+                        <div class="mb-3 @(newPost.PostType == PostType.Event ? "" : "collapse")">
+                            <label class="form-label">Post type</label>
+                            <InputDateTime id="createdDate" class="form-control" @bind-Value="newPost.DateOfEvent"></InputDateTime>
+                            <ValidationMessage class="offset-sm-3 col-sm-8" For="(()=>newPost.DateOfEvent)"></ValidationMessage>
+                        </div>
+                        <div class="mb-3">
+                            <div class="custom-file">
+                                <InputFile id="customFile" class="custom-file-input" accept="image/jpeg" OnChange="HandleSelection" />
+                                <label class="custom-file-label" for="customFile">Choose image</label>
+                            </div>
+                        </div>
+                        <div class="@(showWarning ? "" : "collapse")">
+                            <p class="text-danger">Could not load loacation from image. Please set loacation on map!</p>
+                        </div>
+                        <!-- You must wrap the map component in a container setting its actual size. -->
+                        @if (_map != null)
+                        {
+                            <div id="mapContainer" class="@(showMap ? "" : "collapse")"  style="width: 100%; height: 500px;">
+                                <LeafletMap Map="_map" />
+                            </div>
+                        }
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-block btn-info">Create</button>
+                        </div>
+                    </EditForm>
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-@*<EditForm Model="@newPost" OnValidSubmit="CreateNewPost">
-    <DataAnnotationsValidator />
-
-    <h1 class="h3 mb-3 text-center">Create new post</h1>
-    <div class="form-group">
-        <InputText id="name" class="form-control" placeholder="Name" @bind-Value="newPost.Name" />
-        <ValidationMessage For="@(() => newPost.Name)" />
-    </div>
-    <div class="form-group">
-        <InputTextArea id="content" class="form-control" placeholder="Content" @bind-Value="newPost.Content" />
-        <ValidationMessage For="@(() => newPost.Content)" />
-    </div>
-    <div class="form-group">
-        <InputSelect id="thread" class="form-control" @bind-Value="newPost.ThreadId">
-            @foreach (var thread in threads)
-            {
-                <option value="@thread.Id">@thread.Name</option>
-            }
-        </InputSelect>
-        <ValidationMessage For="@(() => newPost.ThreadId)" />
-    </div>
-    <div class="form-group">
-        <InputSelect class="form-control" @bind-Value="newPost.PostType">
-            <option value="@PostType.Place" selected>Place</option>
-            <option value="@PostType.Event">Event</option>
-        </InputSelect>
-    </div>
-    <div class="@(newPost.PostType == PostType.Event ? "" : "collapse")">
-    <div class="form-group">
-        <label for="createdDate" class="col-sm-3">Date of event:</label>
-        <InputDateTime id="createdDate" class="form-control col-sm-8" @bind-Value="newPost.DateOfEvent"></InputDateTime>
-        <ValidationMessage class="offset-sm-3 col-sm-8" For="(()=>newPost.DateOfEvent)"></ValidationMessage>
-    </div>
-    </div>
-
-    <InputFile OnChange="HandleSelection" />
-    <p>@status</p>
-    @if (!string.IsNullOrEmpty(imageDataUri))
-    {
-        <img src="@imageDataUri" />
-    }
-
-    <div class="form-group">
-        <button type="submit" class="btn btn-lg btn-primary btn-block">Create</button>
-    </div>
-</EditForm>*@
 
 
 @code {
@@ -115,6 +93,11 @@
     PostRequest newPost = new PostRequest();
     List<ThreadResponse> threads = new List<ThreadResponse>();
     string selectedThreadId;
+
+    private Map _map;
+    private LatLng _markerLatLng = new LatLng(48.286392f, 25.938034f);
+    private bool showMap { get; set; } = false;
+    private bool showWarning { get; set; } = false;
 
 
     protected override async Task OnInitializedAsync()
@@ -130,9 +113,70 @@
         }
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+            await jsRuntime.InvokeVoidAsync("createNote");
+    }
+
+    private void InitMap(double? lat, double? lng)
+    {
+
+        if (lat != null && lng != null)
+            _markerLatLng = new LatLng((float)lat, (float)lng);
+        else
+            showWarning = true;
+
+
+        var marker = new Marker(_markerLatLng)
+        {
+            Draggable = true,
+            Title = "Marker 1",
+            Tooltip = new Tooltip { Content = "Click and drag to move me" }
+        };
+
+        _map = new Map(jsRuntime)
+        {
+            Center = _markerLatLng,
+            Zoom = 16.0f,
+            FullscreenControl = true
+        };
+
+        _map.OnInitialized += () =>
+        {
+            _map.AddLayer(new TileLayer
+            {
+                UrlTemplate = "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                Attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+            });
+            _map.AddLayer(marker);
+        };
+
+        marker.OnMove += OnDrag;
+        marker.OnMoveEnd += OnDragEnd;
+
+        showMap = true;
+    }
+
+    private void OnDrag(Marker marker, DragEvent evt)
+    {
+        _markerLatLng = evt.LatLng;
+        StateHasChanged();
+    }
+
+    private async void OnDragEnd(Marker marker, Event e)
+    {
+        marker.Position = _markerLatLng;
+        Console.WriteLine("I am now at {0:0.00}° lat, {1:0.00}° lng", _markerLatLng.Lat, _markerLatLng.Lng);
+        await LeafletInterops.UpdatePopupContent(jsRuntime, _map.Id, marker);
+    }
+
     async Task CreateNewPost()
     {
         newPost.Image = base64image;
+        newPost.Latitude = _markerLatLng.Lat;
+        newPost.Longitude = _markerLatLng.Lng;
+        newPost.Content = await jsRuntime.InvokeAsync<string>("getCode");
 
         var responce = await Http.PostAsJsonAsync(ApiRoutes.Posts.Create, newPost);
 
@@ -141,7 +185,7 @@
             Toaster.Success("You succesfuly created post!");
             UriHelper.NavigateTo("/userpage");
         }
-        else if(responce.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        else if (responce.StatusCode == System.Net.HttpStatusCode.Unauthorized)
         {
             Toaster.Warning("You have to login to create a post");
         }
@@ -158,15 +202,38 @@
         {
             // Load as an image file in memory
             var format = "image/jpeg";
-            var imageFile = await rawFile.ToImageFileAsync(format, 640, 480);
-            var ms = new MemoryStream();
-            await imageFile.Data.CopyToAsync(ms);
+            //var imageFile = await rawFile.ToImageFileAsync(format, 640, 480);
+            using (var ms = new MemoryStream())
+            {
+                await rawFile.Data.CopyToAsync(ms);
+                // Make a data URL so we can display it
+                base64image = ms.ToArray();
 
-            // Make a data URL so we can display it
-            base64image = ms.ToArray();
+                ms.Seek(0, SeekOrigin.Begin);
+                double? lat = null, lng = null;
+                try
+                {
+                    using (ExifReader reader = new ExifReader(ms))
+                    {
+                        reader.GetTagValue(ExifTags.GPSLatitude, out double[] latitude);
+                        reader.GetTagValue(ExifTags.GPSLongitude, out double[] longitude);
+                        if(latitude != null && longitude != null)
+                        {
+                            lat = latitude[0] + latitude[1] / 60f + latitude[2] / 3600f;
+                            lng = longitude[0] + longitude[1] / 60f + longitude[2] / 3600f;
+
+                        }
+                    }
+                }catch(Exception ex) { }
+                InitMap(lat, lng);
+            }
             imageDataUri = $"data:{format};base64,{Convert.ToBase64String(base64image)}";
 
-            status = $"Finished loading {ms.Length} bytes from {imageFile.Name}";
+            //status = $"Finished loading {ms.Length} bytes from {imageFile.Name}";
         }
+    }
+    public async ValueTask DisposeAsync()
+    {
+        await jsRuntime.InvokeVoidAsync("destroyNote");
     }
 }

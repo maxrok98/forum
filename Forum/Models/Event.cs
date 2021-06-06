@@ -8,5 +8,6 @@ namespace Forum.Models
     public class Event : Post
     {
         public DateTime DateOfEvent { get; set; }
+        public virtual ICollection<Calendar> Calendar { get; set; }
     }
 }

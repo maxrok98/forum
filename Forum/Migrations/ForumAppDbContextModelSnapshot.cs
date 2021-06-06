@@ -19,6 +19,26 @@ namespace Forum.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Forum.Models.Calendar", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("EventId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Calendar");
+                });
+
             modelBuilder.Entity("Forum.Models.Chat", b =>
                 {
                     b.Property<string>("Id")
@@ -86,15 +106,17 @@ namespace Forum.Migrations
                         {
                             Id = "c1c09a1b-9c36-4e6b-a24d-4b7934fab507",
                             Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PostId = "49dd1460-4b04-4249-a32d-282fcf54ff29",
-                            Text = "Realy cool article"
+                            PostId = "3494f2c5-4966-44c9-bcaa-4360daf44c96",
+                            Text = "Realy cool article",
+                            UserId = "dde8b42a-591c-46e1-9de9-49be6442583e"
                         },
                         new
                         {
                             Id = "c58de694-692c-4ba3-a746-3114af9f6196",
                             Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PostId = "8fa4c18f-1c26-4738-879b-31ce028392ed",
-                            Text = "ARM the best!!"
+                            PostId = "0f8b5f51-856f-467d-ac1d-29647ad68658",
+                            Text = "ARM the best!!",
+                            UserId = "5736d00c-ee3f-4ea8-b965-d5a21642d06a"
                         });
                 });
 
@@ -144,6 +166,12 @@ namespace Forum.Migrations
 
                     b.Property<string>("ImageLink")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Latitude")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Longitude")
+                        .HasColumnType("real");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -196,7 +224,9 @@ namespace Forum.Migrations
 
                     b.HasKey("Token");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("RefreshTokens");
                 });
@@ -335,15 +365,15 @@ namespace Forum.Migrations
                         {
                             Id = "5736d00c-ee3f-4ea8-b965-d5a21642d06a",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a616fab4-1f23-44de-b672-3d3d5094ad97",
+                            ConcurrencyStamp = "53a95d55-405b-4e39-8f7c-19518fb59a17",
                             Email = "admin@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOloD83Yh1eXL0RLRBe4CN7GafunnM07yJZYKtRkDNc8aL3FL8QINnWFsuJux6dInw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEK7PD4pIKEYMxPeB9UabDBZY0dSplGL4+Z723PBUA6y0hgIhVcRnXf4fzbpUEyENNA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "15b1cde1-84a8-4e41-b7d2-d84ac13f8577",
+                            SecurityStamp = "1be0d32f-6f01-4845-894c-e594873d5152",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             Year = 0
@@ -352,15 +382,15 @@ namespace Forum.Migrations
                         {
                             Id = "dde8b42a-591c-46e1-9de9-49be6442583e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b4757807-761d-423b-bf5d-cb67ae3c26f3",
+                            ConcurrencyStamp = "739b5fab-42f2-4451-8170-3e853cb43fb2",
                             Email = "new@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "NEW@EXAMPLE.COM",
                             NormalizedUserName = "NEW",
-                            PasswordHash = "AQAAAAEAACcQAAAAEE80ZeBy3h0m+/Q1QYesTaTemFLnN0yi0VYYZd0L86nQ1vBkQ9nHUezJ0fZUt67umg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEK1Z+K6YtOzyiBVAPD1/p9wtFSqzmO5CLDz96K8Xg7YIREWy9BWXxqK2bSaQmvljMA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c52134f0-ba04-4756-82ab-ac5c85628582",
+                            SecurityStamp = "b3c85d2e-d80d-4dd2-85ca-c265e7129dd1",
                             TwoFactorEnabled = false,
                             UserName = "new",
                             Year = 0
@@ -417,14 +447,14 @@ namespace Forum.Migrations
                         new
                         {
                             Id = "e8c6906e-c1c0-43fa-aa89-034ec2e6961b",
-                            ConcurrencyStamp = "74f577af-0bf8-4d9b-b54d-79db80cec2a0",
+                            ConcurrencyStamp = "ae5bda57-81c7-472a-b4dc-8106f86a784c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "8642a250-3c71-4e43-9b9d-090f836c6c08",
-                            ConcurrencyStamp = "bc866c43-2980-4991-95af-e26ec6b2e05f",
+                            ConcurrencyStamp = "2614e945-d21b-4922-8c1f-2f8d35051b4c",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -561,22 +591,26 @@ namespace Forum.Migrations
                             Id = "49dd1460-4b04-4249-a32d-282fcf54ff29",
                             Content = "First event",
                             Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Latitude = 48.28651f,
+                            Longitude = 25.937176f,
                             Name = "Event 1",
                             Rating = 0,
                             ThreadId = "a126c861-36b8-4823-8d4f-65dd12e02b23",
                             UserId = "dde8b42a-591c-46e1-9de9-49be6442583e",
-                            DateOfEvent = new DateTime(2021, 5, 16, 16, 21, 46, 600, DateTimeKind.Local).AddTicks(9931)
+                            DateOfEvent = new DateTime(2021, 6, 7, 18, 51, 48, 247, DateTimeKind.Local).AddTicks(9180)
                         },
                         new
                         {
                             Id = "8fa4c18f-1c26-4738-879b-31ce028392ed",
                             Content = "Secont event",
                             Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Latitude = 48.2865f,
+                            Longitude = 25.937166f,
                             Name = "Event 2",
                             Rating = 0,
                             ThreadId = "a897c53c-54a2-43c5-a914-326d1ef2d2bc",
                             UserId = "5736d00c-ee3f-4ea8-b965-d5a21642d06a",
-                            DateOfEvent = new DateTime(2021, 5, 16, 16, 21, 46, 604, DateTimeKind.Local).AddTicks(5507)
+                            DateOfEvent = new DateTime(2021, 6, 7, 18, 51, 48, 251, DateTimeKind.Local).AddTicks(3471)
                         });
                 });
 
@@ -592,6 +626,8 @@ namespace Forum.Migrations
                             Id = "3494f2c5-4966-44c9-bcaa-4360daf44c96",
                             Content = "Here we are going to talk about OS",
                             Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Latitude = 48.286507f,
+                            Longitude = 25.937176f,
                             Name = "Little bit about OS",
                             Rating = 0,
                             ThreadId = "a126c861-36b8-4823-8d4f-65dd12e02b23",
@@ -602,11 +638,24 @@ namespace Forum.Migrations
                             Id = "0f8b5f51-856f-467d-ac1d-29647ad68658",
                             Content = "ARM is beter then x86",
                             Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Latitude = 48.286507f,
+                            Longitude = 25.93717f,
                             Name = "Little bit about ARM architecture",
                             Rating = 0,
                             ThreadId = "a897c53c-54a2-43c5-a914-326d1ef2d2bc",
                             UserId = "5736d00c-ee3f-4ea8-b965-d5a21642d06a"
                         });
+                });
+
+            modelBuilder.Entity("Forum.Models.Calendar", b =>
+                {
+                    b.HasOne("Forum.Models.Event", "Event")
+                        .WithMany("Calendar")
+                        .HasForeignKey("EventId");
+
+                    b.HasOne("Forum.Models.User", "User")
+                        .WithMany("Calendar")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Forum.Models.Chat", b =>
@@ -667,8 +716,9 @@ namespace Forum.Migrations
             modelBuilder.Entity("Forum.Models.RefreshToken", b =>
                 {
                     b.HasOne("Forum.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithOne("RefreshToken")
+                        .HasForeignKey("Forum.Models.RefreshToken", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Forum.Models.Subscription", b =>

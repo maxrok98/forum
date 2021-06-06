@@ -16,5 +16,6 @@ namespace Forum.Contracts.Responses
         public virtual List<PostForUserResponse> myPosts { get; set; }
         public virtual List<ThreadResponse> Subscription { get; set; }
         public virtual List<PostForUserResponse> Votes { get; set; }
+        public virtual List<PostForUserResponse> Calendar { get; set; }
     }
 }

@@ -1,11 +1,12 @@
-﻿<nav>
-    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        @foreach(TabPage tabPage in Pages)
-        {
-            <a class="nav-item nav-link @GetButtonClass(tabPage)" @onclick="@( () => ActivatePage(tabPage))">@tabPage.Text</a>
-        }
-    </div>
-</nav>
+﻿<ul class="nav nav-tabs" id="user-nav-tab" role="tablist">
+    @foreach(TabPage tabPage in Pages)
+    {
+        <li class="nav-item">
+            <button class="nav-link @GetButtonClass(tabPage)" @onclick="@( () => ActivatePage(tabPage))">@tabPage.Text</button>
+        </li>
+    }
+</ul>
+
 <CascadingValue Value="this">
     @ChildContent
 </CascadingValue>

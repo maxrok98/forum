@@ -19,6 +19,7 @@ namespace Forum.Models
         public DbSet<Thread> Threads { get; set; }
         public DbSet<Vote> Votes { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<Calendar> Calendar { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public ForumAppDbContext(DbContextOptions<ForumAppDbContext> options)
                     : base(options)
@@ -65,11 +66,11 @@ namespace Forum.Models
             modelBuilder.Entity<Subscription>().HasOne(p => p.Thread).WithMany(t => t.Subscriptions).HasForeignKey(t => t.ThreadId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Subscription>().HasOne(p => p.User).WithMany(t => t.Subscriptions).HasForeignKey(t => t.UserId).OnDelete(DeleteBehavior.Cascade);
 
-            var threadId1 = Guid.NewGuid().ToString();
-            var threadId2 = Guid.NewGuid().ToString();
+            modelBuilder.Entity<RefreshToken>().HasOne(u => u.User).WithOne(u => u.RefreshToken).OnDelete(DeleteBehavior.Cascade);
 
-            var admRolId = Guid.NewGuid().ToString();
-            var usrRolId = Guid.NewGuid().ToString();
+
+            var admRolId = "e8c6906e-c1c0-43fa-aa89-034ec2e6961b";
+            var usrRolId = "8642a250-3c71-4e43-9b9d-090f836c6c08";
             modelBuilder.Entity<IdentityRole>().HasData(new List<IdentityRole>
             {
                 new IdentityRole {
@@ -84,8 +85,8 @@ namespace Forum.Models
                 },
             });
 
-            var admUserId = Guid.NewGuid().ToString();
-            var UserId = Guid.NewGuid().ToString();
+            var admUserId = "5736d00c-ee3f-4ea8-b965-d5a21642d06a";
+            var UserId = "dde8b42a-591c-46e1-9de9-49be6442583e";
             var hasher = new PasswordHasher<User>();
             modelBuilder.Entity<User>().HasData(
                 new User
@@ -122,6 +123,9 @@ namespace Forum.Models
                  }
             );
 
+            var threadId1 = "a126c861-36b8-4823-8d4f-65dd12e02b23";
+            var threadId2 = "a897c53c-54a2-43c5-a914-326d1ef2d2bc";
+
             modelBuilder.Entity<Thread>().HasData
             (
                 new Thread
@@ -138,8 +142,8 @@ namespace Forum.Models
                 }
             );
 
-            var postId1 = Guid.NewGuid().ToString();
-            var postId2 = Guid.NewGuid().ToString();
+            var postId1 = "3494f2c5-4966-44c9-bcaa-4360daf44c96";
+            var postId2 = "0f8b5f51-856f-467d-ac1d-29647ad68658";
             modelBuilder.Entity<Place>().HasData
             (
                 new Place
@@ -148,6 +152,8 @@ namespace Forum.Models
                     UserId = UserId,
                     Name = "Little bit about OS",
                     Content = "Here we are going to talk about OS",
+                    Latitude = 48.286507f,
+                    Longitude = 25.937176f,
                     ThreadId = threadId1
                 },
                 new Place
@@ -156,47 +162,55 @@ namespace Forum.Models
                     UserId = admUserId,
                     Name = "Little bit about ARM architecture",
                     Content = "ARM is beter then x86",
+                    Latitude = 48.286506f,
+                    Longitude = 25.937170f,
                     ThreadId = threadId2
                 }
             );
-            postId1 = Guid.NewGuid().ToString();
-            postId2 = Guid.NewGuid().ToString();
+            var postId3 = "49dd1460-4b04-4249-a32d-282fcf54ff29";
+            var postId4 = "8fa4c18f-1c26-4738-879b-31ce028392ed";
             modelBuilder.Entity<Event>().HasData
             (
                 new Event
                 {
-                    Id = postId1,
+                    Id = postId3,
                     UserId = UserId,
                     Name = "Event 1",
                     Content = "First event",
+                    Latitude = 48.286509f,
+                    Longitude = 25.937175f,
                     ThreadId = threadId1,
                     DateOfEvent = DateTime.Now.AddDays(1)
                 },
                 new Event
                 {
-                    Id = postId2,
+                    Id = postId4,
                     UserId = admUserId,
                     Name = "Event 2",
                     Content = "Secont event",
+                    Latitude = 48.286500f,
+                    Longitude = 25.937166f,
                     ThreadId = threadId2,
                     DateOfEvent = DateTime.Now.AddDays(1)
                 }
             );
 
-            var comentId1 = Guid.NewGuid().ToString();
-            var comentId2 = Guid.NewGuid().ToString();
+            var comentId1 = "c1c09a1b-9c36-4e6b-a24d-4b7934fab507";
+            var comentId2 = "c58de694-692c-4ba3-a746-3114af9f6196";
             modelBuilder.Entity<Coment>().HasData
             (
                 new Coment
                 {
                     Id = comentId1,
                     PostId = postId1,
+                    UserId = UserId,
                     Text = "Realy cool article"
                 },
                 new Coment
                 {
                     Id = comentId2,
                     PostId = postId2,
+                    UserId = admUserId,
                     Text = "ARM the best!!"
                 }
             );

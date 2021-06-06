@@ -8,57 +8,39 @@
         <div class="col-12 align-self-center">
             <div class="m-3 m-lg-5">
 
-                <div class="text-center mt-4">
-                    <h1 class="h3">Please sign in</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-center mt-4">
+                            <h1 class="h3">Please sign in</h1>
+                        </div>
+
+                        <EditForm Model="@login" OnValidSubmit="LogonUser">
+                            <DataAnnotationsValidator />
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <InputText id="Username" class="form-control" placeholder="Email" @bind-Value="login.Email" />
+                                <ValidationMessage For="@(() => login.Email)" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <InputText id="Password" class="form-control" type="password" placeholder="Password" @bind-Value="login.Password" />
+                                <ValidationMessage For="@(() => login.Password)" />
+                            </div>
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-block btn-success">Sign in</button>
+                            </div>
+
+                            <div class="text-center text-muted mt-2">
+                                Do not have an account? <a href="user/Registration">Sign up</a>
+                            </div>
+                        </EditForm>
+
+                    </div>
                 </div>
-
-                <EditForm Model="@login" OnValidSubmit="LogonUser">
-                    <DataAnnotationsValidator />
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <InputText id="Username" class="form-control" placeholder="Email" @bind-Value="login.Email" />
-                        <ValidationMessage For="@(() => login.Email)" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <InputText id="Password" class="form-control" type="password" placeholder="Password" @bind-Value="login.Password" />
-                        <ValidationMessage For="@(() => login.Password)" />
-                    </div>
-                    <div class="text-center mt-4">
-                        <button type="submit" class="btn btn-block btn-success">Sign in</button>
-                    </div>
-
-                    <div class="text-center text-muted mt-2">
-                        Do not have an account? <a href="user/Registration">Sign up</a>
-                    </div>
-                </EditForm>
             </div>
         </div>
     </div>
 </div>
-
-@*<div class="form-signin">
-    <div class="text-center">
-        <img src="img/blazorbrand.png" height="150" />
-    </div>
-    <EditForm Model="@login" OnValidSubmit="LogonUser">
-        <DataAnnotationsValidator />
-
-        <h1 class="h3 mb-3 text-center">Please sign in</h1>
-        <div class="form-group">
-            <InputText id="Username" class="form-control" placeholder="Email" @bind-Value="login.Email" />
-            <ValidationMessage For="@(() => login.Email)" />
-        </div>
-        <div class="form-group">
-            <InputText id="Password" class="form-control" type="password" placeholder="Password" @bind-Value="login.Password" />
-            <ValidationMessage For="@(() => login.Password)" />
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-lg btn-primary btn-block">Sign in</button>
-        </div>
-    </EditForm>
-    <NavLink class="btn btn-lg btn-danger btn-block" href="user/registration">Registration</NavLink>
-</div>*@
 
 @code {
     UserLoginRequest login = new UserLoginRequest();
@@ -70,7 +52,7 @@
         if (result.Success)
         {
             Toaster.Success("You seccessfully entered to your account!");
-            UriHelper.NavigateTo("/userpage");
+            UriHelper.NavigateTo("/profile");
         }
         else
         {

@@ -1,3 +1,10 @@
-﻿@page "/posts"
+﻿@page "/"
+@page "/posts"
+@page "/posts/{SearchTerm}"
 
-<PostsList></PostsList>
+<PostsList SearchTerm="@SearchTerm"></PostsList>
+
+@code{
+    [Parameter]
+    public string SearchTerm { get; set; }
+}
