@@ -21,6 +21,9 @@ jobs:
       with:
         dotnet-version: '3.1.301'
 
+    - name: Add pacages source
+      run: dotnet nuget add source nuget/BlazorMyLeaflet.0.4.0-alpha.nupkg -n local --configfile Nuget.Config
+      
     - name: Build with dotnet
       run: dotnet build --configuration Release
 
