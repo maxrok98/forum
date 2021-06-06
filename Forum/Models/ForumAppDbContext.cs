@@ -66,7 +66,7 @@ namespace Forum.Models
             modelBuilder.Entity<Subscription>().HasOne(p => p.Thread).WithMany(t => t.Subscriptions).HasForeignKey(t => t.ThreadId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Subscription>().HasOne(p => p.User).WithMany(t => t.Subscriptions).HasForeignKey(t => t.UserId).OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<RefreshToken>().HasOne(u => u.User).WithMany(u => u.RefreshToken).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<RefreshToken>().HasOne(u => u.User).WithOne(u => u.RefreshToken).OnDelete(DeleteBehavior.Cascade);
 
 
             var admRolId = "e8c6906e-c1c0-43fa-aa89-034ec2e6961b";

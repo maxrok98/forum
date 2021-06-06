@@ -22,11 +22,11 @@ namespace Forum.Client.Services
         private readonly AuthenticationStateProvider _authenticationStateProvider;
         private readonly ILocalStorageService _localStorage;
 
-        public AuthService(HttpClient httpClient,
+        public AuthService(IHttpClientFactory httpClientFactory,
                            AuthenticationStateProvider authenticationStateProvider,
                            ILocalStorageService localStorage)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClientFactory.CreateClient("AuthHttpClient");
             _authenticationStateProvider = authenticationStateProvider;
             _localStorage = localStorage;
         }
@@ -78,6 +78,28 @@ namespace Forum.Client.Services
             await _localStorage.RemoveItemAsync("JWT-RefreshToken");
             ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
             _httpClient.DefaultRequestHeaders.Authorization = null;
+        }
+
+        public async Task<string> RefreshToken()
+        {
+            var token = await _localStorage.GetItemAsync<string>("JWT-Token");
+            var refreshToken = await _localStorage.GetItemAsync<string>("JWT-RefreshToken");
+            var tokenDto = JsonSerializer.Serialize(new RefreshTokenRequest { Token = token, RefreshToken = refreshToken });
+            var bodyContent = new StringContent(tokenDto, Encoding.UTF8, "application/json");
+            var refreshResult = await _httpClient.PostAsync(ApiRoutes.Identity.Refresh, bodyContent);
+            var refreshContent = await refreshResult.Content.ReadAsStringAsync();
+            if (!refreshResult.IsSuccessStatusCode)
+            {
+                await Logout();
+                //throw new ApplicationException("Something went wrong during the refresh token action");
+                return string.Empty;
+            }
+            var result = JsonSerializer.Deserialize<AuthSuccessResponse>(refreshContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            await _localStorage.SetItemAsync("JWT-Token", result.Token);
+            await _localStorage.SetItemAsync("JWT-RefreshToken", result.RefreshToken);
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Token);
+            return result.Token;
         }
     }
 

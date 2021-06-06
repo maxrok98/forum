@@ -4,6 +4,9 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient Http
 
+@inject HttpInterceptorService Interceptor
+@implements IDisposable
+
 
 
 <div class="container-scroller @(sidebarIconOnly ? "sidebar-icon-only" : "")">
@@ -97,7 +100,10 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Interceptor.RegisterEvent();
         var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        //TODO
+        //AuthenticationStateProvider.AuthenticationStateChanged <- to change image, name in right corner 
 
         if (state.User.Identity.IsAuthenticated)
         {
@@ -107,6 +113,11 @@
         }
 
     }
+
+    protected async Task UserStateChange()
+        {
+
+        }
 
     protected async Task LoadUserInfo(string id)
     {
@@ -128,5 +139,6 @@
             });
         }
     }
+    public void Dispose() => Interceptor.DisposeEvent();
 }
 

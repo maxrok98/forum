@@ -24,7 +24,7 @@ namespace Forum.Models
         public virtual ICollection<Subscription> Subscriptions { get; set; }
         public virtual ICollection<Calendar> Calendar { get; set; }
 
-        public virtual ICollection<RefreshToken> RefreshToken { get; set; }
+        public virtual RefreshToken RefreshToken { get; set; }
 
     }
 }

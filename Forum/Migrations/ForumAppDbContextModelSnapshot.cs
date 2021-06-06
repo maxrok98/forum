@@ -224,7 +224,9 @@ namespace Forum.Migrations
 
                     b.HasKey("Token");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("RefreshTokens");
                 });
@@ -363,15 +365,15 @@ namespace Forum.Migrations
                         {
                             Id = "5736d00c-ee3f-4ea8-b965-d5a21642d06a",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "268469f0-1bf4-4009-bfe2-6ea6846826b6",
+                            ConcurrencyStamp = "53a95d55-405b-4e39-8f7c-19518fb59a17",
                             Email = "admin@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEIJuRzidy+PxQ08b0jCv6RJ5EVi8QiBaniu1kP9hf1xfE9S9Rf9qbZEZH/1qZgPcZg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEK7PD4pIKEYMxPeB9UabDBZY0dSplGL4+Z723PBUA6y0hgIhVcRnXf4fzbpUEyENNA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6360fd2a-72f1-4570-8359-ba96e986a415",
+                            SecurityStamp = "1be0d32f-6f01-4845-894c-e594873d5152",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             Year = 0
@@ -380,15 +382,15 @@ namespace Forum.Migrations
                         {
                             Id = "dde8b42a-591c-46e1-9de9-49be6442583e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9581560b-ce21-4d80-81da-3c08d65f7f46",
+                            ConcurrencyStamp = "739b5fab-42f2-4451-8170-3e853cb43fb2",
                             Email = "new@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "NEW@EXAMPLE.COM",
                             NormalizedUserName = "NEW",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGA39QxDNg9ENvhXiDQGOA6YF1wQqv91mRQ/ul747pslxCWjdPDFFNlFIATes4X9LA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEK1Z+K6YtOzyiBVAPD1/p9wtFSqzmO5CLDz96K8Xg7YIREWy9BWXxqK2bSaQmvljMA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2a02c713-12e6-4f67-ae11-3bd8da240b28",
+                            SecurityStamp = "b3c85d2e-d80d-4dd2-85ca-c265e7129dd1",
                             TwoFactorEnabled = false,
                             UserName = "new",
                             Year = 0
@@ -445,14 +447,14 @@ namespace Forum.Migrations
                         new
                         {
                             Id = "e8c6906e-c1c0-43fa-aa89-034ec2e6961b",
-                            ConcurrencyStamp = "aac5bd67-32b3-44e0-b592-d8d9ce7c9cb1",
+                            ConcurrencyStamp = "ae5bda57-81c7-472a-b4dc-8106f86a784c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "8642a250-3c71-4e43-9b9d-090f836c6c08",
-                            ConcurrencyStamp = "1b203c79-2048-4cad-8c23-addf4d696bc8",
+                            ConcurrencyStamp = "2614e945-d21b-4922-8c1f-2f8d35051b4c",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -595,7 +597,7 @@ namespace Forum.Migrations
                             Rating = 0,
                             ThreadId = "a126c861-36b8-4823-8d4f-65dd12e02b23",
                             UserId = "dde8b42a-591c-46e1-9de9-49be6442583e",
-                            DateOfEvent = new DateTime(2021, 6, 6, 23, 51, 44, 573, DateTimeKind.Local).AddTicks(9704)
+                            DateOfEvent = new DateTime(2021, 6, 7, 18, 51, 48, 247, DateTimeKind.Local).AddTicks(9180)
                         },
                         new
                         {
@@ -608,7 +610,7 @@ namespace Forum.Migrations
                             Rating = 0,
                             ThreadId = "a897c53c-54a2-43c5-a914-326d1ef2d2bc",
                             UserId = "5736d00c-ee3f-4ea8-b965-d5a21642d06a",
-                            DateOfEvent = new DateTime(2021, 6, 6, 23, 51, 44, 579, DateTimeKind.Local).AddTicks(4993)
+                            DateOfEvent = new DateTime(2021, 6, 7, 18, 51, 48, 251, DateTimeKind.Local).AddTicks(3471)
                         });
                 });
 
@@ -714,8 +716,8 @@ namespace Forum.Migrations
             modelBuilder.Entity("Forum.Models.RefreshToken", b =>
                 {
                     b.HasOne("Forum.Models.User", "User")
-                        .WithMany("RefreshToken")
-                        .HasForeignKey("UserId")
+                        .WithOne("RefreshToken")
+                        .HasForeignKey("Forum.Models.RefreshToken", "UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

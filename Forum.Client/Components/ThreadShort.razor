@@ -22,7 +22,9 @@
         <AuthorizeView Roles="Admin">       
             <button class="btn btn-danger" @onclick="@(async () => await DeleteThreadAsync(thread.Id))">Delete</button>
         </AuthorizeView>
+        <AuthorizeView>
             <button class="btn btn-warning" @onclick="@(async () => await SubscribeToThreadAsync(thread.Id))">Subscribe</button>
+        </AuthorizeView>
     </div>
 
 </div>

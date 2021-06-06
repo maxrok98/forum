@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Forum.Client.Services;
 using System.Reflection;
 using System.Linq;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace Forum.Client
 {
@@ -29,10 +30,17 @@ namespace Forum.Client
 
             builder.Services.AddBlazoredLocalStorage();
 
-            builder.Services.AddHttpClient("BlazorApp", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddHttpClient("AuthHttpClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+            builder.Services.AddScoped(sp => new HttpClient 
+            {
+                BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) 
+            }
+            .EnableIntercept(sp));
+            builder.Services.AddHttpClientInterceptor();
+            builder.Services.AddScoped<HttpInterceptorService>();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
+            builder.Services.AddScoped<RefreshTokenService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IPostService, PostService>();
             builder.Services.AddScoped<IThreadService, ThreadService>();

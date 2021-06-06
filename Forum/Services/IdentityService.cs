@@ -256,6 +256,9 @@ namespace Forum.Services
                 ExpiryDate = DateTime.UtcNow.AddMonths(6)
             };
 
+            var delToken = await _context.RefreshTokens.Where(x => x.UserId == user.Id).FirstOrDefaultAsync();
+            if(delToken != null)
+                _context.RefreshTokens.Remove(delToken);
             await _context.RefreshTokens.AddAsync(refreshToken);
             await _context.SaveChangesAsync();
 

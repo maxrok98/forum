@@ -71,30 +71,36 @@
 
 <nav class="sidebar sidebar-offcanvas @(activeSidebar ? "active" : "")" id="sidebar">
     <ul class="nav">
+        <AuthorizeView>
         <li class="nav-item">
             <NavLink class="nav-link" href="subscribtions">
                 <i class="mdi mdi-home menu-icon"></i>
                 <span class="menu-title">Home</span>
             </NavLink>
         </li>
+        </AuthorizeView>
+        <AuthorizeView>
         <li class="nav-item">
             <NavLink class="nav-link" href="profile">
                 <i class="mdi mdi-account-circle menu-icon"></i>
                 <span class="menu-title">My page</span>
             </NavLink>
         </li>
+        </AuthorizeView>
         <li class="nav-item">
             <NavLink class="nav-link" href="threadpage">
                 <i class="mdi mdi-format-list-bulleted menu-icon"></i>
                 <span class="menu-title">Threads</span> 
             </NavLink>
         </li>
+        <AuthorizeView>
         <li class="nav-item">
             <NavLink class="nav-link" href="createpost">
                 <i class="mdi mdi-file-document-box menu-icon"></i>
                 <span class="menu-title">Create post</span> 
             </NavLink>
         </li>
+        </AuthorizeView>
         <li class="nav-item">
             <NavLink class="nav-link" href="posts">
                 <i class="mdi mdi-library-books menu-icon"></i>
