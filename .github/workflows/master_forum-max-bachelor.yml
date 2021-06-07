@@ -25,7 +25,7 @@ jobs:
       run: dotnet nuget add source nuget/ -n local --configfile Nuget.Config
       
     - name: Restore pacages
-      run: dotnet restore
+      run: dotnet restore . --configfile Nuget.Config
       
     - name: Build with dotnet
       run: dotnet build --configuration Release
