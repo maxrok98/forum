@@ -24,6 +24,9 @@ jobs:
     - name: Add pacages source
       run: dotnet nuget add source nuget/BlazorMyLeaflet.0.4.0-alpha.nupkg -n local --configfile Nuget.Config
       
+    - name: Restore pacages
+      run: dotnet restore
+      
     - name: Build with dotnet
       run: dotnet build --configuration Release
 
