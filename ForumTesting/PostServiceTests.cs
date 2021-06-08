@@ -79,7 +79,7 @@ namespace ForumTesting
             };
 
             //Act
-            PostResponse pr = await _sut.AddAsync(post, Forum.Contracts.PostType.Event);
+            PostResponse pr = await _sut.AddAsync(post, Forum.Contracts.PostType.Place);
 
             //Assert
             Assert.True(pr.Success);
@@ -122,7 +122,7 @@ namespace ForumTesting
             };
 
             //Act
-            PostResponse pr = await _sut.AddAsync(post, Forum.Contracts.PostType.Event);
+            PostResponse pr = await _sut.AddAsync(post, Forum.Contracts.PostType.Place);
 
             //Assert
             Assert.Same(post, pr.Resource);

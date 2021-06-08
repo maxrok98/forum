@@ -102,7 +102,12 @@ namespace Forum.Controllers
                 return BadRequest("You do not own this post");
             }
 
-            var pt = _mapper.Map<PostRequest, Post>(post);
+            Post pt;
+            if(post.PostType == PostType.Event)
+                pt = _mapper.Map<PostRequest, Event>(post);
+            else
+                pt = _mapper.Map<PostRequest, Place>(post);
+            pt.UserId = HttpContext.GetUserId();
             var result = await _postService.UpdateAsync(id, pt);
 
             if (!result.Success)

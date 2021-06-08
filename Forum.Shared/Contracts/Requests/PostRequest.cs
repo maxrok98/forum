@@ -23,7 +23,7 @@ namespace Forum.Contracts.Requests
         [DataType(DataType.Date)]
         public DateTime? DateOfEvent { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
+        //[JsonConverter(typeof(StringEnumConverter))]
         public PostType PostType { get; set; }
         public float Latitude { get; set; }
         public float Longitude { get; set; }

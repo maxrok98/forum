@@ -85,8 +85,8 @@ namespace ForumIntegrationTesting
                 posts.Add(pr);
             }
 
-            Assert.Equal("Little bit about OS", posts[0].Name);
-            Assert.Equal("Little bit about ARM architecture", posts[1].Name);
+            Assert.Equal("Event 1", posts[0].Name);
+            Assert.Equal("Event 2", posts[1].Name);
         }
 
         [Fact]
@@ -135,7 +135,7 @@ namespace ForumIntegrationTesting
                 Name = "Post created for test",
                 Content = "Some content for test",
                 ThreadId = Guid.NewGuid().ToString(),
-                Image = new byte[10]
+                PostType = PostType.Place
             };
 
             var response = await _client.PostAsJsonAsync("api/post/post/", newPost);
@@ -159,13 +159,13 @@ namespace ForumIntegrationTesting
                 Name = "Post created for test",
                 Content = "Some content for test",
                 ThreadId = threadId,
-                Image = new byte[10]
+                PostType = PostType.Place
             };
 
             var jsonString = new StringContent(JsonConvert.SerializeObject(newPost), Encoding.UTF8, "application/json");
-            var response = _client.PostAsync("api/post/post/", jsonString).Result;
+            var response = await _client.PostAsync("api/post/post/", jsonString);
 
-            var registrationResponse = response.Content.ReadAsStringAsync().Result;
+            var registrationResponse = await response.Content.ReadAsStringAsync();
             var registrationResponseObj = JsonConvert.DeserializeObject<PostResponse>(registrationResponse);
 
             //--------UPDATE CREATED POST
@@ -174,14 +174,14 @@ namespace ForumIntegrationTesting
                 Name = "Post for update",
                 Content = "Content has to to be updated",
                 ThreadId = threadId,
-                Image = new byte[10]
+                PostType = PostType.Place
             };
 
             var postId = registrationResponseObj.Id;
             var jsonString2 = new StringContent(JsonConvert.SerializeObject(newPost2), Encoding.UTF8, "application/json");
-            var response2 = _client.PutAsync($"api/post/put/{postId}", jsonString2).Result;
+            var response2 = await _client.PutAsync($"api/post/put/{postId}", jsonString2);
 
-            var registrationResponse2 = response2.Content.ReadAsStringAsync().Result;
+            var registrationResponse2 = await response2.Content.ReadAsStringAsync();
             var registrationResponseObj2 = JsonConvert.DeserializeObject<PostResponse>(registrationResponse2);
 
             Assert.Equal(newPost2.Name, registrationResponseObj2.Name);
@@ -198,18 +198,19 @@ namespace ForumIntegrationTesting
                 Name = "Post created for test",
                 Content = "Some content for test",
                 ThreadId = Guid.NewGuid().ToString(),
-                Image = new byte[10]
+                PostType = PostType.Place,
+                DateOfEvent = DateTime.MinValue
             };
 
             var jsonString = new StringContent(JsonConvert.SerializeObject(newPost), Encoding.UTF8, "application/json");
-            var response = _client.PostAsync("api/post/post/", jsonString).Result;
+            var response = await _client.PostAsync("api/post/post/", jsonString);
 
             var registrationResponse = response.Content.ReadAsStringAsync().Result;
             var registrationResponseObj = JsonConvert.DeserializeObject<PostResponse>(registrationResponse);
 
             //---------DELETE NEW POST
             var postId = registrationResponseObj.Id;
-            var response2 = _client.DeleteAsync($"api/post/delete/{postId}").Result;
+            var response2 = await _client.DeleteAsync($"api/post/delete/{postId}");
 
             //---------CHECK IF DELETED
             var response3 = await _client.GetAsync($"api/post/get/{postId}");
