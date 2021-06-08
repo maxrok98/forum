@@ -20,11 +20,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '3.1.301'
-
-    - name: Add pacages source
-      run: dotnet nuget add source nuget/ -n local --configfile Nuget.Config
       
-    - name: Restore pacages
+    - name: Restore packages
       run: dotnet restore . --configfile Nuget.Config
       
     - name: Build with dotnet
@@ -44,6 +41,18 @@ jobs:
     needs: build
 
     steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1.301'
+      
+    - name: Restore packages
+      run: dotnet restore . --configfile Nuget.Config
+      
+    - name: Build with dotnet
+      run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
 
