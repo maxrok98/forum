@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,12 @@ namespace Forum.Client.Services
     {
         private readonly AuthenticationStateProvider _authProvider;
         private readonly IAuthService _authService;
-        public RefreshTokenService(AuthenticationStateProvider authProvider, IAuthService authService)
+        private readonly ILocalStorageService _localStorage;
+        public RefreshTokenService(AuthenticationStateProvider authProvider, IAuthService authService, ILocalStorageService localStorage)
         {
             _authProvider = authProvider;
             _authService = authService;
+            _localStorage = localStorage;
         }
         public async Task<string> TryRefreshToken()
         {
@@ -28,7 +31,7 @@ namespace Forum.Client.Services
                 if (diff.TotalMinutes <= 0)
                     return await _authService.RefreshToken();
             }
-            return string.Empty;
+            return await _localStorage.GetItemAsStringAsync("JWT-Token");
         }
     }
 }

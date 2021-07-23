@@ -14,6 +14,21 @@ namespace Forum.Contracts
 
         public const string Base = Root;
 
+        public static class Chats
+        {
+            public const string Get = Base + "/chat/get/{id}";
+
+            public const string GetAll = Base + "/chat/get";
+
+            public const string GetMy = Base + "/chat/get-my-chats";
+
+            public const string Create = Base + "/chat/post";
+
+            public const string Update = Base + "/chat/put/{id}";
+
+            public const string Delete = Base + "/chat/delete/{id}";
+        }
+
         public static class Posts
         {
             public const string GetAll = Base + "/post/get";

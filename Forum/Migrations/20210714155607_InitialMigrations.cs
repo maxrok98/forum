@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Forum.Migrations
 {
-    public partial class InitMigration : Migration
+    public partial class InitialMigrations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -47,6 +47,19 @@ namespace Forum.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Chats",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
+                    Encrypted = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Chats", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -170,33 +183,6 @@ namespace Forum.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Chats",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(maxLength: 50, nullable: false),
-                    CreatorId = table.Column<string>(nullable: true),
-                    AddedId = table.Column<string>(nullable: true),
-                    Encrypted = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Chats", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Chats_AspNetUsers_AddedId",
-                        column: x => x.AddedId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Chats_AspNetUsers_CreatorId",
-                        column: x => x.CreatorId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RefreshTokens",
                 columns: table => new
                 {
@@ -217,6 +203,57 @@ namespace Forum.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    ChatId = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true),
+                    Text = table.Column<string>(maxLength: 300, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Messages_Chats_ChatId",
+                        column: x => x.ChatId,
+                        principalTable: "Chats",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Messages_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserChat",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    UserId = table.Column<string>(nullable: true),
+                    ChatId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserChat", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserChat_Chats_ChatId",
+                        column: x => x.ChatId,
+                        principalTable: "Chats",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserChat_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -276,32 +313,6 @@ namespace Forum.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Messages",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    ChatId = table.Column<string>(nullable: true),
-                    UserId = table.Column<string>(nullable: true),
-                    Text = table.Column<string>(maxLength: 300, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Messages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Messages_Chats_ChatId",
-                        column: x => x.ChatId,
-                        principalTable: "Chats",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Messages_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -393,8 +404,8 @@ namespace Forum.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "e8c6906e-c1c0-43fa-aa89-034ec2e6961b", "ae5bda57-81c7-472a-b4dc-8106f86a784c", "Admin", "ADMIN" },
-                    { "8642a250-3c71-4e43-9b9d-090f836c6c08", "2614e945-d21b-4922-8c1f-2f8d35051b4c", "User", "USER" }
+                    { "e8c6906e-c1c0-43fa-aa89-034ec2e6961b", "3765315b-5567-409c-82b1-7006b96612b7", "Admin", "ADMIN" },
+                    { "8642a250-3c71-4e43-9b9d-090f836c6c08", "07597159-92d4-4d06-924c-dc0679359277", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
@@ -402,9 +413,14 @@ namespace Forum.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "ImageLink", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PublicKey", "SecurityStamp", "TwoFactorEnabled", "UserName", "Year" },
                 values: new object[,]
                 {
-                    { "5736d00c-ee3f-4ea8-b965-d5a21642d06a", 0, "53a95d55-405b-4e39-8f7c-19518fb59a17", "admin@example.com", false, null, false, null, "ADMIN@EXAMPLE.COM", "ADMIN", "AQAAAAEAACcQAAAAEK7PD4pIKEYMxPeB9UabDBZY0dSplGL4+Z723PBUA6y0hgIhVcRnXf4fzbpUEyENNA==", null, false, null, "1be0d32f-6f01-4845-894c-e594873d5152", false, "admin", 0 },
-                    { "dde8b42a-591c-46e1-9de9-49be6442583e", 0, "739b5fab-42f2-4451-8170-3e853cb43fb2", "new@example.com", false, null, false, null, "NEW@EXAMPLE.COM", "NEW", "AQAAAAEAACcQAAAAEK1Z+K6YtOzyiBVAPD1/p9wtFSqzmO5CLDz96K8Xg7YIREWy9BWXxqK2bSaQmvljMA==", null, false, null, "b3c85d2e-d80d-4dd2-85ca-c265e7129dd1", false, "new", 0 }
+                    { "5736d00c-ee3f-4ea8-b965-d5a21642d06a", 0, "5d6e8f92-dc39-4ec8-9622-493579faadb1", "admin@example.com", false, null, false, null, "ADMIN@EXAMPLE.COM", "ADMIN", "AQAAAAEAACcQAAAAEAA2CCOlgVO6j+QZ++a3fkEHfaFzKJNqEk5KaSG2CbOX6CecVJuA5xJvY2PBsr8Hyw==", null, false, null, "b61fef40-8b24-48fa-b4f1-c67d0f97eb53", false, "admin", 0 },
+                    { "dde8b42a-591c-46e1-9de9-49be6442583e", 0, "b1ebb56d-f01e-4f33-8cee-505c29548761", "new@example.com", false, null, false, null, "NEW@EXAMPLE.COM", "NEW", "AQAAAAEAACcQAAAAEJpj8VtNsx6iYg1sFEQ34pULKxp3tGLVssQ1aJ8Acn+ow8PvDgQVKEP4OSbpVGiKcQ==", null, false, null, "1fafa572-29f1-4530-95f5-f931db366fad", false, "new", 0 }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Chats",
+                columns: new[] { "Id", "Encrypted", "Name" },
+                values: new object[] { "23aa043e-278b-4784-9d60-7e659336f17d", false, "First chat" });
 
             migrationBuilder.InsertData(
                 table: "Threads",
@@ -425,9 +441,18 @@ namespace Forum.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Messages",
+                columns: new[] { "Id", "ChatId", "Text", "UserId" },
+                values: new object[,]
+                {
+                    { "1633688f-ee72-4c5e-bf45-5359f6a663b9", "23aa043e-278b-4784-9d60-7e659336f17d", "hello, i am admin!", "5736d00c-ee3f-4ea8-b965-d5a21642d06a" },
+                    { "c4e4c52e-e2d9-48ff-b04a-c73b84546503", "23aa043e-278b-4784-9d60-7e659336f17d", "hello, i am user!", "dde8b42a-591c-46e1-9de9-49be6442583e" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Latitude", "Longitude", "Name", "Rating", "ThreadId", "UserId", "DateOfEvent" },
-                values: new object[] { "8fa4c18f-1c26-4738-879b-31ce028392ed", "Secont event", "Event", null, 48.2865f, 25.937166f, "Event 2", 0, "a897c53c-54a2-43c5-a914-326d1ef2d2bc", "5736d00c-ee3f-4ea8-b965-d5a21642d06a", new DateTime(2021, 6, 7, 18, 51, 48, 251, DateTimeKind.Local).AddTicks(3471) });
+                values: new object[] { "8fa4c18f-1c26-4738-879b-31ce028392ed", "Secont event", "Event", null, 48.2865f, 25.937166f, "Event 2", 0, "a897c53c-54a2-43c5-a914-326d1ef2d2bc", "5736d00c-ee3f-4ea8-b965-d5a21642d06a", new DateTime(2021, 7, 15, 18, 55, 52, 583, DateTimeKind.Local).AddTicks(4927) });
 
             migrationBuilder.InsertData(
                 table: "Posts",
@@ -437,12 +462,21 @@ namespace Forum.Migrations
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Latitude", "Longitude", "Name", "Rating", "ThreadId", "UserId", "DateOfEvent" },
-                values: new object[] { "49dd1460-4b04-4249-a32d-282fcf54ff29", "First event", "Event", null, 48.28651f, 25.937176f, "Event 1", 0, "a126c861-36b8-4823-8d4f-65dd12e02b23", "dde8b42a-591c-46e1-9de9-49be6442583e", new DateTime(2021, 6, 7, 18, 51, 48, 247, DateTimeKind.Local).AddTicks(9180) });
+                values: new object[] { "49dd1460-4b04-4249-a32d-282fcf54ff29", "First event", "Event", null, 48.28651f, 25.937176f, "Event 1", 0, "a126c861-36b8-4823-8d4f-65dd12e02b23", "dde8b42a-591c-46e1-9de9-49be6442583e", new DateTime(2021, 7, 15, 18, 55, 52, 580, DateTimeKind.Local).AddTicks(9222) });
 
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "Id", "Content", "Discriminator", "ImageLink", "Latitude", "Longitude", "Name", "Rating", "ThreadId", "UserId" },
                 values: new object[] { "3494f2c5-4966-44c9-bcaa-4360daf44c96", "Here we are going to talk about OS", "Place", null, 48.286507f, 25.937176f, "Little bit about OS", 0, "a126c861-36b8-4823-8d4f-65dd12e02b23", "dde8b42a-591c-46e1-9de9-49be6442583e" });
+
+            migrationBuilder.InsertData(
+                table: "UserChat",
+                columns: new[] { "Id", "ChatId", "UserId" },
+                values: new object[,]
+                {
+                    { "969aaefb-aa6e-4ac3-aa42-409611eae06c", "23aa043e-278b-4784-9d60-7e659336f17d", "5736d00c-ee3f-4ea8-b965-d5a21642d06a" },
+                    { "6b7d2f4a-4e8d-4140-b2de-9952a2e22d8f", "23aa043e-278b-4784-9d60-7e659336f17d", "dde8b42a-591c-46e1-9de9-49be6442583e" }
+                });
 
             migrationBuilder.InsertData(
                 table: "Coments",
@@ -504,16 +538,6 @@ namespace Forum.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Chats_AddedId",
-                table: "Chats",
-                column: "AddedId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Chats_CreatorId",
-                table: "Chats",
-                column: "CreatorId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Coments_ParentComentId",
                 table: "Coments",
                 column: "ParentComentId");
@@ -566,6 +590,16 @@ namespace Forum.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserChat_ChatId",
+                table: "UserChat",
+                column: "ChatId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserChat_UserId",
+                table: "UserChat",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Votes_PostId",
                 table: "Votes",
                 column: "PostId");
@@ -607,6 +641,9 @@ namespace Forum.Migrations
 
             migrationBuilder.DropTable(
                 name: "Subscriptions");
+
+            migrationBuilder.DropTable(
+                name: "UserChat");
 
             migrationBuilder.DropTable(
                 name: "Votes");

@@ -15,8 +15,7 @@ namespace Forum.Models
 
         public string ImageLink { get; set; }
 
-        public virtual ICollection<Chat> MyChats { get; set; }
-        public virtual ICollection<Chat> OtherChats { get; set; }
+        public virtual ICollection<UserChat> Chats { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
         public virtual ICollection<Coment> Coments { get; set; }

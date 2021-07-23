@@ -13,6 +13,7 @@ namespace Forum.Models
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Chat> Chats { get; set; }
+        public DbSet<UserChat> UserChat { get; set; }
         public DbSet<Coment> Coments { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Post> Posts { get; set; }
@@ -25,7 +26,7 @@ namespace Forum.Models
                     : base(options)
         {
             //Database.EnsureDeleted(); // later switch to Database.Migrate(); - applies migration to db
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
             //Database.Migrate();
             //Configuration = configuration;
         }
@@ -54,9 +55,12 @@ namespace Forum.Models
             modelBuilder.Entity<Vote>().HasOne(p => p.Post).WithMany(t => t.Votes).HasForeignKey(t => t.PostId).OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<Vote>().HasOne(p => p.User).WithMany(t => t.Votes).HasForeignKey(t => t.UserId).OnDelete(DeleteBehavior.SetNull);
 
-            modelBuilder.Entity<Chat>().HasOne(m => m.Creator).WithMany(t => t.MyChats).HasForeignKey(m => m.CreatorId).OnDelete(DeleteBehavior.SetNull); 
-            modelBuilder.Entity<Chat>().HasOne(m => m.Added).WithMany(t => t.OtherChats).HasForeignKey(m => m.AddedId);
+            //modelBuilder.Entity<Chat>().HasOne(m => m.Creator).WithMany(t => t.MyChats).HasForeignKey(m => m.CreatorId).OnDelete(DeleteBehavior.SetNull); 
+            //modelBuilder.Entity<Chat>().HasOne(m => m.Added).WithMany(t => t.OtherChats).HasForeignKey(m => m.AddedId);
             modelBuilder.Entity<Chat>().Property(p => p.Name).HasMaxLength(50).IsRequired();
+            //modelBuilder.Entity<UserChat>().HasKey(k => new { k.User, k.Chat });
+            modelBuilder.Entity<UserChat>().HasOne(c => c.User).WithMany(u => u.Chats).HasForeignKey(k => k.UserId);
+            modelBuilder.Entity<UserChat>().HasOne(c => c.Chat).WithMany(u => u.Users).HasForeignKey(k => k.ChatId);
 
             modelBuilder.Entity<Message>().HasOne(p => p.User).WithMany(t => t.Messages).HasForeignKey(t => t.UserId).OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<Message>().HasOne(p => p.Chat).WithMany(t => t.Messages).HasForeignKey(t => t.ChatId).OnDelete(DeleteBehavior.Cascade);
@@ -213,6 +217,26 @@ namespace Forum.Models
                     UserId = admUserId,
                     Text = "ARM the best!!"
                 }
+            );
+
+            var chatId = "23aa043e-278b-4784-9d60-7e659336f17d";
+            modelBuilder.Entity<Chat>().HasData
+            (
+                new Chat
+                {
+                    Id = chatId,
+                    Name = "First chat",
+                }
+            );
+            modelBuilder.Entity<UserChat>().HasData
+            (
+                new UserChat { Id = "969aaefb-aa6e-4ac3-aa42-409611eae06c", ChatId = chatId, UserId = admUserId},
+                new UserChat { Id = "6b7d2f4a-4e8d-4140-b2de-9952a2e22d8f", ChatId = chatId, UserId = UserId}
+            );
+            modelBuilder.Entity<Message>().HasData
+            (
+                new Message { Id = "1633688f-ee72-4c5e-bf45-5359f6a663b9", ChatId = chatId, UserId = admUserId, Text = "hello, i am admin!" },
+                new Message { Id = "c4e4c52e-e2d9-48ff-b04a-c73b84546503", ChatId = chatId, UserId = UserId, Text = "hello, i am user!" }
             );
         }
     }

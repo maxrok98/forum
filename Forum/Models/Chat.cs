@@ -12,11 +12,12 @@ namespace Forum.Models
 
         public string Name { get; set; }
 
-        public string CreatorId { get; set; }
-        public virtual User Creator { get; set; }
+        public virtual ICollection<UserChat> Users { get; set; }
+        //public string CreatorId { get; set; }
+        //public virtual User Creator { get; set; }
 
-        public string AddedId { get; set; }
-        public virtual User Added { get; set; }
+        //public string AddedId { get; set; }
+        //public virtual User Added { get; set; }
 
         public bool Encrypted { get; set; }
 

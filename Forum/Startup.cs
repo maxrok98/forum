@@ -62,6 +62,22 @@ namespace Forum
             .AddJwtBearer(x => {
                 x.SaveToken = true;
                 x.TokenValidationParameters = tokenValidationParameters;
+                x.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        // если запрос направлен хабу
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments(Forum.Contracts.ChatClient.HUBURL)))
+                        {
+                            // получаем токен из строки запроса
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             services.AddSingleton(tokenValidationParameters);
@@ -88,6 +104,8 @@ namespace Forum
             services.AddScoped<IVoteRepository, VoteRepository>();
             services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
             services.AddScoped<ICalendarRepository, CalendarRepository>();
+            services.AddScoped<IChatRepository, ChatRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -97,6 +115,8 @@ namespace Forum
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IImageHostService, ImageHostService>();
+            services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<IMessageService, MessageService>();
             services.AddSingleton<IUriService>(provider => {
                 var accessor = provider.GetRequiredService<IHttpContextAccessor>();
                 var request = accessor.HttpContext.Request;
@@ -146,6 +166,7 @@ namespace Forum
                   .AllowAnyMethod()
                   .AllowAnyHeader();
             }));
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -192,6 +213,7 @@ namespace Forum
                     name: "default",
                     pattern: "{controller=swagger}/{action=index}/{id?}");
                 endpoints.MapFallbackToFile("index.html");
+                endpoints.MapHub<Hubs.ChatHub>(Forum.Contracts.ChatClient.HUBURL);
             });
         }
     }

@@ -1,0 +1,210 @@
+﻿@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject HttpClient Http
+
+@implements IAsyncDisposable
+
+
+<div class="px-4 py-5 chat-box bg-white">
+    @if(chatResponse != null)
+    {
+    @foreach(var mes in chatResponse.Messages.OrderBy(x => x.Date))
+    {
+        if(mes.User.Id == userId)
+        {
+            <div class="media w-50 ml-auto mb-3">
+                <div class="media-body">
+                    <div class="bg-primary rounded py-2 px-3 mb-2">
+                        <p class="text-small mb-0 text-white">@mes.Text</p>
+                    </div>
+                    <p class="small text-muted">@mes.Date.ToString()</p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="media w-50 mb-3">
+                <img src="@(string.IsNullOrEmpty(mes.User.ImageLink) ? "/img/user_placeholder.png" : mes.User.ImageLink )" alt="user" width="50" class="rounded-circle">
+                <div class="media-body ml-3">
+                    <div class="bg-light rounded py-2 px-3 mb-2">
+                        <p><b><a href="user/@mes.User.Id">@mes.User.UserName</a></b></p>
+                        <p class="text-small mb-0 text-muted">@mes.Text</p>
+                    </div>
+                    <p class="small text-muted">@mes.Date.ToString()</p>
+                </div>
+            </div>
+
+        }
+    }
+    }
+</div>
+
+<!-- Typing area -->
+<div class="bg-light">
+    <div class="input-group">
+        <input type="text" placeholder="Type a message" @bind="@newMessage"aria-describedby="button-addon2" class="form-control rounded-0 border-0 py-4 bg-light">
+        <div class="input-group-append">
+            <button id="button-addon2" @onclick="@SendAsync" class="btn btn-link"> <i class="fa fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
+
+
+    @code  {
+        [Parameter]
+        public string chatId { get; set; }
+        [Inject]
+        protected RefreshTokenService tokenService { get; set; }
+        // flag to indicate chat status
+        bool chatting = false;
+
+        // name of the user who will be chatting
+        string username = "max";
+        string userId = string.Empty;
+
+        ChatClient client = null;
+
+        // on-screen message
+        string message = null;
+
+        // new message input
+        string newMessage = null;
+
+        // list of messages in chat
+        //List<Message> messages = new List<Message>();
+
+        ChatResponse chatResponse { get; set; }
+
+        protected override async Task OnInitializedAsync()
+        {
+            var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            userId = state.User.FindFirst(c => c.Type == "id")?.Value;
+        }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            var response = await Http.GetAsync(ApiRoutes.Chats.Get.Replace("{id}", chatId));
+            if (response.IsSuccessStatusCode)
+            {
+                chatResponse = await response.Content.ReadFromJsonAsync<ChatResponse>();
+            }
+            Console.WriteLine(chatId + " - open!");
+            await ChatCreate();
+        }
+
+        /// <summary>
+        /// Start chat client
+        /// </summary>
+        async Task ChatCreate()
+        {
+            // check username is valid
+            if (string.IsNullOrWhiteSpace(chatId))
+            {
+                message = "Please enter a chatId";
+                return;
+            };
+
+            try
+            {
+                // remove old messages if any
+                //messages.Clear();
+
+                // Create the chat client
+                string baseUrl = navigationManager.BaseUri;
+                client = new ChatClient(chatId, baseUrl);
+                // add an event handler for incoming messages
+                client.MessageReceived += MessageReceived;
+                // start the client
+                Console.WriteLine("Index: chart starting...");
+                await client.StartAsync(tokenService.TryRefreshToken);
+                Console.WriteLine("Index: chart started?");
+
+                chatting = true;
+            }
+            catch (Exception e)
+            {
+                message = $"ERROR: Failed to start chat client: {e.Message}";
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
+        }
+
+        /// <summary>
+        /// Inbound message
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void MessageReceived(object sender, MessageReceivedEventArgs e)
+        {
+            Console.WriteLine($"Blazor: receive {e.messageResponse.User.UserName} {e.messageResponse.Text}");
+            //bool isMine = false;
+            //if (!string.IsNullOrWhiteSpace(e.Username))
+            //{
+            //    isMine = string.Equals(e.Username, username, StringComparison.CurrentCultureIgnoreCase);
+            //}
+
+            //var newMsg = new Message(e.Username, e.Message, isMine);
+            //messages.Add(newMsg);
+
+            chatResponse.Messages.Add(e.messageResponse);
+
+            // Inform blazor the UI needs updating
+            StateHasChanged();
+        }
+
+        async Task DisconnectAsync()
+        {
+            if (chatting)
+            {
+                await client.StopAsync();
+                client = null;
+                message = "chat ended";
+                chatting = false;
+            }
+        }
+
+        async Task SendAsync()
+        {
+            if (chatting && !string.IsNullOrWhiteSpace(newMessage))
+            {
+                // send message to hub
+                await client.SendAsync(newMessage);
+                chatResponse.Messages.Add(new MessageResponse() { Text = newMessage, Date = DateTime.Now, User = new UserShortResponse() { Id = userId } });
+                // clear input box
+                newMessage = "";
+                StateHasChanged();
+            }
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            Console.WriteLine(chatId + " - closed!");
+            await DisconnectAsync();
+        }
+
+        class Message
+        {
+            public Message(string username, string body, bool mine)
+            {
+                Username = username;
+                Body = body;
+                Mine = mine;
+            }
+
+            public string Username { get; set; }
+            public string Body { get; set; }
+            public bool Mine { get; set; }
+
+            /// <summary>
+            /// Determine CSS classes to use for message div
+            /// </summary>
+            public string CSS
+            {
+                get
+                {
+                    return Mine ? "sent" : "received";
+                }
+            }
+        }
+
+    }

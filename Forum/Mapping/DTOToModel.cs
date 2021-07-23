@@ -21,6 +21,8 @@ namespace Forum.Mapping
             CreateMap<PostRequest, Place>().ForMember(dest => dest.ImageLink, opts => opts.MapFrom(src => Convert.ToBase64String(src.Image)));
             CreateMap<ComentRequest, Coment>();
             CreateMap<PaginationQuery, PaginationFilter>();
+            CreateMap<ChatRequest, Chat>().ForMember(dest => dest.Users, opts => opts.MapFrom(src => src.Users));
+            CreateMap<UserRequest, UserChat>();
         }
     }
 }

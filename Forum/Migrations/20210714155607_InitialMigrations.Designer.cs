@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Forum.Migrations
 {
     [DbContext(typeof(ForumAppDbContext))]
-    [Migration("20210606155149_InitMigration")]
-    partial class InitMigration
+    [Migration("20210714155607_InitialMigrations")]
+    partial class InitialMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -46,12 +46,6 @@ namespace Forum.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("AddedId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CreatorId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<bool>("Encrypted")
                         .HasColumnType("bit");
 
@@ -62,11 +56,15 @@ namespace Forum.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddedId");
-
-                    b.HasIndex("CreatorId");
-
                     b.ToTable("Chats");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "23aa043e-278b-4784-9d60-7e659336f17d",
+                            Encrypted = false,
+                            Name = "First chat"
+                        });
                 });
 
             modelBuilder.Entity("Forum.Models.Coment", b =>
@@ -145,6 +143,22 @@ namespace Forum.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Messages");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1633688f-ee72-4c5e-bf45-5359f6a663b9",
+                            ChatId = "23aa043e-278b-4784-9d60-7e659336f17d",
+                            Text = "hello, i am admin!",
+                            UserId = "5736d00c-ee3f-4ea8-b965-d5a21642d06a"
+                        },
+                        new
+                        {
+                            Id = "c4e4c52e-e2d9-48ff-b04a-c73b84546503",
+                            ChatId = "23aa043e-278b-4784-9d60-7e659336f17d",
+                            Text = "hello, i am user!",
+                            UserId = "dde8b42a-591c-46e1-9de9-49be6442583e"
+                        });
                 });
 
             modelBuilder.Entity("Forum.Models.Post", b =>
@@ -367,15 +381,15 @@ namespace Forum.Migrations
                         {
                             Id = "5736d00c-ee3f-4ea8-b965-d5a21642d06a",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "53a95d55-405b-4e39-8f7c-19518fb59a17",
+                            ConcurrencyStamp = "5d6e8f92-dc39-4ec8-9622-493579faadb1",
                             Email = "admin@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEK7PD4pIKEYMxPeB9UabDBZY0dSplGL4+Z723PBUA6y0hgIhVcRnXf4fzbpUEyENNA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAA2CCOlgVO6j+QZ++a3fkEHfaFzKJNqEk5KaSG2CbOX6CecVJuA5xJvY2PBsr8Hyw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1be0d32f-6f01-4845-894c-e594873d5152",
+                            SecurityStamp = "b61fef40-8b24-48fa-b4f1-c67d0f97eb53",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             Year = 0
@@ -384,18 +398,52 @@ namespace Forum.Migrations
                         {
                             Id = "dde8b42a-591c-46e1-9de9-49be6442583e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "739b5fab-42f2-4451-8170-3e853cb43fb2",
+                            ConcurrencyStamp = "b1ebb56d-f01e-4f33-8cee-505c29548761",
                             Email = "new@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "NEW@EXAMPLE.COM",
                             NormalizedUserName = "NEW",
-                            PasswordHash = "AQAAAAEAACcQAAAAEK1Z+K6YtOzyiBVAPD1/p9wtFSqzmO5CLDz96K8Xg7YIREWy9BWXxqK2bSaQmvljMA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJpj8VtNsx6iYg1sFEQ34pULKxp3tGLVssQ1aJ8Acn+ow8PvDgQVKEP4OSbpVGiKcQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b3c85d2e-d80d-4dd2-85ca-c265e7129dd1",
+                            SecurityStamp = "1fafa572-29f1-4530-95f5-f931db366fad",
                             TwoFactorEnabled = false,
                             UserName = "new",
                             Year = 0
+                        });
+                });
+
+            modelBuilder.Entity("Forum.Models.UserChat", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ChatId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserChat");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "969aaefb-aa6e-4ac3-aa42-409611eae06c",
+                            ChatId = "23aa043e-278b-4784-9d60-7e659336f17d",
+                            UserId = "5736d00c-ee3f-4ea8-b965-d5a21642d06a"
+                        },
+                        new
+                        {
+                            Id = "6b7d2f4a-4e8d-4140-b2de-9952a2e22d8f",
+                            ChatId = "23aa043e-278b-4784-9d60-7e659336f17d",
+                            UserId = "dde8b42a-591c-46e1-9de9-49be6442583e"
                         });
                 });
 
@@ -449,14 +497,14 @@ namespace Forum.Migrations
                         new
                         {
                             Id = "e8c6906e-c1c0-43fa-aa89-034ec2e6961b",
-                            ConcurrencyStamp = "ae5bda57-81c7-472a-b4dc-8106f86a784c",
+                            ConcurrencyStamp = "3765315b-5567-409c-82b1-7006b96612b7",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "8642a250-3c71-4e43-9b9d-090f836c6c08",
-                            ConcurrencyStamp = "2614e945-d21b-4922-8c1f-2f8d35051b4c",
+                            ConcurrencyStamp = "07597159-92d4-4d06-924c-dc0679359277",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -599,7 +647,7 @@ namespace Forum.Migrations
                             Rating = 0,
                             ThreadId = "a126c861-36b8-4823-8d4f-65dd12e02b23",
                             UserId = "dde8b42a-591c-46e1-9de9-49be6442583e",
-                            DateOfEvent = new DateTime(2021, 6, 7, 18, 51, 48, 247, DateTimeKind.Local).AddTicks(9180)
+                            DateOfEvent = new DateTime(2021, 7, 15, 18, 55, 52, 580, DateTimeKind.Local).AddTicks(9222)
                         },
                         new
                         {
@@ -612,7 +660,7 @@ namespace Forum.Migrations
                             Rating = 0,
                             ThreadId = "a897c53c-54a2-43c5-a914-326d1ef2d2bc",
                             UserId = "5736d00c-ee3f-4ea8-b965-d5a21642d06a",
-                            DateOfEvent = new DateTime(2021, 6, 7, 18, 51, 48, 251, DateTimeKind.Local).AddTicks(3471)
+                            DateOfEvent = new DateTime(2021, 7, 15, 18, 55, 52, 583, DateTimeKind.Local).AddTicks(4927)
                         });
                 });
 
@@ -658,18 +706,6 @@ namespace Forum.Migrations
                     b.HasOne("Forum.Models.User", "User")
                         .WithMany("Calendar")
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Forum.Models.Chat", b =>
-                {
-                    b.HasOne("Forum.Models.User", "Added")
-                        .WithMany("OtherChats")
-                        .HasForeignKey("AddedId");
-
-                    b.HasOne("Forum.Models.User", "Creator")
-                        .WithMany("MyChats")
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("Forum.Models.Coment", b =>
@@ -734,6 +770,17 @@ namespace Forum.Migrations
                         .WithMany("Subscriptions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Forum.Models.UserChat", b =>
+                {
+                    b.HasOne("Forum.Models.Chat", "Chat")
+                        .WithMany("Users")
+                        .HasForeignKey("ChatId");
+
+                    b.HasOne("Forum.Models.User", "User")
+                        .WithMany("Chats")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Forum.Models.Vote", b =>

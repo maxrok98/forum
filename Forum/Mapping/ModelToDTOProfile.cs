@@ -38,6 +38,13 @@ namespace Forum.Mapping
             CreateMap<User, UserShortResponse>().ForMember(dest => dest.myPostsAmount, opt => opt.MapFrom(src => src.Posts.Count))
                                          .ForMember(dest => dest.SubscriptionAmount, opt => opt.MapFrom(src => src.Subscriptions.Count))
                                          .ForMember(dest => dest.VotesAmount, opt => opt.MapFrom(src => src.Votes.Count));
+            CreateMap<Chat, ChatShortResponse>().ForMember(dest => dest.Users, opt => opt.MapFrom(src => src.Users.Select(x => x.User).ToList()))
+                                                .ForMember(dest => dest.LastMessage, opt => opt.MapFrom(src => src.Messages.FirstOrDefault()));
+
+            CreateMap<Chat, ChatResponse>().ForMember(dest => dest.Users, opt => opt.MapFrom(src => src.Users.Select(x => x.User).ToList()))
+                                            .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages));
+
+            CreateMap<Message, MessageResponse>(); //.ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User));
         }
     }
 }

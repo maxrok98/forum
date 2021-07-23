@@ -1,4 +1,120 @@
-﻿.profile_img img {
+﻿/* chat images*/
+
+.avatar {
+    display: inline-block;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 60px;
+}
+
+    .avatar:not(:first-child) {
+        margin-left: -37px;
+        -webkit-mask: radial-gradient(circle 33px at 3px 50%,transparent 99%,#fff 100%);
+        mask: radial-gradient(circle 33px at 3px 50%,transparent 99%,#fff 100%);
+    }
+
+    .avatar img {
+        width: 100%;
+        display: block;
+    }
+
+
+/*
+*
+* ==========================================
+* Chat Styles 
+* ==========================================
+*
+*/
+body {
+    background-color: #74EBD5;
+    background-image: linear-gradient(90deg, #74EBD5 0%, #9FACE6 100%);
+    min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    width: 5px;
+    background: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+    width: 1em;
+    background-color: #ddd;
+    outline: 1px solid slategrey;
+    border-radius: 1rem;
+}
+
+.text-small {
+    font-size: 0.9rem;
+}
+
+.messages-box,
+.chat-box {
+    height: 510px;
+    overflow-y: scroll;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+input::placeholder {
+    font-size: 0.9rem;
+    color: #999;
+}
+
+
+
+/* improved CSS for speech bubbles */
+
+.received, .sent {
+    position: relative;
+    font-family: arial;
+    font-size: 1.1em;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+    .received:after, .sent:after {
+        content: '';
+        border: 20px solid transparent;
+        position: absolute;
+        margin-top: -30px;
+    }
+
+.sent {
+    background: #03a9f4;
+    color: #fff;
+    margin-left: 10%;
+    top: 50%;
+    text-align: right;
+}
+
+.received {
+    background: #4CAF50;
+    color: #fff;
+    margin-left: 10px;
+    margin-right: 10%;
+}
+
+.sent:after {
+    border-left-color: #03a9f4;
+    border-right: 0;
+    right: -20px;
+}
+
+.received:after {
+    border-right-color: #4CAF50;
+    border-left: 0;
+    left: -20px;
+}
+
+.profile_img img {
     width: 200px;
     height: 200px;
 }
