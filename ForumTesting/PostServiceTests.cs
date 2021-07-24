@@ -1,5 +1,5 @@
-﻿using Forum.Services.Communication;
-using Forum.Services;
+﻿using Forum.BLL.Services.Communication;
+using Forum.BLL.Services;
 using Microsoft.AspNetCore;
 using Moq;
 using System;
