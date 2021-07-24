@@ -1,9 +1,9 @@
-﻿using Forum.Contracts.Responses;
+﻿using Forum.Shared.Contracts.Responses;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Threading.Tasks;
 
-namespace Forum.Contracts
+namespace Forum.Shared.Contracts
 {
 
     /// <summary>

@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Forum.BLL\Forum.BLL.csproj" />
     <ProjectReference Include="..\Forum.Client\Forum.Client.csproj" />
     <ProjectReference Include="..\Forum.DAL\Forum.DAL.csproj" />
     <ProjectReference Include="..\Forum.Shared\Forum.Shared.csproj" />

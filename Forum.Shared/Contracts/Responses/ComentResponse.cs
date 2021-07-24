@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Forum.Contracts.Responses
+namespace Forum.Shared.Contracts.Responses
 {
     public class ComentResponse
     {
@@ -11,8 +11,8 @@ namespace Forum.Contracts.Responses
         public string ParentComentId { get; set; }
 
         public string UserId { get; set; }
-        public string  UserName { get; set; }
-        public string  ImageLink { get; set; }
+        public string UserName { get; set; }
+        public string ImageLink { get; set; }
 
         public string Text { get; set; }
         public DateTime Date { get; set; }

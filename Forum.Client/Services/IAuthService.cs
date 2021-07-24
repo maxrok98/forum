@@ -1,5 +1,5 @@
 ﻿using Forum.Client.Services.Communication;
-using Forum.Contracts.Requests;
+using Forum.Shared.Contracts.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Forum.Contracts.Requests
+namespace Forum.Shared.Contracts.Requests
 {
     public class ThreadRequest
     {

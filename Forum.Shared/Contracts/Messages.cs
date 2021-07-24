@@ -1,4 +1,4 @@
-﻿namespace Forum.Contracts
+﻿namespace Forum.Shared.Contracts
 {
     /// <summary>
     /// Stores shared names used in both client and hub

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Forum.Contracts.Responses
+namespace Forum.Shared.Contracts.Responses
 {
     public class UserShortResponse
     {

@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forum.Shared", "Forum.Share
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorFullCalendar", "BlazorFullCalendar\BlazorFullCalendar.csproj", "{06FA0456-794A-4121-840E-5F88CA0D0555}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forum.DAL", "Forum.DAL\Forum.DAL.csproj", "{FBC22B11-756E-4B99-8890-F40D790CCFFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forum.DAL", "Forum.DAL\Forum.DAL.csproj", "{FBC22B11-756E-4B99-8890-F40D790CCFFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forum.BLL", "Forum.BLL\Forum.BLL.csproj", "{13BA022F-23C1-4931-8823-6F92C399FEED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{FBC22B11-756E-4B99-8890-F40D790CCFFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBC22B11-756E-4B99-8890-F40D790CCFFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBC22B11-756E-4B99-8890-F40D790CCFFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13BA022F-23C1-4931-8823-6F92C399FEED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13BA022F-23C1-4931-8823-6F92C399FEED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13BA022F-23C1-4931-8823-6F92C399FEED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13BA022F-23C1-4931-8823-6F92C399FEED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

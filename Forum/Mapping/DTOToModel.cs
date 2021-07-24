@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Forum.Contracts;
-using Forum.Contracts.Requests.Queries;
-using Forum.Contracts.Requests;
 using Forum.DAL.Models;
+using Forum.Shared.Contracts.Requests;
+using Forum.Shared.Contracts.Requests.Queries;
 
-namespace Forum.Mapping
+namespace Forum.BLL.Mapping
 {
     public class DTOToModel : Profile
     {

@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Forum.Contracts.Requests
+namespace Forum.Shared.Contracts.Requests
 {
     public class PostRequest
     {
@@ -17,7 +17,7 @@ namespace Forum.Contracts.Requests
         public string Name { get; set; }
 
         public string Content { get; set; }
-    
+
         public byte[] Image { get; set; }
 
         [DataType(DataType.Date)]

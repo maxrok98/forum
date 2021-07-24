@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Forum.Contracts.Responses;
-using Forum.Contracts;
 using Forum.DAL.Models;
+using Forum.Shared.Contracts;
+using Forum.Shared.Contracts.Responses;
 
-namespace Forum.Mapping
+namespace Forum.BLL.Mapping
 {
     public class ModelToDTOProfile : Profile
     {

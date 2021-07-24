@@ -1,5 +1,4 @@
 ﻿using Forum;
-using Forum.Contracts.Responses;
 using Forum.Contracts.Requests;
 using Newtonsoft.Json;
 using System;
@@ -11,9 +10,10 @@ using Xunit;
 using Forum.Models;
 using System.Net.Http.Headers;
 //using Newtonsoft.Json;
-using Forum.Contracts;
 //using Nancy.Json;
 using System.Net.Http.Json;
+using Forum.Shared.Contracts.Responses;
+using Forum.Shared.Contracts;
 
 namespace ForumIntegrationTesting
 {

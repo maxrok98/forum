@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Forum.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Forum.Services;
-using Forum.Contracts.Responses;
+using Forum.BLL.Services;
 using AutoMapper;
 using Forum.DAL.Models;
+using Forum.Shared.Contracts.Responses;
+using Forum.Shared.Contracts;
 
 namespace Forum.Hubs
 {

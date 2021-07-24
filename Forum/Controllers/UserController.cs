@@ -6,15 +6,15 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Forum.Services;
 using AutoMapper;
-using Forum.Contracts.Responses;
-using Forum.Contracts.Requests;
 using Forum.Extensions;
-using Forum.Contracts.Requests.Queries;
 using Forum.Helpers;
-using Forum.Contracts;
 using Forum.DAL.Models;
+using Forum.BLL.Services;
+using Forum.Shared.Contracts.Requests.Queries;
+using Forum.Shared.Contracts.Requests;
+using Forum.Shared.Contracts.Responses;
+using Forum.Shared.Contracts;
 
 namespace Forum.Controllers
 {

@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using Forum.Services;
-using Forum.Contracts;
-using Forum.Contracts.Requests;
-using Forum.Contracts.Responses;
+using Forum.BLL.Services;
+using Forum.Shared.Contracts.Responses;
+using Forum.Shared.Contracts.Requests;
+using Forum.Shared.Contracts;
 
 namespace Forum.Controllers
 {

@@ -1,10 +1,9 @@
-﻿using Forum.Contracts.Requests.Queries;
-using Forum.Services;
+﻿using Forum.BLL.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Forum.Contracts.Responses;
+using Forum.Shared.Contracts.Responses;
 using Forum.DAL.Models;
 
 namespace Forum.Helpers

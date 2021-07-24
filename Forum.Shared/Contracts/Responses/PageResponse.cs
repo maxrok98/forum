@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Forum.Contracts.Responses
+namespace Forum.Shared.Contracts.Responses
 {
     public class PageResponse<T>
     {
-        public PageResponse(){}
+        public PageResponse() { }
 
         public PageResponse(IEnumerable<T> data)
         {

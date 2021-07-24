@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Forum.Contracts.Requests
+namespace Forum.Shared.Contracts.Requests
 {
     public class UpdateAccountRequest
     {

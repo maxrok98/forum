@@ -4,7 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Forum.Contracts
+namespace Forum.Shared.Contracts
 {
     public static class ApiRoutes
     {
@@ -46,7 +46,7 @@ namespace Forum.Contracts
             public const string Unvote = Base + "/post/unvote/{id}";
 
             public const string CalendarAdd = Base + "/post/calendar-add/{id}";
-            
+
             public const string CalendarRemove = Base + "/post/calendar-remove/{id}";
         }
         public static class Coments

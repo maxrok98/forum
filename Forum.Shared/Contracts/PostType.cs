@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Forum.Contracts
+namespace Forum.Shared.Contracts
 {
     public enum PostType
     {

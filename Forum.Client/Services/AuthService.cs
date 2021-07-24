@@ -5,14 +5,14 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
-using Forum.Contracts.Requests;
 using System.Text.Json;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Net.Http.Json;
-using Forum.Contracts;
-using Forum.Contracts.Responses;
 using Forum.Client.Services.Communication;
+using Forum.Shared.Contracts.Requests;
+using Forum.Shared.Contracts.Responses;
+using Forum.Shared.Contracts;
 
 namespace Forum.Client.Services
 {

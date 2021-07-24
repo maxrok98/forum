@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Forum.Contracts.Requests.Queries
+namespace Forum.Shared.Contracts.Requests.Queries
 {
     public class PaginationQuery
     {

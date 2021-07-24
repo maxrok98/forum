@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Forum.Contracts.Requests
+namespace Forum.Shared.Contracts.Requests
 {
     public class UserRegistrationRequest
     {
@@ -18,7 +18,7 @@ namespace Forum.Contracts.Requests
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name ="Password")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
         [Required]

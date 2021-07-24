@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 
-namespace Forum.Contracts.Requests
+namespace Forum.Shared.Contracts.Requests
 {
     public class UserLoginRequest
     {

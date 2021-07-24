@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using Forum.Services;
 using AutoMapper;
 using Forum.Extensions;
-using Forum.Contracts.Responses;
-using Forum.Contracts.Requests;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using Forum.Contracts.Requests.Queries;
-using Forum.Contracts;
 using Forum.Helpers;
 using Forum.DAL.Models;
+using Forum.BLL.Services;
+using Forum.Shared.Contracts.Requests.Queries;
+using Forum.Shared.Contracts.Requests;
+using Forum.Shared.Contracts.Responses;
+using Forum.Shared.Contracts;
 
 namespace Forum.Controllers
 {

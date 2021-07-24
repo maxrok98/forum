@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Forum.DAL.Models;
 using Forum.DAL.Repositories;
+using Forum.Shared.Contracts;
 
 namespace ForumTesting
 {
@@ -79,7 +80,7 @@ namespace ForumTesting
             };
 
             //Act
-            PostResponse pr = await _sut.AddAsync(post, Forum.Contracts.PostType.Place);
+            PostResponse pr = await _sut.AddAsync(post, PostType.Place);
 
             //Assert
             Assert.True(pr.Success);
@@ -101,7 +102,7 @@ namespace ForumTesting
             _postRepoMock.Setup(x => x.AddAsync(post)).Throws(new Exception());
 
             //Act
-            PostResponse pr = await _sut.AddAsync(post, Forum.Contracts.PostType.Event);
+            PostResponse pr = await _sut.AddAsync(post, PostType.Event);
 
             //Assert
             Assert.False(pr.Success);
@@ -122,7 +123,7 @@ namespace ForumTesting
             };
 
             //Act
-            PostResponse pr = await _sut.AddAsync(post, Forum.Contracts.PostType.Place);
+            PostResponse pr = await _sut.AddAsync(post, PostType.Place);
 
             //Assert
             Assert.Same(post, pr.Resource);

@@ -1,4 +1,4 @@
-﻿using Forum.Contracts.Responses;
+﻿using Forum.Shared.Contracts.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;

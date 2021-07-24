@@ -13,14 +13,15 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using Forum.Services;
-using Forum.Option;
+using Forum.BLL.Services;
+using Forum.BLL.Settings;
 using System.Text;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Hosting;
 using Forum.DAL.Models;
 using Forum.DAL.Repositories;
+using Forum.Shared.Contracts;
 
 namespace Forum
 {
@@ -69,7 +70,7 @@ namespace Forum
 
                         // если запрос направлен хабу
                         var path = context.HttpContext.Request.Path;
-                        if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments(Forum.Contracts.ChatClient.HUBURL)))
+                        if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments(ChatClient.HUBURL)))
                         {
                             // получаем токен из строки запроса
                             context.Token = accessToken;
@@ -212,7 +213,7 @@ namespace Forum
                     name: "default",
                     pattern: "{controller=swagger}/{action=index}/{id?}");
                 endpoints.MapFallbackToFile("index.html");
-                endpoints.MapHub<Hubs.ChatHub>(Forum.Contracts.ChatClient.HUBURL);
+                endpoints.MapHub<Hubs.ChatHub>(ChatClient.HUBURL);
             });
         }
     }

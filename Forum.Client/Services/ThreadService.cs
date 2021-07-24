@@ -1,6 +1,6 @@
 ﻿using Forum.Client.Services.Communication;
-using Forum.Contracts;
-using Forum.Contracts.Responses;
+using Forum.Shared.Contracts;
+using Forum.Shared.Contracts.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
