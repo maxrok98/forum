@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Forum.Models;
 using Forum.Services.Communication;
-using Forum.Repositories;
+using Forum.DAL.Models;
+using Forum.DAL.Repositories;
 
 namespace Forum.Services
 {

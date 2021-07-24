@@ -12,16 +12,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Forum.Models;
 using AutoMapper;
-using Forum.Repositories;
 using Forum.Services;
 using Forum.Option;
 using System.Text;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Hosting;
-using kedzior.io.ConnectionStringConverter;
+using Forum.DAL.Models;
+using Forum.DAL.Repositories;
 
 namespace Forum
 {

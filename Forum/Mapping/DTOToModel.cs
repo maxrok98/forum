@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Forum.Models;
 using Forum.Contracts;
 using Forum.Contracts.Requests.Queries;
 using Forum.Contracts.Requests;
+using Forum.DAL.Models;
 
 namespace Forum.Mapping
 {

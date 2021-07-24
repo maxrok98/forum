@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Forum.Models;
-using Forum.Repositories;
+using Forum.DAL.Models;
+using Forum.DAL.Repositories;
 using Forum.Services.Communication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

@@ -1,6 +1,4 @@
 ﻿using Forum.Services.Communication;
-using Forum.Models;
-using Forum.Repositories;
 using Forum.Services;
 using Microsoft.AspNetCore;
 using Moq;
@@ -9,6 +7,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using Forum.DAL.Models;
+using Forum.DAL.Repositories;
 
 namespace ForumTesting
 {

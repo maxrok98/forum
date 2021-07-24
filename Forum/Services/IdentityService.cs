@@ -6,12 +6,12 @@ using Forum.Option;
 using Forum.Services.Communication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using Forum.Repositories;
-using Forum.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Forum.DAL.Models;
+using Forum.DAL.Repositories;
 
 namespace Forum.Services
 {
@@ -22,10 +22,10 @@ namespace Forum.Services
         private readonly JwtSettings _jwtSettings;
         private readonly TokenValidationParameters _tokenValidationParameters;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly Models.ForumAppDbContext _context;
+        private readonly ForumAppDbContext _context;
         private readonly IImageHostService _imageHostService;
 
-        public IdentityService(UserManager<User> userManager, JwtSettings jwtSettings, TokenValidationParameters tokenValidationParameters, Models.ForumAppDbContext context, IUnitOfWork unitOfWork, RoleManager<IdentityRole> roleManager, IImageHostService imageHostService)
+        public IdentityService(UserManager<User> userManager, JwtSettings jwtSettings, TokenValidationParameters tokenValidationParameters, ForumAppDbContext context, IUnitOfWork unitOfWork, RoleManager<IdentityRole> roleManager, IImageHostService imageHostService)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings;

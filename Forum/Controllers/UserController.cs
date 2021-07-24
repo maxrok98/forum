@@ -10,11 +10,11 @@ using Forum.Services;
 using AutoMapper;
 using Forum.Contracts.Responses;
 using Forum.Contracts.Requests;
-using Forum.Models;
 using Forum.Extensions;
 using Forum.Contracts.Requests.Queries;
 using Forum.Helpers;
 using Forum.Contracts;
+using Forum.DAL.Models;
 
 namespace Forum.Controllers
 {

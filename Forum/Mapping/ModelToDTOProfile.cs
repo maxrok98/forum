@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Forum.Models;
 using Forum.Contracts.Responses;
 using Forum.Contracts;
+using Forum.DAL.Models;
 
 namespace Forum.Mapping
 {

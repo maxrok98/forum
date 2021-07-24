@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Forum.Models;
 using Forum.Services.Communication;
-using Forum.Repositories;
 using Forum.Contracts;
 using System.Net.Http;
 using System.Text.Json;
 using Newtonsoft.Json;
 using Forum.Contracts.Requests;
+using Forum.DAL.Models;
+using Forum.DAL.Repositories;
 
 namespace Forum.Services
 {

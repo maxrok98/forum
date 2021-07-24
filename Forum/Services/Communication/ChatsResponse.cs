@@ -1,4 +1,4 @@
-﻿using Forum.Models;
+﻿using Forum.DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Forum.Services;
 using Forum.Contracts.Responses;
 using AutoMapper;
-using Forum.Models;
+using Forum.DAL.Models;
 
 namespace Forum.Hubs
 {

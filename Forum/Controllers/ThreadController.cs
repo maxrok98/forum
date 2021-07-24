@@ -8,10 +8,10 @@ using AutoMapper;
 using Forum.Services;
 using Forum.Contracts.Responses;
 using Forum.Contracts.Requests;
-using Forum.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Forum.Extensions;
+using Forum.DAL.Models;
 
 namespace Forum.Controllers
 {

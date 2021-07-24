@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Forum.Models;
 using Forum.Services.Communication;
 using Forum.Contracts;
 using Forum.Contracts.Requests;
+using Forum.DAL.Models;
 
 namespace Forum.Services
 {

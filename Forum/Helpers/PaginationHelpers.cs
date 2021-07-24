@@ -1,11 +1,11 @@
 ﻿using Forum.Contracts.Requests.Queries;
-using Forum.Models;
 using Forum.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Forum.Contracts.Responses;
+using Forum.DAL.Models;
 
 namespace Forum.Helpers
 {

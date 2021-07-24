@@ -1,5 +1,5 @@
-﻿using Forum.Models;
-using Forum.Repositories;
+﻿using Forum.DAL.Models;
+using Forum.DAL.Repositories;
 using Forum.Services.Communication;
 using System;
 using System.Collections.Generic;

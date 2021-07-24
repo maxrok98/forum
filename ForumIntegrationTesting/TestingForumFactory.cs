@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Linq;
-using Forum.Models;
 using Microsoft.AspNetCore.Identity;
+using Forum.DAL.Models;
 
 namespace ForumIntegrationTesting
 {

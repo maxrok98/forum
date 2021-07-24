@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Forum.Models;
 using Forum.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -12,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Forum.Extensions;
 using Forum.Contracts.Responses;
 using Forum.Contracts.Requests;
+using Forum.DAL.Models;
 
 namespace Forum.Controllers
 {

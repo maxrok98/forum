@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Forum.Models;
+using Forum.DAL.Models;
 
 namespace Forum.Services.Communication
 {

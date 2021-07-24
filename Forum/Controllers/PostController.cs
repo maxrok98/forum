@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Forum.Services;
 using AutoMapper;
-using Forum.Models;
 using Forum.Extensions;
 using Forum.Contracts.Responses;
 using Forum.Contracts.Requests;
@@ -17,6 +16,7 @@ using System.Security.Claims;
 using Forum.Contracts.Requests.Queries;
 using Forum.Contracts;
 using Forum.Helpers;
+using Forum.DAL.Models;
 
 namespace Forum.Controllers
 {

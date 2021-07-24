@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Forum.Models;
 using Forum.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +10,7 @@ using System.Threading.Tasks;
 using Forum.Contracts.Requests;
 using Forum.Contracts.Responses;
 using Forum.Extensions;
+using Forum.DAL.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
