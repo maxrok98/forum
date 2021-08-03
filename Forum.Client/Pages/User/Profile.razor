@@ -346,7 +346,6 @@ else
 
         var responce = await Http.GetAsync(ApiRoutes.User.Get.Replace("{id}", id));
 
-        var format = "image/jpeg";
         if (responce.IsSuccessStatusCode)
         {
             user = await responce.Content.ReadFromJsonAsync<UserResponse>();

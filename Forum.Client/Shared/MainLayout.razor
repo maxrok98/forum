@@ -94,16 +94,13 @@
     bool sidebarIconOnly { get; set; } = false;
     string SearchTerm { get; set; }
 
-    //System.Security.Claims.ClaimsPrincipal user;
-
     UserShortResponse user { get; set; } = new UserShortResponse();
 
     protected override async Task OnInitializedAsync()
     {
         Interceptor.RegisterEvent();
         var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        //TODO
-        //AuthenticationStateProvider.AuthenticationStateChanged <- to change image, name in right corner 
+        AuthenticationStateProvider.AuthenticationStateChanged += async (Task<AuthenticationState> s) => await UserStateChange(s); // <- to change image, name in right corner 
 
         if (state.User.Identity.IsAuthenticated)
         {
@@ -114,10 +111,17 @@
 
     }
 
-    protected async Task UserStateChange()
+    protected async Task UserStateChange(Task<AuthenticationState> s)
+    {
+        var state = await s;
+
+        if (state.User.Identity.IsAuthenticated)
         {
+            var id = state.User.FindFirst(c => c.Type == "id")?.Value;
+            await LoadUserInfo(id);
 
         }
+    }
 
     protected async Task LoadUserInfo(string id)
     {
