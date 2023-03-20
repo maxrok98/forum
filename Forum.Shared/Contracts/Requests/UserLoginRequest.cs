@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using System.Numerics;
 
 namespace Forum.Shared.Contracts.Requests
 {
@@ -16,5 +17,10 @@ namespace Forum.Shared.Contracts.Requests
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
+        public long PublicKey { get; set; }
+        
+        public byte[] IV { get; set; }
+        
     }
 }

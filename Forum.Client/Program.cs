@@ -14,6 +14,7 @@ using Forum.Client.Services;
 using System.Reflection;
 using System.Linq;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
+using Forum.Shared.Services;
 
 namespace Forum.Client
 {
@@ -45,6 +46,7 @@ namespace Forum.Client
             builder.Services.AddScoped<IPostService, PostService>();
             builder.Services.AddScoped<IThreadService, ThreadService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddSingleton<DiffieHellman>();
             builder.Services.AddToaster(config =>
             {
                 //example customizations

@@ -22,6 +22,7 @@ using Microsoft.Extensions.Hosting;
 using Forum.DAL.Models;
 using Forum.DAL.Repositories;
 using Forum.Shared.Contracts;
+using Forum.Shared.Services;
 
 namespace Forum
 {
@@ -92,7 +93,7 @@ namespace Forum
             else
             {
                 services.AddDbContext<ForumAppDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection2")));
                 services.AddIdentity<User, IdentityRole>()
                     .AddEntityFrameworkStores<ForumAppDbContext>();
             }
@@ -123,6 +124,8 @@ namespace Forum
                 var absoluteUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent(), "/");
                 return new UriService(absoluteUri);
             });
+
+            services.AddSingleton<DiffieHellman>();
 
             services.AddHttpClient("image_store", c =>
             {

@@ -17,6 +17,7 @@ using Forum.Shared.Contracts.Requests.Queries;
 using Forum.Shared.Contracts.Requests;
 using Forum.Shared.Contracts.Responses;
 using Forum.Shared.Contracts;
+using Forum.Shared.Services;
 
 namespace Forum.Controllers
 {
@@ -29,11 +30,13 @@ namespace Forum.Controllers
         private readonly IPostService _postService;
         private readonly IUriService _uriService;
         private readonly IMapper _mapper;
-        public PostController(IPostService postService, IUriService uriService, IMapper mapper)
+        private readonly DiffieHellman _diffieHellman;
+        public PostController(IPostService postService, IUriService uriService, IMapper mapper, DiffieHellman diffieHellman)
         {
             _postService = postService;
             _uriService = uriService;
             _mapper = mapper;
+            _diffieHellman = diffieHellman;
         }
         // GET: api/Post
         [HttpGet("get", Name = "GetPosts")]

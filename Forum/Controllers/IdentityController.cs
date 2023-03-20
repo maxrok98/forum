@@ -9,6 +9,8 @@ using Forum.BLL.Services;
 using Forum.Shared.Contracts.Responses;
 using Forum.Shared.Contracts.Requests;
 using Forum.Shared.Contracts;
+using Forum.Shared.Services;
+using System.Numerics;
 
 namespace Forum.Controllers
 {
@@ -17,10 +19,12 @@ namespace Forum.Controllers
     public class IdentityController : ControllerBase
     {
         private readonly IIdentityService _identityService;
+        private readonly DiffieHellman _diffieHellman;
 
-        public IdentityController(IIdentityService identityService)
+        public IdentityController(IIdentityService identityService, DiffieHellman diffieHellman)
         {
             _identityService = identityService;
+            _diffieHellman = diffieHellman;
         }
 
         [HttpPost(ApiRoutes.Identity.Register)]
@@ -34,7 +38,7 @@ namespace Forum.Controllers
                 });
             }
 
-            var authResponse = await _identityService.RegisterAsync(request.Email, request.Password, request.Image, request.UserName);
+            var authResponse = await _identityService.RegisterAsync(request.Email, request.Password, request.Image, request.UserName, request.PublicKey, request.IV);
 
             if (!authResponse.Success)
             {
@@ -54,7 +58,7 @@ namespace Forum.Controllers
         [HttpPost(ApiRoutes.Identity.Login)]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
         {
-            var authResponse = await _identityService.LoginAsync(request.Email, request.Password);
+            var authResponse = await _identityService.LoginAsync(request.Email, request.Password, request.PublicKey, request.IV);
 
             if (!authResponse.Success)
             {
@@ -67,14 +71,15 @@ namespace Forum.Controllers
             return Ok(new AuthSuccessResponse
             {
                 Token = authResponse.Token,
-                RefreshToken = authResponse.RefreshToken
+                RefreshToken = authResponse.RefreshToken,
+                PublicKey = _diffieHellman.publicKey
             });
         }
 
         [HttpPost(ApiRoutes.Identity.Refresh)]
         public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request)
         {
-            var authResponse = await _identityService.RefreshTokenAsync(request.Token, request.RefreshToken);
+            var authResponse = await _identityService.RefreshTokenAsync(request.Token, request.RefreshToken, request.PublicKey, request.IV);
 
             if (!authResponse.Success)
             {

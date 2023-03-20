@@ -13,6 +13,7 @@ using Forum.Client.Services.Communication;
 using Forum.Shared.Contracts.Requests;
 using Forum.Shared.Contracts.Responses;
 using Forum.Shared.Contracts;
+using Forum.Shared.Services;
 
 namespace Forum.Client.Services
 {
@@ -21,24 +22,30 @@ namespace Forum.Client.Services
         private readonly HttpClient _httpClient;
         private readonly AuthenticationStateProvider _authenticationStateProvider;
         private readonly ILocalStorageService _localStorage;
+        private readonly DiffieHellman _diffieHellman;
 
         public AuthService(IHttpClientFactory httpClientFactory,
                            AuthenticationStateProvider authenticationStateProvider,
-                           ILocalStorageService localStorage)
+                           ILocalStorageService localStorage,
+                           DiffieHellman diffieHellman)
         {
             _httpClient = httpClientFactory.CreateClient("AuthHttpClient");
             _authenticationStateProvider = authenticationStateProvider;
             _localStorage = localStorage;
+            _diffieHellman = diffieHellman;
         }
 
         public async Task<AuthResponse> Register(UserRegistrationRequest registerModel)
         {
+            registerModel.PublicKey = _diffieHellman.publicKey;
+            registerModel.IV = _diffieHellman.IV;
             var response = await _httpClient.PostAsJsonAsync(ApiRoutes.Identity.Register, registerModel);
             if (response.IsSuccessStatusCode)
             {
                 AuthSuccessResponse cont = await response.Content.ReadFromJsonAsync<AuthSuccessResponse>();
                 await _localStorage.SetItemAsync<string>("JWT-Token", cont.Token);
                 await _localStorage.SetItemAsync<string>("JWT-RefreshToken", cont.RefreshToken);
+                await _localStorage.SetItemAsync<string>("ServerPublicKey", cont.PublicKey.ToString());
                 ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(cont.Token);
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", cont.Token);
 
@@ -53,12 +60,16 @@ namespace Forum.Client.Services
 
         public async Task<AuthResponse> Login(UserLoginRequest loginModel)
         {
+            loginModel.PublicKey = _diffieHellman.publicKey;
+            loginModel.IV = _diffieHellman.IV;
+            Console.WriteLine(loginModel.PublicKey.ToString());
             var response = await _httpClient.PostAsJsonAsync(ApiRoutes.Identity.Login, loginModel);
             if (response.IsSuccessStatusCode)
             {
                 AuthSuccessResponse cont = await response.Content.ReadFromJsonAsync<AuthSuccessResponse>();
                 await _localStorage.SetItemAsync<string>("JWT-Token", cont.Token);
                 await _localStorage.SetItemAsync<string>("JWT-RefreshToken", cont.RefreshToken);
+                await _localStorage.SetItemAsync<string>("ServerPublicKey", cont.PublicKey.ToString());
                 ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(cont.Token);
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", cont.Token);
 
@@ -84,7 +95,7 @@ namespace Forum.Client.Services
         {
             var token = await _localStorage.GetItemAsync<string>("JWT-Token");
             var refreshToken = await _localStorage.GetItemAsync<string>("JWT-RefreshToken");
-            var tokenDto = JsonSerializer.Serialize(new RefreshTokenRequest { Token = token, RefreshToken = refreshToken });
+            var tokenDto = JsonSerializer.Serialize(new RefreshTokenRequest { Token = token, RefreshToken = refreshToken, PublicKey = _diffieHellman.publicKey, IV = _diffieHellman.IV });
             var bodyContent = new StringContent(tokenDto, Encoding.UTF8, "application/json");
             var refreshResult = await _httpClient.PostAsync(ApiRoutes.Identity.Refresh, bodyContent);
             var refreshContent = await refreshResult.Content.ReadAsStringAsync();
@@ -97,6 +108,7 @@ namespace Forum.Client.Services
             var result = JsonSerializer.Deserialize<AuthSuccessResponse>(refreshContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             await _localStorage.SetItemAsync("JWT-Token", result.Token);
             await _localStorage.SetItemAsync("JWT-RefreshToken", result.RefreshToken);
+            await _localStorage.SetItemAsync<string>("ServerPublicKey", result.PublicKey.ToString());
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Token);
             return result.Token;

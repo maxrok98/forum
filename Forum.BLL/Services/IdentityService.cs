@@ -12,6 +12,7 @@ using Forum.DAL.Models;
 using Forum.DAL.Repositories;
 using Forum.BLL.Services.Communication;
 using Forum.BLL.Settings;
+using System.Numerics;
 
 namespace Forum.BLL.Services
 {
@@ -36,7 +37,7 @@ namespace Forum.BLL.Services
             _imageHostService = imageHostService;
         }
 
-        public async Task<AuthentificationResult> RegisterAsync(string email, string password, byte[] image, string UserName)
+        public async Task<AuthentificationResult> RegisterAsync(string email, string password, byte[] image, string UserName, long publicKey, byte[] IV)
         {
             var existingUser = await _userManager.FindByEmailAsync(email);
 
@@ -88,10 +89,10 @@ namespace Forum.BLL.Services
             await _userManager.AddToRoleAsync(user, "User");
 
 
-            return await GenerateAuthentificationResultForUserAsync(newUser);
+            return await GenerateAuthentificationResultForUserAsync(newUser, publicKey, IV);
         }
 
-        public async Task<AuthentificationResult> LoginAsync(string email, string password)
+        public async Task<AuthentificationResult> LoginAsync(string email, string password, long publicKey, byte[] IV)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
@@ -113,10 +114,10 @@ namespace Forum.BLL.Services
                 };
             }
 
-            return await GenerateAuthentificationResultForUserAsync(user);
+            return await GenerateAuthentificationResultForUserAsync(user, publicKey, IV);
         }
 
-        public async Task<AuthentificationResult> RefreshTokenAsync(string token, string refreshToken)
+        public async Task<AuthentificationResult> RefreshTokenAsync(string token, string refreshToken, long publicKey, byte[] IV)
         {
             var validatedToken = GetPrincipalFromToken(token);
 
@@ -170,7 +171,7 @@ namespace Forum.BLL.Services
             await _context.SaveChangesAsync();
 
             var user = await _userManager.FindByIdAsync(validatedToken.Claims.Single(x => x.Type == "id").Value);
-            return await GenerateAuthentificationResultForUserAsync(user);
+            return await GenerateAuthentificationResultForUserAsync(user, publicKey, IV);
         }
 
         private ClaimsPrincipal GetPrincipalFromToken(string token)
@@ -202,7 +203,7 @@ namespace Forum.BLL.Services
                        StringComparison.InvariantCultureIgnoreCase);
         }
 
-        private async Task<AuthentificationResult> GenerateAuthentificationResultForUserAsync(User user)
+        private async Task<AuthentificationResult> GenerateAuthentificationResultForUserAsync(User user, long publicKey, byte[] IV)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
@@ -214,7 +215,9 @@ namespace Forum.BLL.Services
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("id", user.Id),
                 new Claim("user_name", user.UserName),
-                new Claim("image_link", user.ImageLink ?? "")
+                new Claim("image_link", user.ImageLink ?? ""),
+                new Claim("publicKey", publicKey.ToString()),
+                new Claim("IV", Convert.ToBase64String(IV))
             };
 
             var userClaims = await _userManager.GetClaimsAsync(user);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace Forum.Shared.Contracts.Responses
@@ -10,5 +11,7 @@ namespace Forum.Shared.Contracts.Responses
         public string Token { get; set; }
 
         public string RefreshToken { get; set; }
+
+        public long PublicKey { get; set; }
     }
 }

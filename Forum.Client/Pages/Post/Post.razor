@@ -1,10 +1,13 @@
 ﻿@page "/post/{Id}"
 @using BlazorLeaflet.Models
+@using Forum.Shared.Services;
+@using System.Text.Json;
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
 @inject IJSRuntime jsRuntime
+@inject DiffieHellman diffieHellman
 
 @if (post == null)
 {
@@ -176,7 +179,10 @@ else
     async Task CreateNewComent()
     {
         coment.PostId = Id;
-        var response = await Http.PostAsJsonAsync(ApiRoutes.Coments.Create, coment);
+        string stringComment = JsonSerializer.Serialize(coment);
+        long serverPublicKey = long.Parse(await Storage.GetItemAsync<string>("ServerPublicKey"));
+        byte[] cryptedArray = diffieHellman.Encrypt(serverPublicKey, stringComment);
+        var response = await Http.PostAsJsonAsync(ApiRoutes.Coments.Create, cryptedArray);
         await CheckIfOk(response);
     }
     async Task CreateComentHandler(ComentRequest comentreq)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace Forum.Shared.Contracts.Requests
@@ -27,5 +28,9 @@ namespace Forum.Shared.Contracts.Requests
         public string ConfirmPassword { get; set; }
 
         public byte[] Image { get; set; }
+
+        public long PublicKey { get; set; } 
+
+        public byte[] IV { get; set; }
     }
 }

@@ -12,6 +12,9 @@ using Forum.DAL.Models;
 using Forum.BLL.Services;
 using Forum.Shared.Contracts.Requests;
 using Forum.Shared.Contracts.Responses;
+using Forum.Shared.Services;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Text.Json;
 
 namespace Forum.Controllers
 {
@@ -23,10 +26,12 @@ namespace Forum.Controllers
     {
         private readonly IComentService _comentService;
         private readonly IMapper _mapper;
-        public ComentController(IComentService comentService, IMapper mapper)
+        private readonly DiffieHellman _diffieHellman;
+        public ComentController(IComentService comentService, IMapper mapper, DiffieHellman diffieHellman)
         {
             _comentService = comentService;
             _mapper = mapper;
+            _diffieHellman = diffieHellman;
         }
         // GET: api/Coment
         [HttpGet("get", Name = "GetComents")]
@@ -52,8 +57,12 @@ namespace Forum.Controllers
 
         // POST: api/Coment
         [HttpPost("post", Name = "PostComent")]
-        public async Task<IActionResult> Post([FromBody] ComentRequest coment)
+        public async Task<IActionResult> Post([FromBody] byte[] comentArray)
         {
+            long usersPublicKey = long.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type == "publicKey").Value);
+            byte[] usersIV = Convert.FromBase64String(HttpContext.User.Claims.FirstOrDefault(x => x.Type == "IV").Value);
+            string decryptedComent = _diffieHellman.Decrypt(usersPublicKey, comentArray, usersIV);
+            ComentRequest coment = JsonSerializer.Deserialize<ComentRequest>(decryptedComent);
             var cm = _mapper.Map<ComentRequest, Coment>(coment);
             cm.UserId = HttpContext.GetUserId();
             var result = await _comentService.AddAsync(cm);
