@@ -26,7 +26,7 @@ namespace Forum.DAL.Models
                     : base(options)
         {
             //Database.EnsureDeleted(); // later switch to Database.Migrate(); - applies migration to db
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
             //Database.Migrate();
             //Configuration = configuration;
         }

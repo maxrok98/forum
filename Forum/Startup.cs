@@ -92,7 +92,7 @@ namespace Forum
             else
             {
                 services.AddDbContext<ForumAppDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection2")));
                 services.AddIdentity<User, IdentityRole>()
                     .AddEntityFrameworkStores<ForumAppDbContext>();
             }
