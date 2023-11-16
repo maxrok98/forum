@@ -1,0 +1,129 @@
+﻿@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject IPostService PostService
+
+<div class="container">
+
+    @if (posts == null)
+    {
+        <Loader/>
+    }
+    else
+    {
+        <div class="row">
+
+            <!-- Blog Entries Column -->
+            <div class="col-md-8">
+                <ul class="nav nav-pills nav-fill mb-3" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a @onclick="@(() => OnTabChange(""))" class="nav-link active" role="tab" data-toggle="pill" type="button" aria-controls="all">All</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a @onclick="@(() => OnTabChange("event"))" class="nav-link" role="tab" data-toggle="pill" type="button" aria-controls="event">Events</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a @onclick="@(() => OnTabChange("place"))" class="nav-link" role="tab" data-toggle="pill" type="button" aria-controls="place">Places</a>
+                    </li>
+                </ul>
+                <div class="@(DaysCollapsed ? "collapse" : "")">
+                    <label class="form-label" for="customRange2">Days at town: <b>@DaysAtTown</b></label>
+                    <input type="range" class="custom-range" value="@DaysAtTown" min="0" max="7" id="customRange2" @onchange="@(async () => await OnDaysChange())"  @oninput="@((args) => OnDaysInput(args))"/>
+                </div>
+                @foreach(var post in posts.Results)
+                {
+                    <PostShort post="@post"/>
+                }
+            </div>
+
+            <div class="col-md-4">
+
+                <!-- Search Widget -->
+                <SearchWidget SearchTerm="@SearchTerm" OnSearchClick="SearchClickHandler" />
+
+                <OrderingWidget OnChangeOrdering="ChangeOrdering" />
+
+            </div>
+
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8 d-flex justify-content-center">
+                <Pager PageCount="Convert.ToInt32(posts.PageCount)" Page="Convert.ToInt32(Page)" OnPagerPageChanged="PagerPageChanged"/>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+    }
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string ThreadId { get; set; }
+    [Parameter]
+    public string SearchTerm { get; set; }
+
+    public string Page { get; set; } = "1";
+    public string PageSize { get; set; } = "2";
+    public string OrderBy { get; set; }
+    public string Type { get; set; } = string.Empty;
+    public string DaysAtTown { get; set; } = "2";
+
+    bool DaysCollapsed { get; set; } = true;
+
+    PageResponse<PostResponse> posts;
+
+    List<RenderFragment<PostShort>> ShortPosts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await loadPosts();
+    }
+
+    protected async Task loadPosts()
+    {
+        posts = await PostService.loadPosts(Page, PageSize, ThreadId, SearchTerm, OrderBy, Type, DaysAtTown);
+    }
+
+    protected async Task SearchClickHandler(string searchTerm)
+    {
+        SearchTerm = searchTerm;
+        await PagerPageChanged(1);
+    }
+    protected async Task ChangeOrdering(ChangeEventArgs e)
+    {
+        OrderBy = e.Value.ToString();
+        await PagerPageChanged(1);
+    }
+
+    protected async Task PagerPageChanged(int page)
+    {
+        Page = page.ToString();
+        await loadPosts();
+        this.StateHasChanged();
+    }
+
+    protected async Task OnTabChange(string type)
+    {
+        if(Type != type)
+        {
+            if (type == "event") DaysCollapsed = false;
+            else DaysCollapsed = true;
+            Type = type;
+            await PagerPageChanged(1);
+        }
+    }
+
+    protected void OnDaysInput(ChangeEventArgs e)
+    {
+        DaysAtTown = e.Value.ToString();
+    }
+
+    protected async Task OnDaysChange()
+    {
+        await PagerPageChanged(1);
+    }
+
+
+}

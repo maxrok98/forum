@@ -1,11 +1,19 @@
-﻿<Router AppAssembly="@typeof(Main).Assembly">
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Sotsera.Blazor.Toaster
+@using Forum.Components
+@using Forum.Components.Pages
+@using Forum.Components.Shared
+@using Forum.Client
+<ToastContainer />
+<Router AppAssembly="@typeof(MainLayout).Assembly">
 	<Found Context="routeData">
-		<RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+		<AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
 	</Found>
 	<NotFound>
-		<LayoutView Layout="@typeof(MainLayout)">
-			<p role="alert">Sorry, there's nothing at this address.</p>
-		</LayoutView>
+    <CascadingAuthenticationState>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Sorry, there's nothing at this address.</p>
+            </LayoutView>
+    </CascadingAuthenticationState>
 	</NotFound>
 </Router>

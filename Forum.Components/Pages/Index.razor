@@ -1,0 +1,76 @@
+﻿@page "/subscribtions"
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
+@if (user == null)
+{
+    <Loader/>
+}
+else
+{
+
+    @if (user.Subscription.Count == 0)
+    {
+        <div class="col-md-12 grid-margin">
+            <div class="card bg-gradient-primary border-0">
+                <div class="card-body py-3 px-4 d-flex align-items-center justify-content-between flex-wrap">
+                    <p class="mb-0 text-white font-weight-medium">
+                        You don't have any subscription.
+                    </p>
+                    <div class="d-flex">
+                        <a href="threadpage" class="btn btn-outline-light mr-2 bg-gradient-danger border-0">Go to thread list</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+    <div class="container">
+        <div class="row">
+            <PostsList ThreadId="@threads.ToString()"></PostsList>
+        </div>
+    </div>
+    }
+}
+
+
+
+@code {
+    System.Text.StringBuilder threads;
+
+    UserResponse user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var User = authState.User;
+        if (User.Identity.IsAuthenticated)
+        {
+            var id = User.FindFirst(c => c.Type == "id")?.Value;
+            await LoadUserInfo(id);
+        }
+
+        threads = new System.Text.StringBuilder();
+        foreach (var threadid in user.Subscription)
+            threads.Append(threadid.Id + " ");
+    }
+
+
+    protected async Task LoadUserInfo(string id)
+    {
+
+        var responce = await Http.GetAsync(ApiRoutes.User.Get.Replace("{id}", id));
+
+        if (responce.IsSuccessStatusCode)
+        {
+            user = await responce.Content.ReadFromJsonAsync<UserResponse>();
+        }
+    }
+
+}

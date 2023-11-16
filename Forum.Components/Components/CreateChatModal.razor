@@ -1,0 +1,173 @@
+﻿@inject IUserService UserService
+@inject Sotsera.Blazor.Toaster.IToaster Toaster
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="modal fade" id="createChatModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New chat</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control" id="recipient-name" @bind-value="@chatName">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Choosed users:</label>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach(var user in choosedUsers)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <img class="rounded_small" src=@(string.IsNullOrEmpty(user.ImageLink) ? "/img/user_placeholder.png" : user.ImageLink )>
+                                            </td>
+                                            <td><a href="user/@user.Id" class="nav-link">@user.UserName</a></td>
+                                            <td><button class="btn btn-danger" @onclick="(() =>  OnDeleteUser(user))">Delete</button></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @if (users == null)
+                    {
+                        <Loader/>
+                    }
+                    else
+                    {
+                    <div class="form-group">
+                        <SearchWidget OnSearchClick="SearchClickHandler" />
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in users.Results)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <img class="rounded_small" src=@(string.IsNullOrEmpty(user.ImageLink) ? "/img/user_placeholder.png" : user.ImageLink )>
+                                            </td>
+                                            <td><a href="user/@user.Id" class="nav-link">@user.UserName</a></td>
+                                            <td><button class="btn btn-info" @onclick="(async () => await OnAddUser(user))">Add</button></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <div class="row justify-content-center">
+                                    <div class="col-md-8 d-flex justify-content-center">
+                                        <Pager PageCount="@Convert.ToInt32(users.PageCount)" Page="@Convert.ToInt32(Page)" OnPagerPageChanged="PagerPageChanged"/>
+                                    </div>
+                                    <div class="col-md-4"></div>
+                                </div>
+                            </table>
+                        </div>
+                    </div>
+                    }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" @onclick="@( () => CreateChat())">Create chat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<ChatRequest> OnCreateChat { get; set; }
+
+    public string Page { get; set; } = "1";
+    public string PageSize { get; set; } = "2";
+    public string SearchTerm { get; set; } = string.Empty;
+
+    private string userId;
+    private string chatName;
+
+    PageResponse<UserShortResponse> users { get; set; }
+    List<UserShortResponse> choosedUsers { get; set; } = new List<UserShortResponse>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        userId = state.User.FindFirst(c => c.Type == "id")?.Value;
+        await loadUsers();
+    }
+
+    protected async Task loadUsers()
+    {
+        users = await UserService.GetAll(Page, PageSize, SearchTerm);
+    }
+
+    protected async Task OnAddUser(UserShortResponse user)
+    {
+        if(user.Id == userId)
+        {
+            Toaster.Info("You can't add yourself to chat!");
+        }
+        else if (choosedUsers.Contains(user))
+        {
+            Toaster.Warning("You already added this user!");
+        }
+        else
+        {
+            choosedUsers.Add(user);
+        }
+    }
+
+    protected void CreateChat()
+    {
+        if(string.IsNullOrEmpty(chatName) || choosedUsers.Count == 0)
+        {
+            Toaster.Warning("Name and user list shood not by empty!");
+        }
+        else
+        {
+            var chatRequest = new ChatRequest() { Name = chatName };
+            chatRequest.Users = new List<UserRequest>();
+            foreach (var user in choosedUsers)
+                chatRequest.Users.Add(new UserRequest() { UserId = user.Id });
+            chatRequest.Users.Add(new UserRequest() { UserId = userId });
+            OnCreateChat.InvokeAsync(chatRequest);
+            chatName = string.Empty;
+            choosedUsers.Clear();
+        }
+
+
+    }
+
+    protected void OnDeleteUser(UserShortResponse user)
+    {
+        choosedUsers.Remove(user);
+    }
+
+    protected async Task SearchClickHandler(string searchTerm)
+    {
+        SearchTerm = searchTerm;
+        await PagerPageChanged(1);
+    }
+
+    protected async Task PagerPageChanged(int page)
+    {
+        Page = page.ToString();
+        await loadUsers();
+    }
+
+}

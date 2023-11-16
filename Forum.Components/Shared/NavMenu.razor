@@ -1,0 +1,146 @@
+﻿@*<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">Forum.Client</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="subscribtions" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="userpage">
+                <span class="oi oi-account-login" aria-hidden="true"></span> My page
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="threadpage">
+                <span class="oi oi-list" aria-hidden="true"></span> Threads
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="createpost">
+                <span class="oi oi-document" aria-hidden="true"></span> Create post
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="posts">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Posts
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="userlist">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> User List
+            </NavLink>
+        </li>
+        <AuthorizeView>
+            <Authorized>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="user/logout">
+                        <span class="oi oi-account-logout" aria-hidden="true"></span> User logout
+                    </NavLink>
+                </li>
+            </Authorized>
+            <NotAuthorized>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="user/login">
+                        <span class="oi oi-account-login" aria-hidden="true"></span> User login
+                    </NavLink>
+                </li>
+            </NotAuthorized>
+        </AuthorizeView>
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}*@
+
+
+
+<nav class="sidebar sidebar-offcanvas @(activeSidebar ? "active" : "")" id="sidebar">
+    <ul class="nav">
+        <AuthorizeView>
+        <li class="nav-item">
+            <NavLink class="nav-link" href="subscribtions">
+                <i class="mdi mdi-home menu-icon"></i>
+                <span class="menu-title">Home</span>
+            </NavLink>
+        </li>
+        </AuthorizeView>
+        <AuthorizeView>
+        <li class="nav-item">
+            <NavLink class="nav-link" href="profile">
+                <i class="mdi mdi-account-circle menu-icon"></i>
+                <span class="menu-title">My page</span>
+            </NavLink>
+        </li>
+        </AuthorizeView>
+        <li class="nav-item">
+            <NavLink class="nav-link" href="threadpage">
+                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+                <span class="menu-title">Threads</span> 
+            </NavLink>
+        </li>
+        <AuthorizeView>
+        <li class="nav-item">
+            <NavLink class="nav-link" href="createpost">
+                <i class="mdi mdi-file-document-box menu-icon"></i>
+                <span class="menu-title">Create post</span> 
+            </NavLink>
+        </li>
+        </AuthorizeView>
+        <li class="nav-item">
+            <NavLink class="nav-link" href="posts">
+                <i class="mdi mdi-library-books menu-icon"></i>
+                <span class="menu-title">Posts</span> 
+            </NavLink>
+        </li>
+        <li class="nav-item">
+            <NavLink class="nav-link" href="userlist">
+                <i class="mdi mdi-account-multiple menu-icon"></i>
+                <span class="menu-title">User List</span> 
+            </NavLink>
+        </li>
+        <AuthorizeView>
+            <Authorized>
+                <li class="nav-item" >
+                    <NavLink class="nav-link" href="user/logout">
+                        <i class="mdi mdi-logout menu-icon"></i>
+                        <span class="menu-title">Logout</span> 
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="chats">
+                        <i class="mdi mdi-chat menu-icon"></i>
+                        <span class="menu-title">Chat</span> 
+                    </NavLink>
+                </li>
+            </Authorized>
+            <NotAuthorized>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="user/login">
+                        <i class="mdi mdi-login menu-icon"></i>
+                        <span class="menu-title">User login</span> 
+                    </NavLink>
+                </li>
+            </NotAuthorized>
+        </AuthorizeView>
+    </ul>
+</nav>
+
+@code{
+    [Parameter]
+    public bool activeSidebar { get; set; }
+}

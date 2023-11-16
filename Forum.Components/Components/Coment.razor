@@ -1,0 +1,60 @@
+﻿
+<div class="media mb-4">
+    <img class="d-flex mr-3 rounded_small" src=@(string.IsNullOrEmpty(coment.ImageLink) ? "/img/user_placeholder.png" : coment.ImageLink )>
+    <div class="media-body">
+        <h5 class="mt-0"><a href="user/@coment.UserId">@coment.UserName</a></h5>
+        <p>@coment.Text</p>
+        <button class="btn btn-info" @onclick="Toggle">Coment</button>
+        @if (!Collapsed)
+        {
+        <!-- Comments Form -->
+        <div class="card my-4">
+            <h5 class="card-header">Leave a Comment:</h5>
+            <div class="card-body">
+                <EditForm Model="@comentreq" OnValidSubmit="CreateNewComent">
+                    <DataAnnotationsValidator />
+
+                    <div class="form-group">
+                        <InputText id="name" class="form-control" rows="3" placeholder="Write comment...." @bind-Value="comentreq.Text" />
+                        <ValidationMessage For="@(() => comentreq.Text)" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </EditForm>
+            </div>
+        </div>
+        }
+        @if(coment.SubComents != null)
+        {
+            @foreach(var subComent in coment.SubComents)
+            {
+                <Coment coment="@subComent" OnCreateComent="OnCreateComent"></Coment>
+            }
+        }
+
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public ComentResponse coment { get; set; }
+    [Parameter]
+    public EventCallback<ComentRequest> OnCreateComent { get; set; }
+
+    public bool Collapsed { get; set; } = true;
+
+
+    ComentRequest comentreq { get; set; } = new ComentRequest();
+
+    public async Task CreateNewComent()
+    {
+        comentreq.ParentComentId = coment.Id;
+        Toggle();
+        await OnCreateComent.InvokeAsync(comentreq);
+    }
+
+    void Toggle()
+    {
+        Collapsed = !Collapsed;
+    }
+
+}

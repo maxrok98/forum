@@ -1,5 +1,13 @@
-﻿using Forum.NativeClient.Data;
+﻿using Blazored.LocalStorage;
+using Forum.Client;
+using Forum.Client.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebView.Maui;
+using Sotsera.Blazor.Toaster.Core.Models;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Components.Routing;
 
 namespace Forum.NativeClient {
   public static class MauiProgram {
@@ -16,9 +24,35 @@ namespace Forum.NativeClient {
 		builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
 
-      builder.Services.AddSingleton<WeatherForecastService>();
+        builder.Services.AddBlazoredLocalStorage();
+
+        builder.Services.AddScoped(sp => new HttpClient 
+        {
+#if ANDROID
+            BaseAddress = new Uri("http://10.0.2.2:5000") 
+#else
+            BaseAddress = new Uri("https://localhost:5001")
+#endif
+        }
+        .EnableIntercept(sp));
+        builder.Services.AddHttpClientInterceptor();
+        builder.Services.AddScoped<HttpInterceptorService>();
+        builder.Services.AddAuthorizationCore();
+        builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
+        builder.Services.AddScoped<RefreshTokenService>();
+        builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<IPostService, PostService>();
+        builder.Services.AddScoped<IThreadService, ThreadService>();
+        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddToaster(config =>
+        {
+            //example customizations
+            config.PositionClass = Defaults.Classes.Position.BottomRight;
+            config.PreventDuplicates = true;
+            config.NewestOnTop = false;
+        });
 
       return builder.Build();
-    }
+	}
   }
 }

@@ -1,0 +1,64 @@
+﻿@inject IThreadService ThreadService
+@inject IToaster Toaster 
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+
+
+<div class="position-relative d-flex mb-4 p-4 shadow bg-light thread-table_row-hover">
+
+    <div class="d-flex justify-content-center align-items-center thread-table_row-img">
+        <img src="@thread.ImageLink" height="150" width="150" class="shadow-lg" />
+    </div>
+
+    <div class="d-flex flex-column justify-content-between pl-4 thread-table_row_text">
+        <div>
+            <div><h2><a class="text-decoration-none thread-table_row_text_heading" href="/thread/@thread.Id">@thread.Name</a></h2></div>
+            <div class="text-secondary">@thread.Description</div>
+        </div>
+        <div class="d-flex thread-table_row_icons">
+            <i class="mdi mdi-library-books"> : @thread.NumberOfPost</i>
+                
+            <i class="mdi mdi-account-multiple"> : @thread.NumberOfSubscription</i>
+        </div>
+        <AuthorizeView Roles="Admin">       
+            <button class="btn btn-danger" @onclick="@(async () => await DeleteThreadAsync(thread.Id))">Delete</button>
+        </AuthorizeView>
+        <AuthorizeView>
+            <button class="btn btn-warning" @onclick="@(async () => await SubscribeToThreadAsync(thread.Id))">Subscribe</button>
+        </AuthorizeView>
+    </div>
+
+</div>
+
+@code {
+    [Parameter]
+    public ThreadResponse thread { get; set; }
+
+    async Task DeleteThreadAsync(string id)
+    {
+        var result = await ThreadService.DeleteThread(id);
+        if (result.Success)
+        {
+            Toaster.Success(result.Message);
+            UriHelper.NavigateTo("/threadpage");
+        }
+        else
+        {
+            Toaster.Error(result.Message);
+        }
+    }
+
+    async Task SubscribeToThreadAsync(string id)
+    {
+        var result = await ThreadService.SubscribeToThread(id);
+        if (result.Success)
+        {
+            Toaster.Success(result.Message);
+            thread.NumberOfSubscription += 1;
+        }
+        else
+        {
+            Toaster.Error(result.Message);
+        }
+    }
+
+}

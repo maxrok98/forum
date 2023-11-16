@@ -198,8 +198,9 @@ namespace Forum
             });
 
             app.UseBlazorFrameworkFiles();
-
+#if !DEBUG
             app.UseHttpsRedirection();
+#endif
             app.UseRouting();
             app.UseStaticFiles();
             
