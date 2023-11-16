@@ -22,7 +22,7 @@ jobs:
         dotnet-version: '3.1.301'
       
     - name: Restore packages
-      run: dotnet restore . --configfile Nuget.Config
+      run: dotnet restore Forum/Forum.csproj --configfile Nuget.Config
       
     - name: Build with dotnet
       run: dotnet build --configuration Release
