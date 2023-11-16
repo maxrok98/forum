@@ -22,10 +22,10 @@ jobs:
         dotnet-version: '3.1.301'
       
     - name: Restore packages
-      run: dotnet restore Forum/Forum.csproj --configfile Nuget.Config
+      run: dotnet restore --configfile Nuget.Config
       
     - name: Build with dotnet
-      run: dotnet build Forum/Forum.csproj --configuration Release
+      run: dotnet build --configuration Release
 
     - name: dotnet publish
       run: dotnet publish Forum/Forum.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
@@ -49,10 +49,10 @@ jobs:
         dotnet-version: '3.1.301'
       
     - name: Restore packages
-      run: dotnet restore Forum/Forum.csproj --configfile Nuget.Config
+      run: dotnet restore --configfile Nuget.Config
       
     - name: Build with dotnet
-      run: dotnet build Forum/Forum.csproj --no-restore
+      run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
 
