@@ -18,8 +18,8 @@ jobs:
       with:
         dotnet-version: 3.1.x
     - name: Restore dependencies
-      run: dotnet restore . --configfile Nuget.Config
+      run: dotnet restore Forum/Forum.csproj --configfile Nuget.Config
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build Forum/Forum.csproj --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
