@@ -133,7 +133,6 @@ namespace Forum
             services.AddAutoMapper(typeof(Startup));
 
 
-            services.AddMvc(optinos => optinos.EnableEndpointRouting = false).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddSwaggerGen(x =>
             {
                 x.SwaggerDoc("v1", new OpenApiInfo { Title = "Forum API", Version = "v1" });
@@ -166,13 +165,15 @@ namespace Forum
                   .AllowAnyMethod()
                   .AllowAnyHeader();
             }));
-            services.AddSignalR();
+            services.AddRazorPages();
+            services.AddControllers();
+			services.AddControllersWithViews();
+			services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //dbContext.Database.Migrate();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -197,12 +198,13 @@ namespace Forum
                 option.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description);
             });
 
-            app.UseBlazorFrameworkFiles();
 #if !DEBUG
             app.UseHttpsRedirection();
 #endif
-            app.UseRouting();
+            app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
+
+            app.UseRouting();
             
             app.UseAuthentication();
             app.UseAuthorization();
@@ -210,10 +212,11 @@ namespace Forum
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
+                endpoints.MapRazorPages();
+				endpoints.MapControllerRoute(
+					name: "default",
                     pattern: "{controller=swagger}/{action=index}/{id?}");
-                endpoints.MapFallbackToFile("index.html");
+				endpoints.MapFallbackToFile("index.html");
                 endpoints.MapHub<Hubs.ChatHub>(ChatClient.HUBURL);
             });
         }

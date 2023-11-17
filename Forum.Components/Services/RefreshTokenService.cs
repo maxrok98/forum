@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Forum.Client.Services
+namespace Forum.Components.Services
 {
     public class RefreshTokenService
     {

@@ -7,7 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Forum.Client {
+namespace Forum.Components {
     public class InputDateTime<TValue> : InputDate<TValue> {
         private const string DateFormat = "yyyy-MM-ddTHH:mm";
 

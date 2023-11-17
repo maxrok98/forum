@@ -9,12 +9,12 @@ using System.Text.Json;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Net.Http.Json;
-using Forum.Client.Services.Communication;
+using Forum.Components.Services.Communication;
 using Forum.Shared.Contracts.Requests;
 using Forum.Shared.Contracts.Responses;
 using Forum.Shared.Contracts;
 
-namespace Forum.Client.Services
+namespace Forum.Components.Services
 {
     public class AuthService : IAuthService
     {

@@ -9,7 +9,7 @@ using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Forum.Client
+namespace Forum.Components
 {
     public class ApiAuthenticationStateProvider : AuthenticationStateProvider
     {

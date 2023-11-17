@@ -1,6 +1,6 @@
 ﻿using Blazored.LocalStorage;
-using Forum.Client;
-using Forum.Client.Services;
+using Forum.Components;
+using Forum.Components.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebView.Maui;
 using Sotsera.Blazor.Toaster.Core.Models;
@@ -31,7 +31,7 @@ namespace Forum.NativeClient {
 #if ANDROID
             BaseAddress = new Uri("http://10.0.2.2:5000") 
 #else
-            BaseAddress = new Uri("https://localhost:5001")
+            BaseAddress = new Uri("http://localhost:5000")
 #endif
         }
         .EnableIntercept(sp));

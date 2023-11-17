@@ -10,10 +10,12 @@ using Microsoft.Extensions.Logging;
 using Blazored.LocalStorage;
 using Sotsera.Blazor.Toaster.Core.Models;
 using Microsoft.AspNetCore.Components.Authorization;
-using Forum.Client.Services;
 using System.Reflection;
 using System.Linq;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
+using Forum.Components;
+using Forum.Components.Services;
+using Forum.Client;
 
 namespace Forum.Client
 {

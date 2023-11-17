@@ -1,11 +1,11 @@
-﻿using Forum.Client.Services.Communication;
+﻿using Forum.Components.Services.Communication;
 using Forum.Shared.Contracts.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Forum.Client.Services
+namespace Forum.Components.Services
 {
     public interface IThreadService
     {

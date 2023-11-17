@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
-namespace Forum.Client.Services
+namespace Forum.Components.Services
 {
     public class PostService : IPostService
     {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Toolbelt.Blazor;
 using Blazored.LocalStorage;
 
-namespace Forum.Client.Services
+namespace Forum.Components.Services
 {
     public class HttpInterceptorService
     {

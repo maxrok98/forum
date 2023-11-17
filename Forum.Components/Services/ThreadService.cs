@@ -1,4 +1,4 @@
-﻿using Forum.Client.Services.Communication;
+﻿using Forum.Components.Services.Communication;
 using Forum.Shared.Contracts;
 using Forum.Shared.Contracts.Responses;
 using System;
@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
-namespace Forum.Client.Services
+namespace Forum.Components.Services
 {
     public class ThreadService : IThreadService
     {
