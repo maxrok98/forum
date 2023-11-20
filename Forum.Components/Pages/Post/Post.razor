@@ -136,33 +136,36 @@ else
     public Map _map;
     private LatLng _markerLatLng;
 
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await loadPost();
-
-        _markerLatLng = new LatLng(post.Latitude, post.Longitude);
-
-        var marker = new Marker(_markerLatLng)
+        if (firstRender)
         {
-            Title = "Marker 1",
-        };
+            await loadPost();
 
-        _map = new Map(jsRuntime)
-        {
-            Center = _markerLatLng,
-            Zoom = 16.0f,
-            FullscreenControl = true
-        };
+            _markerLatLng = new LatLng(post.Latitude, post.Longitude);
 
-        _map.OnInitialized += () =>
-        {
-            _map.AddLayer(new TileLayer
+            var marker = new Marker(_markerLatLng)
+                {
+                    Title = "Marker 1",
+                };
+
+            _map = new Map(jsRuntime)
+                {
+                    Center = _markerLatLng,
+                    Zoom = 16.0f,
+                    FullscreenControl = true
+                };
+
+            _map.OnInitialized += () =>
             {
-                UrlTemplate = "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                Attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
-            });
-            _map.AddLayer(marker);
-        };
+                _map.AddLayer(new TileLayer
+                    {
+                        UrlTemplate = "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                        Attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+                    });
+                _map.AddLayer(marker);
+            };
+        }
     }
 
     async Task loadPost()
