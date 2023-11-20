@@ -5,13 +5,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
 
   <!--<ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>-->
 
-  <PublishTrimmed>false</PublishTrimmed>
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
     <PackageReference Include="BlazorMyLeaflet" Version="0.4.0-alpha" />
