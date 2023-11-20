@@ -136,36 +136,34 @@ else
     public Map _map;
     private LatLng _markerLatLng;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync() 
     {
-        if (firstRender)
-        {
-            await loadPost();
+        await loadPost();
+        Console.WriteLine(post.Id);
+        _markerLatLng = new LatLng(post.Latitude, post.Longitude);
 
-            _markerLatLng = new LatLng(post.Latitude, post.Longitude);
-
-            var marker = new Marker(_markerLatLng)
-                {
-                    Title = "Marker 1",
-                };
-
-            _map = new Map(jsRuntime)
-                {
-                    Center = _markerLatLng,
-                    Zoom = 16.0f,
-                    FullscreenControl = true
-                };
-
-            _map.OnInitialized += () =>
+        var marker = new Marker(_markerLatLng)
             {
-                _map.AddLayer(new TileLayer
-                    {
-                        UrlTemplate = "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                        Attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
-                    });
-                _map.AddLayer(marker);
+                Title = "Marker 1",
             };
-        }
+
+        Console.WriteLine("JsRuntime - " + (jsRuntime == null ? "null" : "instance"));
+        _map = new Map(jsRuntime)
+            {
+                Center = _markerLatLng,
+                Zoom = 16.0f,
+                FullscreenControl = true
+            };
+
+        _map.OnInitialized += () =>
+        {
+            _map.AddLayer(new TileLayer
+                {
+                    UrlTemplate = "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    Attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+                });
+            _map.AddLayer(marker);
+        };
     }
 
     async Task loadPost()
