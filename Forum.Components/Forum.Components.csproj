@@ -5,7 +5,6 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-    <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
 
   <!--<ItemGroup>
@@ -14,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
-    <PackageReference Include="BlazorMyLeaflet" Version="0.4.0-alpha" />
+    <PackageReference Include="BlazorModLeaflet" Version="0.4.0-alpha" />
     <PackageReference Include="BlazorInputFile" Version="0.2.0" />
     <PackageReference Include="ExifLib.Standard" Version="1.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.25" />

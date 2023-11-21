@@ -8,7 +8,6 @@
     <PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
     <PackageReference Include="BlazorInputFile" Version="0.2.0" />
     <PackageReference Include="ExifLib.Standard" Version="1.7.0" />
-    <PackageReference Include="BlazorMyLeaflet" Version="0.4.0-alpha" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.24" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.24" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.24" PrivateAssets="all" />
