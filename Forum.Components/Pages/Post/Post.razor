@@ -143,17 +143,16 @@ else
         _markerLatLng = new LatLng(post.Latitude, post.Longitude);
 
         var marker = new Marker(_markerLatLng)
-            {
-                Title = "Marker 1",
-            };
+        {
+            Title = "Marker 1",
+        };
 
         Console.WriteLine("JsRuntime - " + (jsRuntime == null ? "null" : "instance"));
         _map = new Map(jsRuntime)
-            {
-                Center = _markerLatLng,
-                Zoom = 16.0f,
-                FullscreenControl = true
-            };
+        {
+            Center = _markerLatLng,
+            Zoom = 16.0f
+        };
 
         _map.OnInitialized += () =>
         {
