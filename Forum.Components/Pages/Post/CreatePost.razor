@@ -39,7 +39,9 @@
                             *@
                         </div>
                         <div class="d-flex justify-content-center">
-                            <button @onmousedown="butRecordAudioStart_Click" @onmouseup="butRecordAudioStop_Click" type="button" class="btn btn-primary btn-rounded btn-icon">
+                            <button @ontouchstart="butRecordAudioStart_Click" @ontouchend="butRecordAudioStop_Click"
+                                @onmousedown="butRecordAudioStart_Click" @onmouseup="butRecordAudioStop_Click"
+                                type="button" class="btn btn-primary btn-rounded btn-icon">
                                 <i class="mdi mdi-microphone"></i>
                             </button>
                         </div>
