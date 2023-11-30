@@ -15,7 +15,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression></PackageLicenseExpression>
     <LangVersion>8</LangVersion>
-    <PublishTrimmed>false</PublishTrimmed>
+    <!--<PublishTrimmed>false</PublishTrimmed>-->
   </PropertyGroup>
 
 

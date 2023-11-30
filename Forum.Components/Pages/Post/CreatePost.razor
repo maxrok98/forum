@@ -4,6 +4,7 @@
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
 @inject IJSRuntime jsRuntime
+@inject ICognitiveService cognitiveService 
 @implements IAsyncDisposable
 @using BlazorLeaflet.Models
 @using BlazorLeaflet.Models.Events
@@ -30,9 +31,17 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Content</label>
-                            @*<InputTextArea id="content" class="form-control" placeholder="Content" @bind-Value="newPost.Content" />
-                            <ValidationMessage For="@(() => newPost.Content)" />*@
-                            <textarea id="summernote"></textarea>
+                            <InputTextArea id="content" class="form-control" placeholder="Content" @bind-Value="newPost.Content" />
+                            <ValidationMessage For="@(() => newPost.Content)" />
+@*                             <textarea id="summernote"></textarea>
+                             <button @onclick="butRecordAudioStart_Click" class="btn btn-primary" disabled=@mDisableRecordAudioStart>Start Record</button>
+                            <button @onclick="butRecordAudioStop_Click" class="btn btn-primary" disabled=@mDisableRecordAudioStop>Stop</button>
+                            *@
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <button @onmousedown="butRecordAudioStart_Click" @onmouseup="butRecordAudioStop_Click" type="button" class="btn btn-primary btn-rounded btn-icon">
+                                <i class="mdi mdi-microphone"></i>
+                            </button>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Thread</label>
@@ -89,6 +98,9 @@
     string imageDataUri;
     byte[] base64image;
 
+    bool mDisableRecordAudioStart;
+    bool mDisableRecordAudioStop = true;
+
     PostRequest newPost = new PostRequest();
     List<ThreadResponse> threads = new List<ThreadResponse>();
 
@@ -109,6 +121,7 @@
         {
             Toaster.Error("Could not get thread list");
         }
+        await jsRuntime.InvokeVoidAsync("BlazorAudioRecorder.Initialize", DotNetObjectReference.Create(this));
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -197,37 +210,62 @@
         //var rawFile = files.FirstOrDefault();
         //if (rawFile != null)
         //{
-            // Load as an image file in memory
-            var format = "image/jpeg";
-            //var imageFile = await rawFile.ToImageFileAsync(format, 640, 480);
-            using (var ms = new MemoryStream())
+        // Load as an image file in memory
+        var format = "image/jpeg";
+        //var imageFile = await rawFile.ToImageFileAsync(format, 640, 480);
+        using (var ms = new MemoryStream())
+        {
+            await e.File.OpenReadStream().CopyToAsync(ms);
+            // Make a data URL so we can display it
+            base64image = ms.ToArray();
+
+            ms.Seek(0, SeekOrigin.Begin);
+            double? lat = null, lng = null;
+            try
             {
-                await e.File.OpenReadStream().CopyToAsync(ms);
-                // Make a data URL so we can display it
-                base64image = ms.ToArray();
-
-                ms.Seek(0, SeekOrigin.Begin);
-                double? lat = null, lng = null;
-                try
+                using (ExifReader reader = new ExifReader(ms))
                 {
-                    using (ExifReader reader = new ExifReader(ms))
+                    reader.GetTagValue(ExifTags.GPSLatitude, out double[] latitude);
+                    reader.GetTagValue(ExifTags.GPSLongitude, out double[] longitude);
+                    if(latitude != null && longitude != null)
                     {
-                        reader.GetTagValue(ExifTags.GPSLatitude, out double[] latitude);
-                        reader.GetTagValue(ExifTags.GPSLongitude, out double[] longitude);
-                        if(latitude != null && longitude != null)
-                        {
-                            lat = latitude[0] + latitude[1] / 60f + latitude[2] / 3600f;
-                            lng = longitude[0] + longitude[1] / 60f + longitude[2] / 3600f;
+                        lat = latitude[0] + latitude[1] / 60f + latitude[2] / 3600f;
+                        lng = longitude[0] + longitude[1] / 60f + longitude[2] / 3600f;
 
-                        }
                     }
-                }catch(Exception ex) { }
-                InitMap(lat, lng);
-            }
-            imageDataUri = $"data:{format};base64,{Convert.ToBase64String(base64image)}";
+                }
+            }catch(Exception ex) { }
+            InitMap(lat, lng);
+        }
+        imageDataUri = $"data:{format};base64,{Convert.ToBase64String(base64image)}";
 
-            //status = $"Finished loading {ms.Length} bytes from {imageFile.Name}";
+        //status = $"Finished loading {ms.Length} bytes from {imageFile.Name}";
         //}
+    }
+
+    void butRecordAudioStart_Click()
+    {
+        mDisableRecordAudioStart = true;
+        mDisableRecordAudioStop = false;
+        jsRuntime.InvokeVoidAsync("BlazorAudioRecorder.StartRecord");
+    }
+    async Task butRecordAudioStop_Click()
+    {
+        mDisableRecordAudioStart = false;
+        mDisableRecordAudioStop = true;
+        await jsRuntime.InvokeVoidAsync("BlazorAudioRecorder.StopRecord");
+    }
+    [JSInvokable]
+    public async Task OnAudioReady(byte[] bytes, string pAudioUrl)
+    {
+        //await jsRuntime.InvokeVoidAsync("BlazorAudioRecorder.DownloadBlob", pAudioUrl, "TestSample.wav");
+        var result = await cognitiveService.GetSpeechToText(bytes);
+        if (!result.Success)
+        {
+            Toaster.Error(result.Errors.FirstOrDefault());
+        }
+        newPost.Content = newPost.Content + " " + result.Text;
+        StateHasChanged();
     }
     public async ValueTask DisposeAsync()
     {

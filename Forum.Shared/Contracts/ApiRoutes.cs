@@ -116,5 +116,10 @@ namespace Forum.Shared.Contracts
 
             public const string Refresh = Base + "/identity/refresh";
         }
+
+        public static class Cognitive
+        {
+            public const string SpeechToText = Base + "/cognitive";
+        }
     }
 }

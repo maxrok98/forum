@@ -45,6 +45,7 @@ namespace Forum.BLL.Mapping
                                             .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages));
 
             CreateMap<Message, MessageResponse>(); //.ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User));
+            CreateMap<SpeechToText, SpeechToTextResponse>();
         }
     }
 }

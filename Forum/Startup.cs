@@ -22,6 +22,7 @@ using Microsoft.Extensions.Hosting;
 using Forum.DAL.Models;
 using Forum.DAL.Repositories;
 using Forum.Shared.Contracts;
+using Microsoft.CognitiveServices.Speech;
 
 namespace Forum
 {
@@ -109,6 +110,13 @@ namespace Forum
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            services.AddScoped<ICognitiveService, CognitiveService>();
+            services.AddSingleton<SpeechConfig>(sp =>
+            {
+                var speechToTextKey = Environment.GetEnvironmentVariable("azureTextToSpeechKey");
+                var azureCognitiveRegion = Environment.GetEnvironmentVariable("azureCognitiveRegion");
+                return SpeechConfig.FromSubscription(speechToTextKey, azureCognitiveRegion);
+            });
             services.AddScoped<IThreadService, ThreadService>();
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IComentService, ComentService>();
