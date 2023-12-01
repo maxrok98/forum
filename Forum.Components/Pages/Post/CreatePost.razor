@@ -265,7 +265,7 @@
         }
         var code = await jsRuntime.InvokeAsync<string>("getCode");
         code = code.Remove(code.Length - 4);
-        code = code + "Some text" + "</p>";
+        code = code + result.Text + "</p>";
         await jsRuntime.InvokeVoidAsync("setCode", code);
         StateHasChanged();
     }
