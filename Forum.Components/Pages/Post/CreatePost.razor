@@ -20,12 +20,12 @@
     <EditForm Model="@newPost" OnValidSubmit="CreateNewPost">
         <DataAnnotationsValidator />
         <div class="mb-3">
-            <label class="form-label">Title</label>
+            <label class="form-label"><b>Title</b></label>
             <InputText id="name" class="form-control" placeholder="Name" @bind-Value="newPost.Name" />
             <ValidationMessage For="@(() => newPost.Name)" />
         </div>
         <div class="mb-3">
-            <label class="form-label">Content</label>
+            <label class="form-label"><b>Content</b></label>
             <InputTextArea id="content" class="form-control" placeholder="Content" @bind-Value="newPost.Content" />
             <ValidationMessage For="@(() => newPost.Content)" />
 @*                             <textarea id="summernote"></textarea>
@@ -40,7 +40,7 @@
             </button>
         </div>
         <div class="mb-3">
-            <label class="form-label">Thread</label>
+            <label class="form-label"><b>Thread</b></label>
             <InputSelect id="thread" class="form-control" @bind-Value="newPost.ThreadId">
                 @foreach (var thread in threads)
                 {
@@ -50,14 +50,22 @@
             <ValidationMessage For="@(() => newPost.ThreadId)" />
         </div>
         <div class="mb-3">
-            <label class="form-label">Post type</label>
-            <InputSelect class="form-control" @bind-Value="newPost.PostType">
-                <option value="@PostType.Place" selected>Place</option>
-                <option value="@PostType.Event">Event</option>
-            </InputSelect>
+            <label class="form-label"><b>Post type</b></label>
+            <div style="display: flex; justify-content: space-around;">
+            <InputRadioGroup id="postTypesRadio" @bind-Value="newPost.PostType">
+                <div class="custom-control custom-radio custom-control-inline">
+                    <InputRadio id="radioPost" class="custom-control-input" Value="@PostType.Place"/>
+                    <label class="custom-control-label" for="radioPost">Place</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <InputRadio id="radioEvent" class="custom-control-input" Value="@PostType.Event"/>
+                    <label class="custom-control-label" for="radioEvent">Event</label>
+                </div>
+            </InputRadioGroup>
+            </div>
         </div>
         <div class="mb-3 @(newPost.PostType == PostType.Event ? "" : "collapse")">
-            <label class="form-label">Date of event</label>
+            <label class="form-label"><b>Date of event</b></label>
             <InputDateTime id="createdDate" class="form-control" @bind-Value="newPost.DateOfEvent"></InputDateTime>
             <ValidationMessage class="offset-sm-3 col-sm-8" For="(()=>newPost.DateOfEvent)"></ValidationMessage>
         </div>
@@ -73,7 +81,7 @@
         <!-- You must wrap the map component in a container setting its actual size. -->
         @if (_map != null)
         {
-            <div id="mapContainer" class="@(showMap ? "" : "collapse")"  style="width: 100%; height: 500px;">
+            <div id="mapContainer" class="@(showMap ? "" : "collapse")"  style="width: 100%; height: 300px;">
                 <LeafletMap Map="_map" />
             </div>
         }
