@@ -5,22 +5,19 @@
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
 @inject IThreadService ThreadService
 
-<div class="container">
+@if (thread == null)
+{
+    <Loader/>
+}
+else
+{
+    <ThreadShort thread="thread"></ThreadShort>
 
-        @if (thread == null)
-        {
-            <Loader/>
-        }
-        else
-        {
-            <ThreadShort thread="thread"></ThreadShort>
+    <div class="row">
+    <PostsList ThreadId="@thread.Id"></PostsList>
+    </div>
 
-            <div class="row">
-            <PostsList ThreadId="@thread.Id"></PostsList>
-            </div>
-
-        }
-</div>
+}
 
 
 

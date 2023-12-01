@@ -13,106 +13,104 @@
 else
 {
     <!-- Page Content -->
-    <div class="container">
 
-        <div class="row">
+    <div class="row">
 
-            <!-- Post Content Column -->
-            <div class="col-lg-10">
+        <!-- Post Content Column -->
+        <div class="col-lg-10">
 
-                <div class="d-flex justify-content-between align-items-center px-1">
-                <!-- Title -->
-                <h1 class="mt-4">@post.Name</h1>
-                <AuthorizeView Roles="Admin">
-                    <button class="btn btn-danger" @onclick="(async () => await OnDeletePost() )">Delete</button>
-                </AuthorizeView>
-                </div>
-
-                <!-- Author -->
-                <p class="lead">
-                    by
-                    <a href="#">@post.UserName</a>
-                </p>
-
-                <hr>
-
-                <!-- Date/Time -->
-                <p>Posted on @post.Date</p>
-
-                <hr>
-
-                @if(post.PostType == PostType.Event)
-                {
-                <div class="d-flex justify-content-between align-items-center px-1">
-                <p>Date of event: @post.DateOfEvent</p>
-                <button class="btn btn-primary" @onclick="(async () => await OnAddToCalendar())"><i class="mdi mdi-calendar"></i>Add to calendar</button>
-                </div>
-                <hr>
-                }
-
-                <div class="@(type == ImageType.Map ? "collapse" : "")">
-                <!-- Preview Image -->
-                @if(post.ImageLink == null || post.ImageLink == String.Empty)
-                {
-                    <img class="img-fluid rounded" src="/img/post_placeholder.gif" width="920" />
-                }
-                else
-                {
-                    <img class="img-fluid rounded" src="@post.ImageLink" width="920" />
-                }
-                </div>
-                <div class="@(type == ImageType.Photo ? "collapse" : "")">
-                    <div id="mapContainer" style="max-width: 920px; height: 500px;">
-                        <LeafletMap Map="_map" />
-                    </div>
-                </div>
-                <hr>
-                <ul class="nav nav-pills nav-fill mb-3" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <a @onclick="@(() => type = ImageType.Photo)" class="nav-link" role="tab" data-toggle="pill" type="button" aria-controls="all" >Photo</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a @onclick="@(() => type = ImageType.Map)" class="nav-link active" role="tab" data-toggle="pill" type="button" aria-controls="event">Map</a>
-                    </li>
-                </ul>
-
-                <!-- Post Content -->
-                @((MarkupString)@post.Content)
-
-
-                <hr>
-
-                <div class="d-flex justify-content-between align-items-center px-1">
-                <div ><i class="mdi mdi-forum"> : @post.Coments.Count()</i></div>
-                <div ><button class="btn btn-primary" @onclick="Vote">Vote</button> Votes: @post.Rating</div>
-                </div>
-
-                <hr>
-
-                <!-- Comments Form -->
-                <div class="card my-4">
-                    <h5 class="card-header">Leave a Comment:</h5>
-                    <div class="card-body">
-                        <EditForm Model="@coment" OnValidSubmit="CreateNewComent">
-                            <DataAnnotationsValidator />
-
-                            <div class="form-group">
-                                <InputText id="name" class="form-control" rows="3" placeholder="Write comment...." @bind-Value="coment.Text" />
-                                <ValidationMessage For="@(() => coment.Text)" />
-                            </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </EditForm>
-                    </div>
-                </div>
-
-                @foreach(var subComent in post.Coments.Where(p => p.ParentComentId == null))
-                {
-                    <Coment coment="@subComent" OnCreateComent="@CreateComentHandler"></Coment>
-                }
-
-
-
+            <div class="d-flex justify-content-between align-items-center px-1">
+            <!-- Title -->
+            <h1 class="mt-4">@post.Name</h1>
+            <AuthorizeView Roles="Admin">
+                <button class="btn btn-danger" @onclick="(async () => await OnDeletePost() )">Delete</button>
+            </AuthorizeView>
             </div>
+
+            <!-- Author -->
+            <p class="lead">
+                by
+                <a href="#">@post.UserName</a>
+            </p>
+
+            <hr>
+
+            <!-- Date/Time -->
+            <p>Posted on @post.Date</p>
+
+            <hr>
+
+            @if(post.PostType == PostType.Event)
+            {
+            <div class="d-flex justify-content-between align-items-center px-1">
+            <p>Date of event: @post.DateOfEvent</p>
+            <button class="btn btn-primary" @onclick="(async () => await OnAddToCalendar())"><i class="mdi mdi-calendar"></i>Add to calendar</button>
+            </div>
+            <hr>
+            }
+
+            <div class="@(type == ImageType.Map ? "collapse" : "")">
+            <!-- Preview Image -->
+            @if(post.ImageLink == null || post.ImageLink == String.Empty)
+            {
+                <img class="img-fluid rounded" src="/img/post_placeholder.gif" width="920" />
+            }
+            else
+            {
+                <img class="img-fluid rounded" src="@post.ImageLink" width="920" />
+            }
+            </div>
+            <div class="@(type == ImageType.Photo ? "collapse" : "")">
+                <div id="mapContainer" style="max-width: 920px; height: 500px;">
+                    <LeafletMap Map="_map" />
+                </div>
+            </div>
+            <hr>
+            <ul class="nav nav-pills nav-fill mb-3" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a @onclick="@(() => type = ImageType.Photo)" class="nav-link" role="tab" data-toggle="pill" type="button" aria-controls="all" >Photo</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a @onclick="@(() => type = ImageType.Map)" class="nav-link active" role="tab" data-toggle="pill" type="button" aria-controls="event">Map</a>
+                </li>
+            </ul>
+
+            <!-- Post Content -->
+            @((MarkupString)@post.Content)
+
+
+            <hr>
+
+            <div class="d-flex justify-content-between align-items-center px-1">
+            <div ><i class="mdi mdi-forum"> : @post.Coments.Count()</i></div>
+            <div ><button class="btn btn-primary" @onclick="Vote">Vote</button> Votes: @post.Rating</div>
+            </div>
+
+            <hr>
+
+            <!-- Comments Form -->
+            <div class="card my-4">
+                <h5 class="card-header">Leave a Comment:</h5>
+                <div class="card-body">
+                    <EditForm Model="@coment" OnValidSubmit="CreateNewComent">
+                        <DataAnnotationsValidator />
+
+                        <div class="form-group">
+                            <InputText id="name" class="form-control" rows="3" placeholder="Write comment...." @bind-Value="coment.Text" />
+                            <ValidationMessage For="@(() => coment.Text)" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </EditForm>
+                </div>
+            </div>
+
+            @foreach(var subComent in post.Coments.Where(p => p.ParentComentId == null))
+            {
+                <Coment coment="@subComent" OnCreateComent="@CreateComentHandler"></Coment>
+            }
+
+
+
         </div>
     </div>
 }

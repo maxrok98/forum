@@ -3,60 +3,55 @@
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject IPostService PostService
 
-<div class="container">
+@if (posts == null)
+{
+    <Loader/>
+}
+else
+{
+    <div class="row">
 
-    @if (posts == null)
-    {
-        <Loader/>
-    }
-    else
-    {
-        <div class="row">
-
-            <!-- Blog Entries Column -->
-            <div class="col-md-8">
-                <ul class="nav nav-pills nav-fill mb-3" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <a @onclick="@(() => OnTabChange(""))" class="nav-link active" role="tab" data-toggle="pill" type="button" aria-controls="all">All</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a @onclick="@(() => OnTabChange("event"))" class="nav-link" role="tab" data-toggle="pill" type="button" aria-controls="event">Events</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a @onclick="@(() => OnTabChange("place"))" class="nav-link" role="tab" data-toggle="pill" type="button" aria-controls="place">Places</a>
-                    </li>
-                </ul>
-                <div class="@(DaysCollapsed ? "collapse" : "")">
-                    <label class="form-label" for="customRange2">Days at town: <b>@DaysAtTown</b></label>
-                    <input type="range" class="custom-range" value="@DaysAtTown" min="0" max="7" id="customRange2" @onchange="@(async () => await OnDaysChange())"  @oninput="@((args) => OnDaysInput(args))"/>
-                </div>
-                @foreach(var post in posts.Results)
-                {
-                    <PostShort post="@post"/>
-                }
+        <!-- Blog Entries Column -->
+        <div class="col-md-8">
+            <ul class="nav nav-pills nav-fill mb-3" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a @onclick="@(() => OnTabChange(""))" class="nav-link active" role="tab" data-toggle="pill" type="button" aria-controls="all">All</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a @onclick="@(() => OnTabChange("event"))" class="nav-link" role="tab" data-toggle="pill" type="button" aria-controls="event">Events</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a @onclick="@(() => OnTabChange("place"))" class="nav-link" role="tab" data-toggle="pill" type="button" aria-controls="place">Places</a>
+                </li>
+            </ul>
+            <div class="@(DaysCollapsed ? "collapse" : "")">
+                <label class="form-label" for="customRange2">Days at town: <b>@DaysAtTown</b></label>
+                <input type="range" class="custom-range" value="@DaysAtTown" min="0" max="7" id="customRange2" @onchange="@(async () => await OnDaysChange())"  @oninput="@((args) => OnDaysInput(args))"/>
             </div>
+            @foreach(var post in posts.Results)
+            {
+                <PostShort post="@post"/>
+            }
+        </div>
 
-            <div class="col-md-4">
+        <div class="col-md-4">
 
-                <!-- Search Widget -->
-                <SearchWidget SearchTerm="@SearchTerm" OnSearchClick="SearchClickHandler" />
+            <!-- Search Widget -->
+            <SearchWidget SearchTerm="@SearchTerm" OnSearchClick="SearchClickHandler" />
 
-                <OrderingWidget OnChangeOrdering="ChangeOrdering" />
-
-            </div>
+            <OrderingWidget OnChangeOrdering="ChangeOrdering" />
 
         </div>
 
-        <div class="row justify-content-center">
-            <div class="col-md-8 d-flex justify-content-center">
-                <Pager PageCount="Convert.ToInt32(posts.PageCount)" Page="Convert.ToInt32(Page)" OnPagerPageChanged="PagerPageChanged"/>
-            </div>
-            <div class="col-md-4"></div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 d-flex justify-content-center">
+            <Pager PageCount="Convert.ToInt32(posts.PageCount)" Page="Convert.ToInt32(Page)" OnPagerPageChanged="PagerPageChanged"/>
         </div>
-    }
-</div>
-
-
+        <div class="col-md-4"></div>
+    </div>
+}
 
 @code {
     [Parameter]

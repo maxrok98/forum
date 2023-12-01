@@ -3,39 +3,37 @@
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
 @inject IAuthService AuthService
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12 align-self-center">
-            <div class="m-3 m-lg-5">
+<div class="row">
+    <div class="col-12 align-self-center">
+        <div class="m-3 m-lg-5">
 
-                <div class="card">
-                    <div class="card-body">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center mt-4">
+                        <h1 class="h3">Please sign in</h1>
+                    </div>
+
+                    <EditForm Model="@login" OnValidSubmit="LogonUser">
+                        <DataAnnotationsValidator />
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <InputText id="Username" class="form-control" placeholder="Email" @bind-Value="login.Email" />
+                            <ValidationMessage For="@(() => login.Email)" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <InputText id="Password" class="form-control" type="password" placeholder="Password" @bind-Value="login.Password" />
+                            <ValidationMessage For="@(() => login.Password)" />
+                        </div>
                         <div class="text-center mt-4">
-                            <h1 class="h3">Please sign in</h1>
+                            <button type="submit" class="btn btn-block btn-success">Sign in</button>
                         </div>
 
-                        <EditForm Model="@login" OnValidSubmit="LogonUser">
-                            <DataAnnotationsValidator />
-                            <div class="mb-3">
-                                <label class="form-label">Email</label>
-                                <InputText id="Username" class="form-control" placeholder="Email" @bind-Value="login.Email" />
-                                <ValidationMessage For="@(() => login.Email)" />
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Password</label>
-                                <InputText id="Password" class="form-control" type="password" placeholder="Password" @bind-Value="login.Password" />
-                                <ValidationMessage For="@(() => login.Password)" />
-                            </div>
-                            <div class="text-center mt-4">
-                                <button type="submit" class="btn btn-block btn-success">Sign in</button>
-                            </div>
+                        <div class="text-center text-muted mt-2">
+                            Do not have an account? <a href="user/Registration">Sign up</a>
+                        </div>
+                    </EditForm>
 
-                            <div class="text-center text-muted mt-2">
-                                Do not have an account? <a href="user/Registration">Sign up</a>
-                            </div>
-                        </EditForm>
-
-                    </div>
                 </div>
             </div>
         </div>

@@ -6,50 +6,47 @@
 @inject IThreadService ThreadService
 
 
-<div class="container">
+@if (threads == null)
+{
+    <Loader/>
+}
+else
+{
 
-    @if (threads == null)
+    @foreach (var thread in threads)
     {
-        <Loader/>
+        <ThreadShort thread="thread"></ThreadShort>
     }
-    else
-    {
 
-        @foreach (var thread in threads)
-        {
-            <ThreadShort thread="thread"></ThreadShort>
-        }
+    <AuthorizeView Roles="Admin">
+        <EditForm Context="Auth" Model="@newThread" OnValidSubmit="CreateNewThread">
+            <DataAnnotationsValidator />
 
-        <AuthorizeView Roles="Admin">
-            <EditForm Context="Auth" Model="@newThread" OnValidSubmit="CreateNewThread">
-                <DataAnnotationsValidator />
-
-                <div>
-                    <h1 class="h3 mb-3 text-center">Create new thread</h1>
-                    <div class="form-group">
-                        <InputText id="name" class="form-control" placeholder="Name" @bind-Value="newThread.Name" />
-                        <ValidationMessage For="@(() => newThread.Name)" />
-                    </div>
-                    <div class="form-group">
-                        <InputText id="username" class="form-control" placeholder="Description" @bind-Value="newThread.Description" />
-                        <ValidationMessage For="@(() => newThread.Description)" />
-                    </div>
-
-                    <InputFile OnChange="HandleSelection" />
-                    <p>@status</p>
-                    @if (!string.IsNullOrEmpty(imageDataUri))
-                    {
-                        <img src="@imageDataUri" />
-                    }
-
-                    <div class="form-group mt-2">
-                        <button type="submit" class="btn btn-lg btn-primary btn-block">Create</button>
-                    </div>
+            <div>
+                <h1 class="h3 mb-3 text-center">Create new thread</h1>
+                <div class="form-group">
+                    <InputText id="name" class="form-control" placeholder="Name" @bind-Value="newThread.Name" />
+                    <ValidationMessage For="@(() => newThread.Name)" />
                 </div>
-            </EditForm>
-        </AuthorizeView>
-    }
-</div>
+                <div class="form-group">
+                    <InputText id="username" class="form-control" placeholder="Description" @bind-Value="newThread.Description" />
+                    <ValidationMessage For="@(() => newThread.Description)" />
+                </div>
+
+                <InputFile OnChange="HandleSelection" />
+                <p>@status</p>
+                @if (!string.IsNullOrEmpty(imageDataUri))
+                {
+                    <img src="@imageDataUri" />
+                }
+
+                <div class="form-group mt-2">
+                    <button type="submit" class="btn btn-lg btn-primary btn-block">Create</button>
+                </div>
+            </div>
+        </EditForm>
+    </AuthorizeView>
+}
 
 
 @code {
