@@ -8,16 +8,29 @@ using Toolbelt.Blazor.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Routing;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+#if ANDROID
+using Forum.NativeClient.Platforms.Android;
+#endif
 
 namespace Forum.NativeClient {
   public static class MauiProgram {
     public static MauiApp CreateMauiApp() {
       var builder = MauiApp.CreateBuilder();
-      builder
-        .UseMauiApp<App>()
-        .ConfigureFonts(fonts => {
-          fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-        });
+            builder
+              .UseMauiApp<App>()
+              .ConfigureFonts(fonts =>
+              {
+                  fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+              })
+              .ConfigureMauiHandlers(handlers =>
+              {
+#if ANDROID
+                  handlers.AddHandler<BlazorWebView, MauiBlazorWebViewHandler>();
+#endif
+              });
+
+      //CustomizeWebViewHandler();
 
       builder.Services.AddMauiBlazorWebView();
 #if DEBUG
@@ -30,6 +43,7 @@ namespace Forum.NativeClient {
         {
 #if ANDROID
             BaseAddress = new Uri("http://10.0.2.2:5000") 
+            //BaseAddress = new Uri("https://event-forum.azurewebsites.net") 
 #else
             BaseAddress = new Uri("http://localhost:5000")
 #endif
@@ -44,6 +58,7 @@ namespace Forum.NativeClient {
         builder.Services.AddScoped<IPostService, PostService>();
         builder.Services.AddScoped<IThreadService, ThreadService>();
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<ICognitiveService, CognitiveService>();
         builder.Services.AddToaster(config =>
         {
             //example customizations
@@ -54,5 +69,12 @@ namespace Forum.NativeClient {
 
       return builder.Build();
 	}
+//    private static void CustomizeWebViewHandler() {
+//#if ANDROID
+//            Microsoft.Maui.Handlers.WebViewHandler.Mapper.ModifyMapping(
+//            nameof(Android.Webkit.WebView.WebChromeClient),
+//            (handler, view, args) => handler.PlatformView.SetWebChromeClient(new MyWebChromeClient(handler)));
+//#endif
+//        }
   }
 }
