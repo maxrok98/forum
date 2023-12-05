@@ -23,6 +23,8 @@ namespace Forum.Shared.Contracts.Responses
 
         public string ImageLink { get; set; }
 
+        public string Tags { get; set; }
+
         public DateTime Date { get; set; }
         public DateTime DateOfEvent { get; set; }
 

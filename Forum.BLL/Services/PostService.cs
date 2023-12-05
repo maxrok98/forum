@@ -20,13 +20,15 @@ namespace Forum.BLL.Services
         private readonly ICalendarRepository _calendarRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IImageHostService _imageHostService;
-        public PostService(IPostRepository postRepository, IVoteRepository voteRepository, ICalendarRepository calendarRepository, IUnitOfWork unitOfWork, IImageHostService imageHostService)
+        private readonly ICognitiveService _cognitiveService;
+        public PostService(IPostRepository postRepository, IVoteRepository voteRepository, ICalendarRepository calendarRepository, IUnitOfWork unitOfWork, IImageHostService imageHostService, ICognitiveService cognitiveService)
         {
             _postRepository = postRepository;
             _unitOfWork = unitOfWork;
             _voteRepository = voteRepository;
             _calendarRepository = calendarRepository;
             _imageHostService = imageHostService;
+            _cognitiveService = cognitiveService;
         }
 
         public async Task<PostsResponse> GetAllAsync(string postName = null, string threadId = null, PaginationFilter paginationFilter = null, string orderByQueryString = null, string type = null, string daysAtTown = null)
@@ -106,6 +108,7 @@ namespace Forum.BLL.Services
                     return new PostResponse("An error accurred when saving image");
                 }
                 post.ImageLink = res.data.display_url;
+                post.Tags = await _cognitiveService.TagsFromImage(res.data.display_url);
             }
 
             post.Id = Guid.NewGuid().ToString();
@@ -132,6 +135,7 @@ namespace Forum.BLL.Services
                     return new PostResponse("An error accurred when saving image");
                 }
                 post.ImageLink = res.data.display_url;
+                post.Tags = await _cognitiveService.TagsFromImage(res.data.display_url);
             }
 
             post.Id = Guid.NewGuid().ToString();

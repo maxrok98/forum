@@ -23,6 +23,10 @@ using Forum.DAL.Models;
 using Forum.DAL.Repositories;
 using Forum.Shared.Contracts;
 using Microsoft.CognitiveServices.Speech;
+using Azure.AI.Vision.Common;
+using Azure;
+using Azure.Storage.Blobs;
+using Azure.Storage;
 
 namespace Forum
 {
@@ -117,12 +121,29 @@ namespace Forum
                 var azureCognitiveRegion = Environment.GetEnvironmentVariable("azureCognitiveRegion");
                 return SpeechConfig.FromSubscription(speechToTextKey, azureCognitiveRegion);
             });
+            services.AddSingleton<VisionServiceOptions>(sp =>
+            {
+                var visionKey = Environment.GetEnvironmentVariable("visionKey");
+                var visionEndpoint = Environment.GetEnvironmentVariable("visionEndpoint");
+                var keyCred = new AzureKeyCredential(visionKey);
+                return new VisionServiceOptions(visionEndpoint, keyCred);
+            });
+            services.AddSingleton<BlobServiceClient>(sp =>
+            {
+                var accountName = Environment.GetEnvironmentVariable("blobName");
+                var accountKey = Environment.GetEnvironmentVariable("blobKey");
+                StorageSharedKeyCredential sharedKeyCredential =
+                    new StorageSharedKeyCredential(accountName, accountKey);
+
+                string blobUri = "https://" + accountName + ".blob.core.windows.net";
+                return new BlobServiceClient(new Uri(blobUri), sharedKeyCredential);
+            });
             services.AddScoped<IThreadService, ThreadService>();
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IComentService, ComentService>();
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IImageHostService, ImageHostService>();
+            services.AddScoped<IImageHostService, BlobHostService>();
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddSingleton<IUriService>(provider => {

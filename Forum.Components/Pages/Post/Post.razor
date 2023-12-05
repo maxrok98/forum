@@ -53,15 +53,15 @@ else
             <!-- Preview Image -->
             @if(post.ImageLink == null || post.ImageLink == String.Empty)
             {
-                <img class="img-fluid rounded" src="/img/post_placeholder.gif" width="920" />
+                <img class="img-fluid rounded" src="/img/post_placeholder.gif" width="940" />
             }
             else
             {
-                <img class="img-fluid rounded" src="@post.ImageLink" width="920" />
+                <img class="img-fluid rounded" src="@post.ImageLink" width="940" />
             }
             </div>
             <div class="@(type == ImageType.Photo ? "collapse" : "")">
-                <div id="mapContainer" style="max-width: 920px; height: 500px;">
+                <div id="mapContainer" style="max-width: 940px; height: 500px;">
                     <LeafletMap Map="_map" />
                 </div>
             </div>
@@ -80,6 +80,22 @@ else
 
 
             <hr>
+
+            @if (post.Tags != null)
+            {
+                @if (!string.IsNullOrEmpty(post.Tags))
+                {
+                    <p>
+                    @foreach(var tag in post.Tags.Trim().Split(" "))
+                    {
+                        <text><a href="#">@("#" + tag)</a> </text>
+                    }
+                    </p>
+
+                    <hr>
+                    
+                }
+            }
 
             <div class="d-flex justify-content-between align-items-center px-1">
             <div ><i class="mdi mdi-forum"> : @post.Coments.Count()</i></div>

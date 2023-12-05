@@ -19,6 +19,8 @@ namespace Forum.DAL.Models
 
         public string ImageLink { get; set; }
 
+        public string Tags {  get; set; }
+
         public DateTime Date { get; set; }
         public int Rating { get; set; }
 
