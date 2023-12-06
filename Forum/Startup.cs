@@ -143,7 +143,7 @@ namespace Forum
             services.AddScoped<IComentService, ComentService>();
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IImageHostService, ImageHostService>();
+            services.AddScoped<IImageHostService, BlobHostService>();
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddSingleton<IUriService>(provider => {
