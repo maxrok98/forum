@@ -5,7 +5,7 @@
              x:Class="Forum.NativeClient.MainPage"
              BackgroundColor="{DynamicResource PageBackgroundColor}">
 
-    <BlazorWebView UrlLoading="BlazorWebView_UrlLoading" BlazorWebViewInitialized="BlazorWebView_BlazorWebViewInitialized" HostPage="wwwroot/index.html">
+    <BlazorWebView BlazorWebViewInitialized="BlazorWebView_BlazorWebViewInitialized" HostPage="wwwroot/index.html">
         <BlazorWebView.RootComponents>
             <RootComponent  Selector="#app" ComponentType="{x:Type local:Main}" />
         </BlazorWebView.RootComponents>

@@ -10,23 +10,28 @@ namespace Forum.NativeClient {
             
         }
 
-        private void BlazorWebView_BlazorWebViewInitialized(object sender, BlazorWebViewInitializedEventArgs e)
+        private async void BlazorWebView_BlazorWebViewInitialized(object sender, BlazorWebViewInitializedEventArgs e)
         {
-            //PermissionStatus status = Permissions.CheckStatusAsync<Permissions.Microphone>().Result;
+            PermissionStatus status = Permissions.CheckStatusAsync<Permissions.Microphone>().Result;
 
-            //if (status != PermissionStatus.Granted)
-            //    Permissions.RequestAsync<Permissions.Microphone>();
+            if (status != PermissionStatus.Granted)
+                await Permissions.RequestAsync<Permissions.Microphone>();
+
+            PermissionStatus statusRead = Permissions.CheckStatusAsync<Permissions.StorageRead>().Result;
+
+            if (statusRead != PermissionStatus.Granted)
+                await Permissions.RequestAsync<Permissions.StorageRead>();
         }
 
         private void BlazorWebView_UrlLoading(object sender, UrlLoadingEventArgs e)
         {
-            if (e.Url.AbsolutePath.Contains("createpost"))
-            {
-                PermissionStatus status = Permissions.CheckStatusAsync<Permissions.Microphone>().Result;
+            //if (e.Url.AbsolutePath.Contains("createpost"))
+            //{
+            //    PermissionStatus status = Permissions.CheckStatusAsync<Permissions.Microphone>().Result;
 
-                if (status != PermissionStatus.Granted)
-                    Permissions.RequestAsync<Permissions.Microphone>();
-            }
+            //    if (status != PermissionStatus.Granted)
+            //        Permissions.RequestAsync<Permissions.Microphone>();
+            //}
 
         }
     }
