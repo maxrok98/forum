@@ -1,5 +1,5 @@
 ﻿using Azure.AI.Vision.Common;
-using Azure.AI.Vision.ImageAnalysis;
+//using Azure.AI.Vision.ImageAnalysis;
 using Forum.BLL.Services.Communication;
 using Forum.DAL.Models;
 using Microsoft.CognitiveServices.Speech;
@@ -17,11 +17,11 @@ namespace Forum.BLL.Services
     public class CognitiveService : ICognitiveService
     {
         private readonly SpeechConfig _speechConfig;
-        private readonly VisionServiceOptions _visionConfig;
-        public CognitiveService(SpeechConfig speechConfig, VisionServiceOptions visionServiceOptions)
+        //private readonly VisionServiceOptions _visionConfig;
+        public CognitiveService(SpeechConfig speechConfig)//, VisionServiceOptions visionServiceOptions)
         {
             _speechConfig = speechConfig;
-            _visionConfig = visionServiceOptions;
+            //_visionConfig = visionServiceOptions;
         }
         public async Task<SpeechToTextResponse> SpeechToText(byte[] wavFile)
         {
@@ -56,34 +56,35 @@ namespace Forum.BLL.Services
 
         public async Task<string> TagsFromImage(string imageUrl)
         {
-            using var imageSource = VisionSource.FromUrl(
-            new Uri(imageUrl));
+            //using var imageSource = VisionSource.FromUrl(
+            //new Uri(imageUrl));
 
-            var analysisOptions = new ImageAnalysisOptions()
-            {
-                Features = ImageAnalysisFeature.Tags,
-                Language = "en",
-                GenderNeutralCaption = true
-            };
+            //var analysisOptions = new ImageAnalysisOptions()
+            //{
+            //    Features = ImageAnalysisFeature.Tags,
+            //    Language = "en",
+            //    GenderNeutralCaption = true
+            //};
 
-            using var analyzer = new ImageAnalyzer(_visionConfig, imageSource, analysisOptions);
-            var result = await analyzer.AnalyzeAsync();
+            //using var analyzer = new ImageAnalyzer(_visionConfig, imageSource, analysisOptions);
+            //var result = await analyzer.AnalyzeAsync();
 
-            StringBuilder tags = new("");
-            if(result.Reason == ImageAnalysisResultReason.Analyzed)
-            {
-                if(result.Tags != null)
-                {
-                    foreach(var tag in result.Tags)
-                    {
-                        if (tag.Confidence > 0.9)
-                        {
-                            tags.Append(" " + tag.Name.Replace(" ", "_"));
-                        }
-                    }
-                }
-            }
-            return tags.ToString();
+            //StringBuilder tags = new("");
+            //if(result.Reason == ImageAnalysisResultReason.Analyzed)
+            //{
+            //    if(result.Tags != null)
+            //    {
+            //        foreach(var tag in result.Tags)
+            //        {
+            //            if (tag.Confidence > 0.9)
+            //            {
+            //                tags.Append(" " + tag.Name.Replace(" ", "_"));
+            //            }
+            //        }
+            //    }
+            //}
+            //return tags.ToString();
+            return "";
         }
     }
 }

@@ -121,13 +121,13 @@ namespace Forum
                 var azureCognitiveRegion = Environment.GetEnvironmentVariable("azureCognitiveRegion");
                 return SpeechConfig.FromSubscription(speechToTextKey, azureCognitiveRegion);
             });
-            services.AddSingleton<VisionServiceOptions>(sp =>
-            {
-                var visionKey = Environment.GetEnvironmentVariable("visionKey");
-                var visionEndpoint = Environment.GetEnvironmentVariable("visionEndpoint");
-                var keyCred = new AzureKeyCredential(visionKey);
-                return new VisionServiceOptions(visionEndpoint, keyCred);
-            });
+            //services.AddSingleton<VisionServiceOptions>(sp =>
+            //{
+            //    var visionKey = Environment.GetEnvironmentVariable("visionKey");
+            //    var visionEndpoint = Environment.GetEnvironmentVariable("visionEndpoint");
+            //    var keyCred = new AzureKeyCredential(visionKey);
+            //    return new VisionServiceOptions(visionEndpoint, keyCred);
+            //});
             services.AddSingleton<BlobServiceClient>(sp =>
             {
                 var accountName = Environment.GetEnvironmentVariable("blobName");
@@ -143,7 +143,7 @@ namespace Forum
             services.AddScoped<IComentService, ComentService>();
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IImageHostService, BlobHostService>();
+            services.AddScoped<IImageHostService, ImageHostService>();
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddSingleton<IUriService>(provider => {

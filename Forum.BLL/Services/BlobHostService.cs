@@ -10,25 +10,25 @@ using System.Threading.Tasks;
 
 namespace Forum.BLL.Services
 {
-    public class BlobHostService : IImageHostService
-    {
-        private readonly BlobServiceClient _blobServiceClient;
+    //public class BlobHostService : IImageHostService
+    //{
+    //    private readonly BlobServiceClient _blobServiceClient;
 
-        public BlobHostService(BlobServiceClient blobServiceClient)
-        {
-            _blobServiceClient = blobServiceClient;
-        }
-        public async Task<ImageHostResponse> SaveImageAsync(string base64string)
-        {
-            var blobContainerService = _blobServiceClient.GetBlobContainerClient("images");
-            var bytes = Convert.FromBase64String(base64string);
-            var block = blobContainerService.GetBlockBlobClient("image_" + Guid.NewGuid().ToString() + ".jpg");
+    //    public BlobHostService(BlobServiceClient blobServiceClient)
+    //    {
+    //        _blobServiceClient = blobServiceClient;
+    //    }
+    //    public async Task<ImageHostResponse> SaveImageAsync(string base64string)
+    //    {
+    //        var blobContainerService = _blobServiceClient.GetBlobContainerClient("images");
+    //        var bytes = Convert.FromBase64String(base64string);
+    //        var block = blobContainerService.GetBlockBlobClient("image_" + Guid.NewGuid().ToString() + ".jpg");
 
-            using (var stream = new MemoryStream(bytes))
-            {
-                await block.UploadAsync(stream);
-            }
-            return new ImageHostResponse { data = new Data { display_url = block.Uri.AbsoluteUri }, success = true };
-        }
-    }
+    //        using (var stream = new MemoryStream(bytes))
+    //        {
+    //            await block.UploadAsync(stream);
+    //        }
+    //        return new ImageHostResponse { data = new Data { display_url = block.Uri.AbsoluteUri }, success = true };
+    //    }
+    //}
 }
