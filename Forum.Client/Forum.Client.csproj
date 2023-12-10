@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <PublishTrimmed>false</PublishTrimmed>
+    <!--<PublishTrimmed>false</PublishTrimmed>-->
   </PropertyGroup>
 
   <ItemGroup>
