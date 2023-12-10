@@ -21,10 +21,11 @@ namespace ForumTesting
         private readonly Mock<ICalendarRepository> _calendarRepoMock = new Mock<ICalendarRepository>();
         private readonly Mock<IUnitOfWork> _unitRepoMock = new Mock<IUnitOfWork>();
         private readonly Mock<IImageHostService> _imageHostService = new Mock<IImageHostService>();
+        private readonly Mock<ICognitiveService> _cognitiveService = new Mock<ICognitiveService>();
 
         public PostServiceTests()
         {
-            _sut = new PostService(_postRepoMock.Object, _voteRepoMock.Object, _calendarRepoMock.Object, _unitRepoMock.Object, _imageHostService.Object);
+            _sut = new PostService(_postRepoMock.Object, _voteRepoMock.Object, _calendarRepoMock.Object, _unitRepoMock.Object, _imageHostService.Object, _cognitiveService.Object);
         }
 
         [Fact]

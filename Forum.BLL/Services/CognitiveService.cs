@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,16 +20,29 @@ namespace Forum.BLL.Services
     {
         private readonly SpeechConfig _speechConfig;
         private readonly VisionServiceOptions _visionConfig;
-        public CognitiveService(SpeechConfig speechConfig, VisionServiceOptions visionServiceOptions)
+        private readonly IHttpClientFactory _httpClientFactory;
+        public CognitiveService(SpeechConfig speechConfig, VisionServiceOptions visionServiceOptions, IHttpClientFactory httpClientFactory)
         {
             _speechConfig = speechConfig;
             _visionConfig = visionServiceOptions;
+            _httpClientFactory = httpClientFactory;
         }
         public async Task<SpeechToTextResponse> SpeechToText(byte[] wavFile)
         {
             //File.WriteAllBytes("C:/users/mroko/downloads/TestSampleFromBytes.wav", wavFile);
+            var waveFormat = AudioStreamFormat.GetWaveFormatPCM(8000, 16, 1);
+            try
+            {
+                wavFile = await DenoiseSound(wavFile);
+            }
+            catch
+            {
+                waveFormat = AudioStreamFormat.GetWaveFormatPCM(44100, 16, 2);
+            }
+
+
             var reader = new BinaryReader(new MemoryStream(wavFile));
-            using var audioConfigStream = AudioInputStream.CreatePushStream(AudioStreamFormat.GetWaveFormatPCM(44100, 16, 2));
+            using var audioConfigStream = AudioInputStream.CreatePushStream(waveFormat);
             using var audioConfig = AudioConfig.FromStreamInput(audioConfigStream);
             using var speechRecognizer = new SpeechRecognizer(_speechConfig, audioConfig);
 
@@ -85,5 +100,27 @@ namespace Forum.BLL.Services
             }
             return tags.ToString();
         }
+
+        private async Task<byte[]> DenoiseSound(byte[] wavFile)
+        {
+            var httpClient = _httpClientFactory.CreateClient("denoiser");
+            var payload = new
+            {
+                wav_bytes = Convert.ToBase64String(wavFile)
+            };
+            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
+            StringContent content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await httpClient.PostAsync("", content);
+
+            response.EnsureSuccessStatusCode();
+
+            var responseData = await response.Content.ReadFromJsonAsync<DenoisedResponce>();
+            return Convert.FromBase64String(responseData.wav_bytes);
+        }
+    }
+
+    internal class DenoisedResponce
+    {
+        public string wav_bytes { get; set; }
     }
 }

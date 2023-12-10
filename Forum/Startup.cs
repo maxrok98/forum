@@ -121,13 +121,13 @@ namespace Forum
                 var azureCognitiveRegion = Environment.GetEnvironmentVariable("azureCognitiveRegion");
                 return SpeechConfig.FromSubscription(speechToTextKey, azureCognitiveRegion);
             });
-            //services.AddSingleton<VisionServiceOptions>(sp =>
-            //{
-            //    var visionKey = Environment.GetEnvironmentVariable("visionKey");
-            //    var visionEndpoint = Environment.GetEnvironmentVariable("visionEndpoint");
-            //    var keyCred = new AzureKeyCredential(visionKey);
-            //    return new VisionServiceOptions(visionEndpoint, keyCred);
-            //});
+            services.AddSingleton<VisionServiceOptions>(sp =>
+            {
+                var visionKey = Environment.GetEnvironmentVariable("visionKey");
+                var visionEndpoint = Environment.GetEnvironmentVariable("visionEndpoint");
+                var keyCred = new AzureKeyCredential(visionKey);
+                return new VisionServiceOptions(visionEndpoint, keyCred);
+            });
             services.AddSingleton<BlobServiceClient>(sp =>
             {
                 var accountName = Environment.GetEnvironmentVariable("blobName");
@@ -157,6 +157,11 @@ namespace Forum
             {
                 c.BaseAddress = new Uri("https://api.imgbb.com/1/upload?key=" +
                     Environment.GetEnvironmentVariable("IMGBB_API_KEY"));
+            });
+
+            services.AddHttpClient("denoiser", c =>
+            {
+                c.BaseAddress = new Uri(Environment.GetEnvironmentVariable("denoiserUri"));
             });
 
             services.AddAutoMapper(typeof(Startup));
