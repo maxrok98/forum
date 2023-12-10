@@ -1,5 +1,7 @@
-﻿using Azure.AI.Vision.Common;
+﻿#if DEBUG
+using Azure.AI.Vision.Common;
 using Azure.AI.Vision.ImageAnalysis;
+#endif
 using Forum.BLL.Services.Communication;
 using Forum.DAL.Models;
 using Microsoft.CognitiveServices.Speech;
@@ -19,12 +21,20 @@ namespace Forum.BLL.Services
     public class CognitiveService : ICognitiveService
     {
         private readonly SpeechConfig _speechConfig;
+#if DEBUG
         private readonly VisionServiceOptions _visionConfig;
+#endif
         private readonly IHttpClientFactory _httpClientFactory;
-        public CognitiveService(SpeechConfig speechConfig, VisionServiceOptions visionServiceOptions, IHttpClientFactory httpClientFactory)
+        public CognitiveService(SpeechConfig speechConfig,
+#if DEBUG
+            VisionServiceOptions visionServiceOptions,
+#endif
+            IHttpClientFactory httpClientFactory)
         {
             _speechConfig = speechConfig;
+#if DEBUG
             _visionConfig = visionServiceOptions;
+#endif
             _httpClientFactory = httpClientFactory;
         }
         public async Task<SpeechToTextResponse> SpeechToText(byte[] wavFile)
@@ -69,6 +79,7 @@ namespace Forum.BLL.Services
             return new SpeechToTextResponse(new SpeechToText { Text = result.Text });
         }
 
+#if DEBUG
         public async Task<string> TagsFromImage(string imageUrl)
         {
             using var imageSource = VisionSource.FromUrl(
@@ -100,6 +111,7 @@ namespace Forum.BLL.Services
             }
             return tags.ToString();
         }
+#endif
 
         private async Task<byte[]> DenoiseSound(byte[] wavFile)
         {

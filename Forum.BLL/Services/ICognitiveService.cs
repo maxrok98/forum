@@ -10,6 +10,8 @@ namespace Forum.BLL.Services
     public interface ICognitiveService
     {
         Task<SpeechToTextResponse> SpeechToText(byte[] wavFile);
+#if DEBUG
         Task<string> TagsFromImage(string imageUrl);
+#endif
     }
 }

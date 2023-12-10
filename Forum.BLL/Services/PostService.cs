@@ -108,7 +108,9 @@ namespace Forum.BLL.Services
                     return new PostResponse("An error accurred when saving image");
                 }
                 post.ImageLink = res.data.display_url;
+#if DEBUG
                 post.Tags = await _cognitiveService.TagsFromImage(res.data.display_url);
+#endif
             }
 
             post.Id = Guid.NewGuid().ToString();
@@ -135,7 +137,9 @@ namespace Forum.BLL.Services
                     return new PostResponse("An error accurred when saving image");
                 }
                 post.ImageLink = res.data.display_url;
+#if DEBUG
                 post.Tags = await _cognitiveService.TagsFromImage(res.data.display_url);
+#endif
             }
 
             post.Id = Guid.NewGuid().ToString();

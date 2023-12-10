@@ -23,7 +23,9 @@ using Forum.DAL.Models;
 using Forum.DAL.Repositories;
 using Forum.Shared.Contracts;
 using Microsoft.CognitiveServices.Speech;
+#if DEBUG
 using Azure.AI.Vision.Common;
+#endif
 using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage;
@@ -121,6 +123,7 @@ namespace Forum
                 var azureCognitiveRegion = Environment.GetEnvironmentVariable("azureCognitiveRegion");
                 return SpeechConfig.FromSubscription(speechToTextKey, azureCognitiveRegion);
             });
+#if DEBUG
             services.AddSingleton<VisionServiceOptions>(sp =>
             {
                 var visionKey = Environment.GetEnvironmentVariable("visionKey");
@@ -128,6 +131,7 @@ namespace Forum
                 var keyCred = new AzureKeyCredential(visionKey);
                 return new VisionServiceOptions(visionEndpoint, keyCred);
             });
+#endif
             services.AddSingleton<BlobServiceClient>(sp =>
             {
                 var accountName = Environment.GetEnvironmentVariable("blobName");
