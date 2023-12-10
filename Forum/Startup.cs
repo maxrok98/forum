@@ -24,11 +24,11 @@ using Forum.DAL.Repositories;
 using Forum.Shared.Contracts;
 using Microsoft.CognitiveServices.Speech;
 #if DEBUG
-using Azure.AI.Vision.Common;
-#endif
 using Azure;
+using Azure.AI.Vision.Common;
 using Azure.Storage.Blobs;
 using Azure.Storage;
+#endif
 
 namespace Forum
 {
@@ -131,7 +131,6 @@ namespace Forum
                 var keyCred = new AzureKeyCredential(visionKey);
                 return new VisionServiceOptions(visionEndpoint, keyCred);
             });
-#endif
             services.AddSingleton<BlobServiceClient>(sp =>
             {
                 var accountName = Environment.GetEnvironmentVariable("blobName");
@@ -142,12 +141,17 @@ namespace Forum
                 string blobUri = "https://" + accountName + ".blob.core.windows.net";
                 return new BlobServiceClient(new Uri(blobUri), sharedKeyCredential);
             });
+#endif
             services.AddScoped<IThreadService, ThreadService>();
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IComentService, ComentService>();
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IUserService, UserService>();
+#if DEBUG
             services.AddScoped<IImageHostService, BlobHostService>();
+#else
+            services.AddScoped<IImageHostService, ImageHostService>();
+#endif
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddSingleton<IUriService>(provider => {

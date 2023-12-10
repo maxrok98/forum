@@ -1,5 +1,7 @@
-﻿using Azure.Storage.Blobs;
+﻿#if DEBUG
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Specialized;
+#endif
 using Forum.BLL.Services.Communication;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace Forum.BLL.Services
 {
+#if DEBUG
     public class BlobHostService : IImageHostService
     {
         private readonly BlobServiceClient _blobServiceClient;
@@ -31,4 +34,5 @@ namespace Forum.BLL.Services
             return new ImageHostResponse { data = new Data { display_url = block.Uri.AbsoluteUri }, success = true };
         }
     }
+#endif
 }
